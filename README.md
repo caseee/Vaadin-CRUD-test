@@ -1,7 +1,9 @@
-VaadinApp
+Gestione Punti Vendita
 ==
 
-Eclipe Plugin:
+Eclipse Project RE: jre7 
+
+Eclipse Plugin:
 
 http://www.apache.org/dist/ant/ivyde/updatesite
 
