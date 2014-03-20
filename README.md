@@ -11,3 +11,6 @@ http://vaadin.com/eclipse
 
 http://download.eclipse.org/egit/updates
 
+Other:
+
+https://developer.mozilla.org/en-US/docs/Mozilla/Projects/XULRunner
