@@ -2,8 +2,11 @@ package it.gigalol.vaadinapp;
 
 import com.vaadin.navigator.*;
 import com.vaadin.navigator.ViewChangeListener.*;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.Reindeer;
 
 public class MainView extends CustomComponent implements View {
 
@@ -28,8 +31,29 @@ public class MainView extends CustomComponent implements View {
         }
     });
 
+    Button movimenta = new Button("Movimenta");
+    Button articoli = new Button("Articoli");
+    
+    
     public MainView() {
-        setCompositionRoot(new CssLayout(text, logout));
+    	
+		// Add both to a panel
+		VerticalLayout fields = new VerticalLayout(movimenta, articoli, logout );
+		fields.setCaption("Pagina Principale");
+		fields.setSpacing(true);
+		fields.setMargin(new MarginInfo(true, true, true, false));
+		fields.setSizeUndefined();
+
+		// The view root layout
+		VerticalLayout viewLayout = new VerticalLayout(fields);
+		viewLayout.setSizeFull();
+		viewLayout.setComponentAlignment(fields, Alignment.MIDDLE_CENTER);
+		viewLayout.setStyleName(Reindeer.LAYOUT_WHITE);
+		setCompositionRoot(viewLayout);
+    	
+        setCompositionRoot(new CssLayout(fields));
+        
+        
     }
 
     @Override
@@ -40,4 +64,19 @@ public class MainView extends CustomComponent implements View {
         // And show the username
         text.setValue("Hello " + username);
     }
+    
+    
+    ClickListener MainClickListener = new ClickListener() {
+    	private static final long serialVersionUID = -2254580865064907743L;
+    	@Override
+    	public void buttonClick(ClickEvent event) {
+    		
+    		
+    	}
+    	
+    };
+    
 }
+
+
+

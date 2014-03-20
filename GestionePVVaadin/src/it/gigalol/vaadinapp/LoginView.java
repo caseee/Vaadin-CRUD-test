@@ -14,7 +14,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-
 public class LoginView extends CustomComponent implements View, Button.ClickListener {
 
 	private static final long serialVersionUID = 3350818906987552789L;
@@ -28,6 +27,7 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 	private final Button loginButton;
 
 	public LoginView() {
+
 		setSizeFull();
 
 		// Create the user input field
@@ -143,7 +143,7 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 		// Validate username and password with database here. For examples sake
 		// I use a dummy username and password.
 		//
-		boolean isValid = ApplicationController.getController().auth(username, password, 1);
+		boolean isValid = ((Controller) getSession().getAttribute("Controller")).auth(username, password, 1);
 
 		if(isValid){
 			// Store the current user in the service session

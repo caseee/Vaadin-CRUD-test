@@ -1,7 +1,9 @@
+/**
+ * 
+ */
 package it.gigalol.vaadinapp;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -9,19 +11,27 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
 import com.vaadin.server.VaadinService;
 
-public class ApplicationController {
-	private static ApplicationController istanza = null;
-	Connection c = null;
+/**
+ * @author Marco
+ *
+ */
+public class Model {
+	private static Model istanza = null;
+	private Connection c = null;
 
-	private ApplicationController() {
+	public static synchronized Model getModel() {
+		if (istanza == null) 
+			istanza = new Model();
+		return istanza;
+	}
 
+	private Model() {
 		// Find the application directory
 		String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 		String homedir = System.getProperty("user.home");
@@ -64,41 +74,33 @@ public class ApplicationController {
 			System.exit(1);
 		}
 		System.out.println("Opened database successfully");
-
-
 	}
 
 	public boolean auth(String user, String pass, int levelreq) {
 
-		boolean result;
+		boolean result = false;
 		try {
 			PreparedStatement stmt = c.prepareStatement("SELECT * FROM USERS WHERE USER=?;");			 
 			stmt.setString(1, user);
 			ResultSet rs = stmt.executeQuery();
 
-			if (rs == null) return false;
-
-			
-			if (rs.next() && rs.isFirst()) {
+			if (rs == null) 
+				result = false;
+			else if (rs.next() && rs.isFirst()) {
 
 				int level = rs.getInt("LEVEL");
 				String hashpass = rs.getString("PASS");
-				
-				if (rs.next()) {
-					rs.close();
-					stmt.close();
-					return false;
-				}
-									
+
+				if (rs.next()) // Se trova più di un utente
+					result = false; 
+				else if (!hashpass.equals(org.apache.commons.codec.digest.DigestUtils.sha1Hex(pass))) // Se la pass non corrisponde
+					result = false;
+				else if (level < levelreq) // Se il livello è inferiore
+					result = false;
+				else
+					result = true;
 				rs.close();
 				stmt.close();
-				
-				if (!hashpass.equals(org.apache.commons.codec.digest.DigestUtils.sha1Hex(pass))) 
-					return false;
-				if (level > levelreq)
-					return true;
-				return false;
-
 			}
 
 
@@ -107,13 +109,8 @@ public class ApplicationController {
 			System.err.println("Error trying autenticate:" + user + " at level:" + levelreq);
 			e.printStackTrace();
 		}
-		return false;
 
-	}
+		return result;
 
-	public static synchronized ApplicationController getController() {
-		if (istanza == null) 
-			istanza = new ApplicationController();
-		return istanza;
 	}
 }

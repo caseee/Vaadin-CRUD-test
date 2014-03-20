@@ -17,14 +17,21 @@ import com.vaadin.ui.VerticalLayout;
 
 @SuppressWarnings("serial")
 @Theme("gestionepvvaadin")
-public class GestionepvvaadinUI extends UI {
-
+public class Launcher extends UI {
+	
+	Controller controller = new Controller();
+	
+	
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = GestionepvvaadinUI.class)
+	@VaadinServletConfiguration(productionMode = false, ui = Launcher.class)
 	public static class Servlet extends VaadinServlet {
+		
 	}
-
+	
 	protected void init(VaadinRequest request) {
+		
+		getSession().setAttribute("Controller", controller);
+		
 		// Crea una nuova istanza Navigator, attacata alla vista corrente
 		new Navigator(this, this);
 
