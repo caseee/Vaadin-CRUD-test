@@ -30,12 +30,29 @@ public class MainView extends CustomComponent implements View {
             getUI().getNavigator().navigateTo(NAME);
         }
     });
-
+    ClickListener mainClickListener = new ClickListener() {
+    	private static final long serialVersionUID = -2254580865064907743L;
+    	@Override
+    	public void buttonClick(ClickEvent event) {
+    		getUI().getNavigator().navigateTo(NAME);
+    		
+    	}
+    	
+    };
     Button movimenta = new Button("Movimenta");
-    Button articoli = new Button("Articoli");
-    
+    Button articoli = new Button("Articoli", new Button.ClickListener() {
+		private static final long serialVersionUID = -9123442014270147559L;
+        public void buttonClick(ClickEvent event) {
+			// Navigate to main view
+        	java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "TRYING TO SWITCH TO ARTICLES" );
+			getUI().getNavigator().navigateTo(ArticlesView.NAME);
+			java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "SWITCHED TO ARTICLES" );
+        }
+    });
     
     public MainView() {
+    	
+    	java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "MAIN VIEW CREATED" );
     	
 		// Add both to a panel
 		VerticalLayout fields = new VerticalLayout(movimenta, articoli, logout );
@@ -66,15 +83,7 @@ public class MainView extends CustomComponent implements View {
     }
     
     
-    ClickListener MainClickListener = new ClickListener() {
-    	private static final long serialVersionUID = -2254580865064907743L;
-    	@Override
-    	public void buttonClick(ClickEvent event) {
-    		
-    		
-    	}
-    	
-    };
+
     
 }
 

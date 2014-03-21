@@ -1,7 +1,6 @@
 package it.gigalol.vaadinapp;
 
-import com.vaadin.data.validator.AbstractValidator;
-import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.*;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
