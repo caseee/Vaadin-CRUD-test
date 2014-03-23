@@ -77,14 +77,13 @@ public class SqlHelper {
 				sr.runScript(fr);
 				fr.close();
 				ApplicationController.getApplicationController().log(Level.INFO,"DB CREATED" );
-				
-				
+								
 			}	
+			
 			TableQuery tq = new TableQuery("ARTICLES", pool);
-			tq.setVersionColumn("VERSION");
+			tq.setVersionColumn("ID");
 			ArticlesContainer = new SQLContainer(tq);
 				
-
 		} catch ( java.lang.ClassNotFoundException cnfe ) {
 			System.err.println( "ERRORE INIT SQLITE: " + cnfe.getClass().getName() + ": " + cnfe.getMessage() );
 			System.exit(1);

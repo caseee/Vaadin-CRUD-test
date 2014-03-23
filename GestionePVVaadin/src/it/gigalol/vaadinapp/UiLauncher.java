@@ -16,9 +16,7 @@ import com.vaadin.ui.UI;
 @SuppressWarnings("serial")
 @Theme("gestionepvvaadin")
 public class UiLauncher extends UI {
-	
-	
-	
+		
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = UiLauncher.class)
 	public static class Servlet extends VaadinServlet {
