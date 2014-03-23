@@ -1,5 +1,7 @@
 package it.gigalol.vaadinapp;
 
+import java.util.logging.Level;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.MarginInfo;
@@ -13,16 +15,15 @@ import com.vaadin.ui.themes.Reindeer;
 public class ArticlesView extends CustomComponent implements View{
 	private static final long serialVersionUID = 2869411776027184262L;
 	public static final String NAME = "articles";
-	
-	
-	Controller controller; 
+		
+	ApplicationController controller; 
 	
 	Table table = new Table("This is my Table");
 
 	public ArticlesView() {
-		controller= ((Controller) getSession().getAttribute("Controller"));
-    	java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "ARTICLES VIEW CREATED" );
-    	
+		controller = ApplicationController.getApplicationController();
+		controller.getArticlesContainer();
+		    	
 		// Add both to a panel
 		VerticalLayout fields = new VerticalLayout(table );
 		fields.setCaption("Pagina Principale");
@@ -39,7 +40,7 @@ public class ArticlesView extends CustomComponent implements View{
     	
         setCompositionRoot(new CssLayout(fields));
 		
-		//table.setData(controller.getArticlesContainer());
+		table.setContainerDataSource(controller.getArticlesContainer());
 	
 	}
 	

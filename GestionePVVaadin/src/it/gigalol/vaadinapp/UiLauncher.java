@@ -1,5 +1,7 @@
 package it.gigalol.vaadinapp;
 
+import java.util.logging.Logger;
+
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
@@ -13,20 +15,12 @@ import com.vaadin.ui.UI;
 
 @SuppressWarnings("serial")
 @Theme("gestionepvvaadin")
-public class Controller extends UI {
+public class UiLauncher extends UI {
 	
-	private Model model = Model.getModel();	
 	
-	public SQLContainer getArticlesContainer() {
-		return model.getArticlesContainer();
-	}
-	
-	public boolean auth(String user, String pass, int levelreq) {
-		return model.auth(user, pass, levelreq);
-	}
 	
 	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = Controller.class)
+	@VaadinServletConfiguration(productionMode = false, ui = UiLauncher.class)
 	public static class Servlet extends VaadinServlet {
 		
 	}

@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.sqlite.SQLiteConfig;
@@ -27,13 +28,13 @@ import com.vaadin.server.VaadinService;
  * @author Marco
  *
  */
-public class Model implements Serializable {
-	private static final long serialVersionUID = -2821722965659956374L;
-	
-	private static Model istanza = null;
-	public static synchronized Model getModel() {
+public class SqlHelper {
+	private JDBCConnectionPool pool;
+		
+	private static SqlHelper istanza = null;
+	public static synchronized SqlHelper getSqlHelper() {
 		if (istanza == null) 
-			istanza = new Model();
+			istanza = new SqlHelper();
 		return istanza;
 	}
 	
@@ -44,7 +45,7 @@ public class Model implements Serializable {
 
 	private Connection c = null;
 	
-	private Model() {
+	private SqlHelper() {
 		// Find the application directory
 		String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 		String homedir = System.getProperty("user.home");
@@ -52,7 +53,6 @@ public class Model implements Serializable {
 		String dbfile = basepath + separator  +"WEB-INF"+separator+"sqlite.db";
 		String dbinit = basepath + separator  +"WEB-INF"+separator+"init.sql";   
 		java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "DB LOCATION " + dbinit );
-
 		
 		try {
 
@@ -63,10 +63,12 @@ public class Model implements Serializable {
 			SQLiteConfig config = new SQLiteConfig();
 			config.setOpenMode(SQLiteOpenMode.READWRITE);
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:"+dbfile, config.toProperties());
-			
+			pool = new SimpleJDBCConnectionPool(
+			        "org.sqlite.JDBC",
+			        "jdbc:sqlite:"+dbfile, 
+			        "SA", "", 2, 10);
+					
 			if (initdb) {
-
 				
 				FileReader fr = new FileReader(dbinit);
 				PrintWriter stdwriter = new PrintWriter(System.out);
@@ -74,18 +76,13 @@ public class Model implements Serializable {
 				SqlRunner sr = new SqlRunner(c, stdwriter, errwriter, false, true);
 				sr.runScript(fr);
 				fr.close();
-				System.out.println("Init database successfully");
-			}	else {
+				ApplicationController.getApplicationController().log(Level.INFO,"DB CREATED" );
 				
-				JDBCConnectionPool pool = new SimpleJDBCConnectionPool(
-				        "org.sqlite.JDBC",
-				        "jdbc:sqlite:"+dbfile, 
-				        "", "", 2, 5);
-				TableQuery tq = new TableQuery("ARTICLES", pool);
-				tq.setVersionColumn("OPTLOCK");
-				SQLContainer ArticlesContainer = new SQLContainer(tq);
 				
-			}
+			}	
+			TableQuery tq = new TableQuery("ARTICLES", pool);
+			tq.setVersionColumn("VERSION");
+			ArticlesContainer = new SQLContainer(tq);
 				
 
 		} catch ( java.lang.ClassNotFoundException cnfe ) {
@@ -107,6 +104,7 @@ public class Model implements Serializable {
 
 		boolean result = false;
 		try {
+			c = pool.reserveConnection();	
 			PreparedStatement stmt = c.prepareStatement("SELECT * FROM USERS WHERE USER=?;");			 
 			stmt.setString(1, user);
 			ResultSet rs = stmt.executeQuery();
@@ -128,12 +126,13 @@ public class Model implements Serializable {
 					result = true;
 				rs.close();
 				stmt.close();
+				pool.releaseConnection(c);
 			}
 
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			System.err.println("Error trying autenticate:" + user + " at level:" + levelreq);
+			ApplicationController.getApplicationController().log(Level.WARNING,"Error trying to authenticate: " +user );
 			e.printStackTrace();
 		}
 

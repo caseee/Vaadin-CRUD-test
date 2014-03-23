@@ -142,7 +142,7 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 		// Validate username and password with database here. For examples sake
 		// I use a dummy username and password.
 		//
-		boolean isValid = ((Controller) getSession().getAttribute("Controller")).auth(username, password, 1);
+		boolean isValid = ApplicationController.getApplicationController().auth(username, password, 1);
 
 		if(isValid){
 			// Store the current user in the service session
