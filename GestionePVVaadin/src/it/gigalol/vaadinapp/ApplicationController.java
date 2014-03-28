@@ -7,7 +7,7 @@ import com.vaadin.data.util.sqlcontainer.SQLContainer;
 
 public class ApplicationController {
 	private static ApplicationController istanza = null;
-	private SqlHelper model = SqlHelper.getSqlHelper();	
+	private SqlInterface model = new SQLiteImp();	
 	private Logger logger = Logger.getLogger("global");
 	
 	public static synchronized ApplicationController getApplicationController() {
@@ -16,7 +16,7 @@ public class ApplicationController {
 		return istanza;
 	}
 	private ApplicationController() {
-				
+		
 	}
 	
 	public void log(Level level, String log) {

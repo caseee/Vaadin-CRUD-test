@@ -12,6 +12,8 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
 
 @SuppressWarnings("serial")
 @Theme("gestionepvvaadin")
@@ -24,8 +26,7 @@ public class UiLauncher extends UI {
 	}
 	
 	protected void init(VaadinRequest request) {
-		
-		getSession().setAttribute("Controller", this);
+			
 		
 		// Crea una nuova istanza Navigator, attacata alla vista corrente
 		new Navigator(this, this);
@@ -66,7 +67,11 @@ public class UiLauncher extends UI {
 
 			}
 		});
-
+				
+		
+		
 	}
 
+
+	
 }
