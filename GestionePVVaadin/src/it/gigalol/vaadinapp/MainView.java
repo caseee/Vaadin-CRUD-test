@@ -2,6 +2,7 @@ package it.gigalol.vaadinapp;
 
 import com.vaadin.navigator.*;
 import com.vaadin.navigator.ViewChangeListener.*;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
@@ -14,46 +15,44 @@ public class MainView extends CustomComponent implements View {
 
 	public static final String NAME = "";
 
-    Label text = new Label();
+	Label text = new Label();
 
-    Button logout = new Button("Logout", new Button.ClickListener() {
+	Button logout = new Button("Logout", new Button.ClickListener() {
 
 		private static final long serialVersionUID = -9081842014270147559L;
 
 		@Override
-        public void buttonClick(ClickEvent event) {
+		public void buttonClick(ClickEvent event) {
 
-            // "Disconnette" l'utente
-            getSession().setAttribute("user", null);
+			// "Disconnette" l'utente
+			getSession().getAttribute(Controller.class).logout();
 
-            // Refresh questa view, dovrebbe redirezionare alla vista di login
-            getUI().getNavigator().navigateTo(NAME);
-        }
-    });
-    ClickListener mainClickListener = new ClickListener() {
-    	private static final long serialVersionUID = -2254580865064907743L;
-    	@Override
-    	public void buttonClick(ClickEvent event) {
-    		getUI().getNavigator().navigateTo(NAME);
-    		
-    	}
-    	
-    };
-    Button movimenta = new Button("Movimenta");
-    Button articoli = new Button("Articoli", new Button.ClickListener() {
+			// Refresh questa view, dovrebbe redirezionare alla vista di login
+			getUI().getNavigator().navigateTo(NAME);
+		}
+	});
+	ClickListener mainClickListener = new ClickListener() {
+		private static final long serialVersionUID = -2254580865064907743L;
+		@Override
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(NAME);
+
+		}
+
+	};
+	Button movimenta = new Button("Movimenta");
+	Button articoli = new Button("Articoli", new Button.ClickListener() {
 		private static final long serialVersionUID = -9123442014270147559L;
-        public void buttonClick(ClickEvent event) {
+		public void buttonClick(ClickEvent event) {
 			// Navigate to main view
-        	java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "TRYING TO SWITCH TO ARTICLES" );
 			getUI().getNavigator().navigateTo(ArticlesView.NAME);
-			java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "SWITCHED TO ARTICLES" );
-        }
-    });
-    
-    public MainView() {
-    	
-    	java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "MAIN VIEW CREATED" );
-    	
+		}
+	});
+
+	public MainView() {
+
+		java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "MAIN VIEW CREATED" );
+
 		// Add both to a panel
 		VerticalLayout fields = new VerticalLayout(movimenta, articoli, logout );
 		fields.setCaption("Pagina Principale");
@@ -67,24 +66,24 @@ public class MainView extends CustomComponent implements View {
 		viewLayout.setComponentAlignment(fields, Alignment.MIDDLE_CENTER);
 		viewLayout.setStyleName(Reindeer.LAYOUT_WHITE);
 		setCompositionRoot(viewLayout);
-    	
-        setCompositionRoot(new CssLayout(fields));
-        
-        
-    }
 
-    @Override
-    public void enter(ViewChangeEvent event) {
-        // Get the user name from the session
-        String username = String.valueOf(getSession().getAttribute("user"));
+		setCompositionRoot(new CssLayout(fields));
 
-        // And show the username
-        text.setValue("Hello " + username);
-    }
-    
-    
 
-    
+	}
+
+	@Override
+	public void enter(ViewChangeEvent event) {
+		// Get the user name from the session
+		String username =  VaadinSession.getCurrent().getAttribute(Controller.class).getLoggedUser().getName();
+
+		// And show the username
+		text.setValue("Hello " + username);
+	}
+
+
+
+
 }
 
 

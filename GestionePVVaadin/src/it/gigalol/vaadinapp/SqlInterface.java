@@ -6,7 +6,7 @@ public interface SqlInterface {
 	
 	public SQLContainer getArticlesContainer();
 
-	public boolean auth(String user, String pass, int levelreq);
+	public UserBean auth(String user, String pass, int levelreq);
 			
 
 }

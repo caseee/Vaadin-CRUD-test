@@ -1,8 +1,9 @@
 package it.gigalol.vaadinapp;
 
-import com.vaadin.data.validator.*;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -13,17 +14,25 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
+
+
+/**
+ * @author Marco Casella
+ *
+ */
 public class LoginView extends CustomComponent implements View, Button.ClickListener {
 
 	private static final long serialVersionUID = 3350818906987552789L;
-
+	private static final String COMPONENT_WIDTH = "300px";
 	public static final String NAME = "login";
-
+	
 	private final TextField user;
 
 	private final PasswordField password;
 
 	private final Button loginButton;
+	
+	
 
 	public LoginView() {
 
@@ -31,7 +40,7 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 
 		// Create the user input field
 		user = new TextField("Nome Utente:");
-		user.setWidth("300px");
+		user.setWidth(COMPONENT_WIDTH);
 		user.setRequired(true);
 		//user.addValidator(new UserValidator());
 		user.setInputPrompt("Il tuo nome utente");
@@ -40,14 +49,14 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 		// Create the password input field
 		password = new PasswordField("Password:");
 		password.setWidth("300px");
-		//password.addValidator(new PasswordValidator());
+		//password.addValidator(new PasswordValidator());				
 		password.setRequired(true);
 		password.setValue("");
 		password.setNullRepresentation("");
 
 		// Create login button
 		loginButton = new Button("Login", this);
-		loginButton.setWidth("300px");
+		loginButton.setWidth(COMPONENT_WIDTH);
 		
 		// Add both to a panel
 		VerticalLayout fields = new VerticalLayout(user, password, loginButton);
@@ -71,58 +80,6 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 	}
 
 	
-	private static final class UserValidator extends AbstractValidator<String> {
-
-		private static final long serialVersionUID = 4213573236844539042L;
-
-		public UserValidator() {
-			super("Nome utente non valido");
-			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		protected boolean isValidValue(String value) {
-			return true;
-		}
-
-		@Override
-		public Class<String> getType() {
-			return String.class;
-		}
-		
-	}
-	
-	
-	//
-	// Validator for validating the passwords
-	//
-	private static final class PasswordValidator extends 	AbstractValidator<String> {
-
-		private static final long serialVersionUID = -9001413658148628824L;
-
-		public PasswordValidator() {
-			super("Password non valida.");
-		}
-
-		@Override
-		protected boolean isValidValue(String value) {
-			//
-			// Password must be at least 8 characters long and contain at least
-			// one number
-			//
-			if (value != null
-					&& (value.length() < 8 || !value.matches(".*\\d.*"))) {
-				return false;
-			}
-			return true;
-		}
-
-		@Override
-		public Class<String> getType() {
-			return String.class;
-		}
-	}
-
 	@Override
 	public void buttonClick(ClickEvent event) {
 
@@ -138,15 +95,10 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 		String username = user.getValue();
 		String password = this.password.getValue();
 
-		//
-		// Validate username and password with database here. For examples sake
-		// I use a dummy username and password.
-		//
-		boolean isValid = ApplicationController.getApplicationController().auth(username, password, 1);
+
+		boolean isValid =  VaadinSession.getCurrent().getAttribute(Controller.class).login(username, password, 1);
 
 		if(isValid){
-			// Store the current user in the service session
-			getSession().setAttribute("user", username);
 
 			// Navigate to main view
 			getUI().getNavigator().navigateTo(MainView.NAME);
