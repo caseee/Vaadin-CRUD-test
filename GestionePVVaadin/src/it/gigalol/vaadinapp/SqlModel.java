@@ -2,7 +2,7 @@ package it.gigalol.vaadinapp;
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 
-public interface SqlInterface {
+public interface SqlModel {
 	
 	public SQLContainer getArticlesContainer();
 

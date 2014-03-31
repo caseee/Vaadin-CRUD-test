@@ -2,19 +2,15 @@ package it.gigalol.vaadinapp;
 
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
+
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.ui.UI;
 
 public class Controller {
 	private static final String LOGGER_TYPE = "global";
-	private static final String I18N_FILENAME = "MessagesBundle";
-	private static SqlInterface model; 	
-	//private ResourceBundle messages;
+	private static SqlModel model; 	
 	private Logger logger = Logger.getLogger(LOGGER_TYPE);
 	
 	private UserBean loggedUser = null;

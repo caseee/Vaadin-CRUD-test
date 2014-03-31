@@ -24,7 +24,7 @@ import com.vaadin.server.VaadinService;
  * @author Marco
  *
  */
-public class SQLiteImp implements SqlInterface {
+public class SQLiteImp implements SqlModel {
 	private static final String WEBDIR = "WEB-INF";
 	private static final String DBNAME = "SQLite.db";
 	private static final String INITSQL = "SQLiteInit.sql";
