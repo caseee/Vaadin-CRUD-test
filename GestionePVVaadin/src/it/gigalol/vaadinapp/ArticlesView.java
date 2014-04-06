@@ -29,6 +29,8 @@ public class ArticlesView extends CustomComponent implements View{
 	private FieldGroup editorFields = new FieldGroup();
 		
 	Table table = new Table();
+	SQLContainer sc;
+	TextField searchField = new TextField("Search");
 	
 	Button back = new Button("Back", new Button.ClickListener() {
 		private static final long serialVersionUID = 8200131706333299060L;
@@ -44,14 +46,16 @@ public class ArticlesView extends CustomComponent implements View{
 		public void buttonClick(ClickEvent event) {
 			try {
 				getSession().getAttribute(Controller.class).getArticlesContainer().commit();
+				Notification.show("Success","Salvataggio eseguito correttamente.",
+		                  Notification.Type.HUMANIZED_MESSAGE);
 			} catch (UnsupportedOperationException e) {
 				Notification.show("Error",
-		                  "Error saving.",
+		                  "Error saving. Unsupported Operation Exception. ",
 		                  Notification.Type.ERROR_MESSAGE);
 				e.printStackTrace();
 			} catch (SQLException e) {
 				Notification.show("Error",
-		                  "Error saving.",
+		                  "Error saving. SQLException.",
 		                  Notification.Type.ERROR_MESSAGE);
 				e.printStackTrace();
 			}
@@ -64,7 +68,7 @@ public class ArticlesView extends CustomComponent implements View{
 		
 		VerticalSplitPanel vsp = new VerticalSplitPanel();
 		
-		final SQLContainer sc = controller.getArticlesContainer();
+		sc = controller.getArticlesContainer();
 		
 		Collection<?> c =  sc.getContainerPropertyIds();
 						
@@ -74,10 +78,9 @@ public class ArticlesView extends CustomComponent implements View{
 		table.setEditable(isEnabled());		
 		table.setContainerDataSource(sc);
 		
-		TextField searchField = new TextField("Search");
-				
+					
 		 searchField.setInputPrompt("Search contacts");
-
+		 searchField.setWidth("100%");
          searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
 
          searchField.addTextChangeListener(new TextChangeListener() {
@@ -90,8 +93,8 @@ public class ArticlesView extends CustomComponent implements View{
                  }
          });
          
-		HorizontalLayout main_btns = new HorizontalLayout(back,save);
-		VerticalLayout bottom = new VerticalLayout(table,searchField);	
+		HorizontalLayout main_btns = new HorizontalLayout(back,save,searchField);
+		VerticalLayout bottom = new VerticalLayout(table);	
 				
 		VerticalLayout row_field = new VerticalLayout();
 		for (Object fieldName : c) {
