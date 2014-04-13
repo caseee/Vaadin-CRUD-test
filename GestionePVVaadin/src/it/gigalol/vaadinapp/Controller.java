@@ -23,7 +23,7 @@ public class Controller {
 	Controller() {        
        
 		try {
-			model= new SQLiteImp();
+			model= new HSQLDBImpl();
 		} catch (ClassNotFoundException e) {
 			log(Level.SEVERE, "Error loading JDBC driver");
 			e.printStackTrace();
