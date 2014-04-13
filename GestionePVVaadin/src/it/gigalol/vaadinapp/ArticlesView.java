@@ -5,12 +5,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Container.ItemSetChangeEvent;
+import com.vaadin.data.Container.ItemSetChangeListener;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitEvent;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitHandler;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.data.util.sqlcontainer.query.QueryDelegate.RowIdChangeEvent;
+import com.vaadin.data.util.sqlcontainer.query.QueryDelegate.RowIdChangeListener;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.navigator.View;
@@ -19,6 +26,7 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -37,7 +45,7 @@ public class ArticlesView extends CustomComponent implements View{
 
 	private String [] searchable = new String [] { "NAME" };
 	private String [] visible = new String [] { "NAME", "PRICE" };
-	private String [] editable = new String [] { "NAME", "DESCRIPRION","PRICE" };
+	private String [] editable = new String [] { "NAME", "GROUP_ID", "DESCRIPTION","PRICE" };
 
 
 	Button back = new Button("Back", new Button.ClickListener() {
@@ -49,7 +57,8 @@ public class ArticlesView extends CustomComponent implements View{
 	});
 
 	Button newItem = new Button("New");
-
+	Button deleteItem = new Button("Delete");
+	
 	Button save = new Button("Save", new Button.ClickListener() {
 		private static final long serialVersionUID = 8200131706333299060L;
 		@Override
@@ -73,11 +82,43 @@ public class ArticlesView extends CustomComponent implements View{
 	public ArticlesView() {
 		Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
 		sc = controller.getArticlesContainer();
+			
+		
+		sc.addRowIdChangeListener(new RowIdChangeListener() {
+			private static final long serialVersionUID = 3639203092384566508L;
 
-		Collection<?> c =  sc.getContainerPropertyIds();
+			@Override
+			public void rowIdChange(RowIdChangeEvent event) {
+				// TODO Auto-generated method stub
+				System.out.println("ROWID CHANGED");
+			}
+			
+		});
+		
+		sc.addItemSetChangeListener(new ItemSetChangeListener() {
+			private static final long serialVersionUID = 6014864348363390864L;
 
+			@Override
+			public void containerItemSetChange(ItemSetChangeEvent event) {
+				System.out.println("SET ITEM CHANGED");
+				
+			}
+			
+		});
+		
+		newItem.addClickListener(new ClickListener() {
 
-		VerticalSplitPanel vsp = new VerticalSplitPanel();
+			@Override
+			public void buttonClick(ClickEvent event) {
+				addContact();
+				
+			}
+			
+		});
+		
+		//Collection<?> c =  sc.getContainerPropertyIds();
+
+		VerticalSplitPanel splitPanel = new VerticalSplitPanel();
 
 		this.setSizeFull();
 
@@ -94,24 +135,42 @@ public class ArticlesView extends CustomComponent implements View{
 
 			}
 		});
+		
+		HorizontalLayout mainButtons = new HorizontalLayout(back,save,newItem,searchField);
+		VerticalLayout bottomLayout = new VerticalLayout(table);	
 
-		HorizontalLayout main_btns = new HorizontalLayout(back,save,searchField);
-		VerticalLayout bottom = new VerticalLayout(table);	
+		final VerticalLayout fieldsLayout = new VerticalLayout();
+		fieldsLayout.addComponent(deleteItem);
+		for (String s : editable) {
 
-		final VerticalLayout row_field = new VerticalLayout();
-		row_field.addComponent(newItem);
-		for (Object fieldName : c) {
-
-			TextField field = new TextField((String) fieldName);
-			row_field.addComponent(field);
+			TextField field = new TextField(s);
+			fieldsLayout.addComponent(field);
 			field.setWidth("100%");
-
-			editorFields.bind(field, fieldName);
+			editorFields.bind(field, s);
+			
 		}
-		//row_field.setVisible(false);
-
+		fieldsLayout.setMargin(true);
+		fieldsLayout.setVisible(false);;
+		
 		editorFields.setBuffered(false);
+		editorFields.addCommitHandler(new CommitHandler() {
+			private static final long serialVersionUID = 7921054396062333143L;
 
+			public void preCommit(CommitEvent commitEvent)
+					throws CommitException {
+				System.out.println("PRE COMMIT");
+				
+			}
+
+			@Override
+			public void postCommit(CommitEvent commitEvent)
+					throws CommitException {
+				
+				System.out.println("POST COMMIT");
+			}
+			
+		});		
+		table.setVisibleColumns((Object[])visible);
 		table.setSizeFull();
 		table.setEditable(false);		
 		table.setSelectable(true);
@@ -122,22 +181,23 @@ public class ArticlesView extends CustomComponent implements View{
 				Object contactId = table.getValue();
 				if (contactId != null)
 					editorFields.setItemDataSource(table.getItem(contactId));
-				row_field.setVisible(contactId != null);
+				fieldsLayout.setVisible(contactId != null);
 			}
 		});
 
-		VerticalLayout top = new VerticalLayout(main_btns,row_field);
-		top.setWidth("100%");
-		top.setHeight("100px");
+		VerticalLayout topLayout = new VerticalLayout(mainButtons,fieldsLayout);
+		topLayout.setWidth("100%");
+		topLayout.setHeight("100px");
 
-		bottom.setHeight("100%");
-		bottom.setWidth("100%");
+		bottomLayout.setHeight("100%");
+		bottomLayout.setWidth("100%");
 
-		vsp.setFirstComponent(top);
-		vsp.setSecondComponent(table);
-		vsp.setSplitPosition(40f);
-		vsp.setSizeFull();
-		setCompositionRoot(vsp);
+		splitPanel.setFirstComponent(topLayout);
+		splitPanel.setSecondComponent(table);
+		splitPanel.setSplitPosition(40f);
+		splitPanel.setSizeFull();
+		setCompositionRoot(splitPanel);
+		
 	}
 
 	@Override
@@ -145,11 +205,21 @@ public class ArticlesView extends CustomComponent implements View{
 
 
 	}
+	
+	public void addContact() {
+		  /* Roll back changes just in case */
+		  try {
+		      sc.rollback();
+		  } catch (SQLException ignored) {
+		  }
+		  Object tempItemId = sc.addItem();
+		  editorFields.setItemDataSource(sc.getItem(tempItemId));
+		  setReadOnly(false);
+		}
+
+
 
 	private class ContactFilter implements Filter {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1772636966694615094L;
 		private String needle;
 
@@ -171,5 +241,7 @@ public class ArticlesView extends CustomComponent implements View{
 			return true;
 		}
 	}
+	
+	
 
 }
