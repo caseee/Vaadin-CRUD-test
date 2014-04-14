@@ -6,7 +6,7 @@ package it.gigalol.vaadinapp;
  */
 public class UserBean {
 	
-	public static final String NAME = "USER";
+	public static final String USERNAME = "USERNAME";
 	public static final String HASH_PASSWORD = "PASS";
 	public static final String LEVEL = "LEVEL";
 	

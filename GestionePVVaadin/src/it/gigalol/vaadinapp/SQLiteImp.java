@@ -81,7 +81,7 @@ public class SQLiteImp implements SqlModel {
 	 */
 	@Override
 	public UserBean auth(String user, String pass, int levelreq) {
-		Connection c;
+		Connection c = null;
 		UserBean result = null;
 		try {
 			c = pool.reserveConnection();	
@@ -89,10 +89,9 @@ public class SQLiteImp implements SqlModel {
 			stmt.setString(1, user);
 			ResultSet rs = stmt.executeQuery();
 
-			if (rs == null) 
-				result = null;
-			else if (rs.next() && rs.isFirst()) {
-				String name = rs.getString(UserBean.NAME);
+
+			if (rs.next() && rs.isFirst()) {
+				String name = rs.getString(UserBean.USERNAME);
 				int level = rs.getInt(UserBean.LEVEL);
 				String hashpass = rs.getString(UserBean.HASH_PASSWORD);
 
@@ -104,10 +103,10 @@ public class SQLiteImp implements SqlModel {
 					result = null;
 				else
 					result = new UserBean(name,level);
-				c.commit();
 				rs.close();
 				stmt.close();
-				pool.releaseConnection(c);
+				c.close();
+				
 				
 			}
 
@@ -117,7 +116,7 @@ public class SQLiteImp implements SqlModel {
 			e.printStackTrace();
 		}
 		finally {
-								
+			pool.releaseConnection(c);			
 		}
 
 		return result;

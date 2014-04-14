@@ -30,7 +30,7 @@ public class HSQLDBImpl implements SqlModel {
 	private static final String HSQLDB_OPTION = ";ifexists=true";
 	private static final String HSQLDB_USER = "SA";
 	private static final String HSQLDB_PASS = "";
-	private static final String FIND_USER_STATEMENT="SELECT * FROM USERS WHERE USER=?;";
+	private static final String FIND_USER_STATEMENT="SELECT * FROM USERS WHERE USERNAME = ?;";
 	private static final int HSQLDB_JDBC_START_CONNECTION = 2;
 	private static final int HSQLDB_JDBC_MAX_CONNECTION = 10;
 	
@@ -38,10 +38,14 @@ public class HSQLDBImpl implements SqlModel {
 	private String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 	
 	private JDBCConnectionPool pool;
-			
+	
+	
+	
 	private SQLContainer ArticlesContainer;
-	public SQLContainer getArticlesContainer() {
-		return ArticlesContainer;
+	public SQLContainer getArticlesContainer() throws SQLException {
+		TableQuery tq = new TableQuery("ARTICLES", pool);
+		tq.setVersionColumn("ID");
+		return new SQLContainer(tq);		 
 	}
 
 	
@@ -65,11 +69,6 @@ public class HSQLDBImpl implements SqlModel {
 
 		if (initdb) popolateDB();
 
-		TableQuery tq = new TableQuery("ARTICLES", pool);
-		tq.setVersionColumn("ID");
-		ArticlesContainer = new SQLContainer(tq);
-
-
 	}
 
 	/* (non-Javadoc)
@@ -77,7 +76,7 @@ public class HSQLDBImpl implements SqlModel {
 	 */
 	@Override
 	public UserBean auth(String user, String pass, int levelreq) {
-		Connection c;
+		Connection c = null;
 		UserBean result = null;
 		try {
 			c = pool.reserveConnection();	
@@ -88,7 +87,7 @@ public class HSQLDBImpl implements SqlModel {
 			if (rs == null) 
 				result = null;
 			else if (rs.next() && rs.isFirst()) {
-				String name = rs.getString(UserBean.NAME);
+				String name = rs.getString(UserBean.USERNAME);
 				int level = rs.getInt(UserBean.LEVEL);
 				String hashpass = rs.getString(UserBean.HASH_PASSWORD);
 
@@ -100,10 +99,11 @@ public class HSQLDBImpl implements SqlModel {
 					result = null;
 				else
 					result = new UserBean(name,level);
-				c.commit();
+				
 				rs.close();
 				stmt.close();
-				pool.releaseConnection(c);
+				c.close();
+				
 				
 			}
 
@@ -113,7 +113,7 @@ public class HSQLDBImpl implements SqlModel {
 			e.printStackTrace();
 		}
 		finally {
-								
+			pool.releaseConnection(c);			
 		}
 
 		return result;

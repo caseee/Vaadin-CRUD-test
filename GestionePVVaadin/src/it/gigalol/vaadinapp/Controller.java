@@ -44,7 +44,14 @@ public class Controller {
 	}
 	
 	public SQLContainer getArticlesContainer() {
-		return model.getArticlesContainer();
+		try {
+			return model.getArticlesContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
 	}
 	
 	public boolean login(String user, String pass, int levelreq) {
