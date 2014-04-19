@@ -1,8 +1,7 @@
 package it.gigalol.vaadinapp;
 
+import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Container.ItemSetChangeEvent;
@@ -14,7 +13,6 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitEvent;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitHandler;
-import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.query.QueryDelegate.RowIdChangeEvent;
 import com.vaadin.data.util.sqlcontainer.query.QueryDelegate.RowIdChangeListener;
@@ -35,7 +33,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.VerticalSplitPanel;
 
-public class ArticlesView extends CustomComponent implements View{
+public class ArticlesView extends CustomComponent implements View, Serializable {
 	private static final long serialVersionUID = 2869411776027184262L;
 	public static final String NAME = "articles";
 	private FieldGroup editorFields = new FieldGroup();
@@ -46,7 +44,6 @@ public class ArticlesView extends CustomComponent implements View{
 	private String [] searchable = new String [] { "NAME" };
 	private String [] visible = new String [] { "NAME", "PRICE" };
 	private String [] editable = new String [] { "NAME", "GROUP_ID", "DESCRIPTION","PRICE" };
-
 
 	Button back = new Button("Back", new Button.ClickListener() {
 		private static final long serialVersionUID = 8200131706333299060L;
@@ -101,12 +98,13 @@ public class ArticlesView extends CustomComponent implements View{
 			@Override
 			public void containerItemSetChange(ItemSetChangeEvent event) {
 				System.out.println("SET ITEM CHANGED");
-				
+				// TODO	
 			}
 			
 		});
 		
 		newItem.addClickListener(new ClickListener() {
+			private static final long serialVersionUID = 4456828994368547215L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -129,9 +127,10 @@ public class ArticlesView extends CustomComponent implements View{
 		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
 		searchField.addTextChangeListener(new TextChangeListener() {
 			private static final long serialVersionUID = 7120106518466783986L;
+			@Override
 			public void textChange(final TextChangeEvent event) {
 				sc.removeAllContainerFilters();
-				sc.addContainerFilter(new ContactFilter(event.getText()));
+				sc.addContainerFilter(new ListFilter(event.getText()));
 
 			}
 		});
@@ -217,16 +216,15 @@ public class ArticlesView extends CustomComponent implements View{
 		  setReadOnly(false);
 		}
 
-
-
-	private class ContactFilter implements Filter {
+	private class ListFilter implements Filter {
 		private static final long serialVersionUID = 1772636966694615094L;
 		private String needle;
 
-		public ContactFilter(String needle) {
+		public ListFilter(String needle) {
 			this.needle = needle.toLowerCase();
 		}
 
+		@Override
 		public boolean passesFilter(Object itemId, Item item) {
 
 			StringBuffer sb = new StringBuffer();
@@ -236,7 +234,8 @@ public class ArticlesView extends CustomComponent implements View{
 
 			return sb.toString().contains(needle);
 		}
-
+		
+		@Override
 		public boolean appliesToProperty(Object id) {
 			return true;
 		}

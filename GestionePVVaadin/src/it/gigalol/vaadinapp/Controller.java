@@ -1,24 +1,28 @@
 package it.gigalol.vaadinapp;
 
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.logging.*;
-
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.ui.UI;
 
-public class Controller {
+/**
+ * Manages business logic of the application
+ * @author Marco Casella
+ *
+ */
+public class Controller implements Serializable {
+	private static final long serialVersionUID = 3911062516609139081L;
 	private static final String LOGGER_TYPE = "global";
 	private static SqlModel model; 	
-	private Logger logger = Logger.getLogger(LOGGER_TYPE);
 	
 	private UserBean loggedUser = null;
 	
 	public UserBean getLoggedUser() {
 		return loggedUser;
 	}
-
 
 	Controller() {        
        
@@ -40,7 +44,7 @@ public class Controller {
 	}
 	
 	public void log(Level level, String log) {
-		logger.log(level,log);
+		Logger.getLogger(LOGGER_TYPE).log(level,log);
 	}
 	
 	public SQLContainer getArticlesContainer() {

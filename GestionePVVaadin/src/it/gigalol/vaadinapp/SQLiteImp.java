@@ -7,13 +7,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 import org.apache.commons.codec.digest.DigestUtils;
+
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.connection.JDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
@@ -21,10 +24,12 @@ import com.vaadin.data.util.sqlcontainer.query.TableQuery;
 import com.vaadin.server.VaadinService;
 
 /**
+ * SQLModel implementation for SQLite server. 
  * @author Marco
  *
  */
-public class SQLiteImp implements SqlModel {
+public class SQLiteImp implements SqlModel, Serializable{
+	private static final long serialVersionUID = 6051487700495192428L;
 	private static final String WEBDIR = "WEB-INF";
 	private static final String DBNAME = "SQLite.db";
 	private static final String INITSQL = "SQLiteInit.sql";
@@ -42,6 +47,9 @@ public class SQLiteImp implements SqlModel {
 	private JDBCConnectionPool pool;
 			
 	private SQLContainer ArticlesContainer;
+	/* (non-Javadoc)
+	 * @see it.gigalol.vaadinapp.SqlModel#getArticlesContainer()
+	 */
 	public SQLContainer getArticlesContainer() {
 		return ArticlesContainer;
 	}

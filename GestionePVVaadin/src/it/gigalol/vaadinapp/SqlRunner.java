@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 
 
 /**
+ * Execute a sql script from a Reader
  * @author Marco Casella, based on Howard Guo
  * 
  */
@@ -27,11 +28,11 @@ public class SqlRunner {
 	private final PrintWriter out, err;
 
 	/**
-	 * @param connection 
-	 * @param out 
-	 * @param err 
-	 * @param autoCommit 
-	 * @param stopOnError
+	 * @param connection Connection used for the execution of the script
+	 * @param out PrintWriter for standard output
+	 * @param err PrintWriter for error output
+	 * @param autoCommit If command must be executed automatically
+	 * @param stopOnError If script must stop on error
 	 */
 	public SqlRunner(final Connection connection, final PrintWriter out, final PrintWriter err, final boolean autoCommit, final boolean stopOnError) {
 		if (connection == null) {
@@ -48,8 +49,9 @@ public class SqlRunner {
 	}
 
 	/**
-	 * @param reader
-	 * @throws SQLException
+	 * Execute script parsed from a reader
+	 * @param reader Source for the script 
+	 * @throws SQLException 
 	 */
 	public void runScript(final Reader reader) throws SQLException {
 		final boolean originalAutoCommit = this.connection.getAutoCommit();

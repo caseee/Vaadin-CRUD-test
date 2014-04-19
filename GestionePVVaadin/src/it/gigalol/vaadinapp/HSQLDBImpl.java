@@ -10,15 +10,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.sqlite.SQLiteConfig;
-import org.sqlite.SQLiteOpenMode;
-
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.connection.JDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.query.TableQuery;
 import com.vaadin.server.VaadinService;
 
+/**
+ * SQLModel implementation for HyperSql server.
+ * @author Marco Casella
+ *
+ */
 public class HSQLDBImpl implements SqlModel {
 	private static final String WEBDIR = "WEB-INF";
 	private static final String DBNAME = "HSQLDB.db";
@@ -27,7 +29,6 @@ public class HSQLDBImpl implements SqlModel {
 	private static final String FILE_SEPARATOR = "file.separator";
 	private static final String HSQLDB_JDBC_DRIVER_NAME = "org.hsqldb.jdbc.JDBCDriver";
 	private static final String HSQLDB_JDBC_CONNECTION_STRING_PREAMBLE = "jdbc:hsqldb:";
-	private static final String HSQLDB_OPTION = ";ifexists=true";
 	private static final String HSQLDB_USER = "SA";
 	private static final String HSQLDB_PASS = "";
 	private static final String FIND_USER_STATEMENT="SELECT * FROM USERS WHERE USERNAME = ?;";
@@ -38,16 +39,15 @@ public class HSQLDBImpl implements SqlModel {
 	private String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 	
 	private JDBCConnectionPool pool;
-	
-	
-	
-	private SQLContainer ArticlesContainer;
+
+	/* (non-Javadoc)
+	 * @see it.gigalol.vaadinapp.SqlModel#getArticlesContainer()
+	 */
 	public SQLContainer getArticlesContainer() throws SQLException {
 		TableQuery tq = new TableQuery("ARTICLES", pool);
 		tq.setVersionColumn("ID");
 		return new SQLContainer(tq);		 
 	}
-
 	
 	public HSQLDBImpl() throws java.lang.ClassNotFoundException,SQLException, FileNotFoundException {
 
@@ -104,9 +104,7 @@ public class HSQLDBImpl implements SqlModel {
 				stmt.close();
 				c.close();
 				
-				
 			}
-
 
 		} catch (SQLException e) {
 			

@@ -11,6 +11,14 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
+/**
+ * Crea un oggetto Controller che gestisce tutti i dati di sessione dell'applicazione
+ * e lo registra negli attributi per poterci accedere in ogni classe.
+ * Crea un oggetto navigator a cui registra tutte le possibili view,
+ * passa alla view iniziale di log-in e controlla ad ogni cambio di view 
+ * che l'utente sia loggato, alternativamente rimanda alla pagina di log-in.
+ * @author Marco Casella
+ */
 @Theme("gestionepvvaadin")
 public class UiLauncher extends UI {
 		

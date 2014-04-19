@@ -1,6 +1,8 @@
 package it.gigalol.vaadinapp;
 
 
+import java.io.Serializable;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinSession;
@@ -17,27 +19,21 @@ import com.vaadin.ui.themes.Reindeer;
 
 
 /**
+ * View che implementa una semplice schermata di log-in.
  * @author Marco Casella
  *
  */
-public class LoginView extends CustomComponent implements View, Button.ClickListener {
+public class LoginView extends CustomComponent implements View, Button.ClickListener, Serializable {
 
 	private static final long serialVersionUID = 3350818906987552789L;
 	private static final String COMPONENT_WIDTH = "300px";
 	public static final String NAME = "login";
-	
 	private final TextField user;
-
 	private final PasswordField password;
-
-	private final Button loginButton;
-	
-	
+	private final Button loginButton;	
 
 	public LoginView() {
-
 		setSizeFull();
-
 		// Create the user input field
 		user = new TextField("Nome Utente:");
 		user.setWidth(COMPONENT_WIDTH);
@@ -45,7 +41,6 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 		//user.addValidator(new UserValidator());
 		user.setInputPrompt("Il tuo nome utente");
 		user.setInvalidAllowed(false);
-
 		// Create the password input field
 		password = new PasswordField("Password:");
 		password.setWidth("300px");
@@ -53,18 +48,15 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 		password.setRequired(true);
 		password.setValue("");
 		password.setNullRepresentation("");
-
 		// Create login button
 		loginButton = new Button("Login", this);
 		loginButton.setWidth(COMPONENT_WIDTH);
-		
 		// Add both to a panel
 		VerticalLayout fields = new VerticalLayout(user, password, loginButton);
 		fields.setCaption("Inserire i dati di accesso per l'applicazione. (Default admin/nimad)");
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));
 		fields.setSizeUndefined();
-
 		// The view root layout
 		VerticalLayout viewLayout = new VerticalLayout(fields);
 		viewLayout.setSizeFull();
@@ -82,7 +74,6 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 	
 	@Override
 	public void buttonClick(ClickEvent event) {
-
 		//
 		// Validate the fields using the navigator. By using validors for the
 		// fields we reduce the amount of queries we have to use to the database
@@ -94,7 +85,6 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 
 		String username = user.getValue();
 		String password = this.password.getValue();
-
 
 		boolean isValid =  VaadinSession.getCurrent().getAttribute(Controller.class).login(username, password, 1);
 
