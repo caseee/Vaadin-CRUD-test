@@ -8,6 +8,7 @@ import com.vaadin.data.*;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.*;
 import com.vaadin.data.fieldgroup.*;
+import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.sqlcontainer.*;
 import com.vaadin.event.FieldEvents.*;
 import com.vaadin.navigator.*;
@@ -19,9 +20,10 @@ import com.vaadin.ui.Button.*;
 
 import de.steinwedel.messagebox.*;
 
-public class ArticlesView extends CustomComponent implements View, Serializable, ClickListener,ValueChangeListener,MessageBoxListener {
+public class ArticlesView extends CustomComponent implements View, Serializable, ClickListener,ValueChangeListener {
 	private static final long serialVersionUID = 2869411776027184262L;
 	public static final String NAME = "articles";
+	public static final String BACK = MainView.NAME;
 	private final String [] searchable = new String [] { "NAME" };
 	private final String [] visible = new String [] { "NAME", "PRICE" };
 	private final String [] editable = new String [] { "NAME", "GROUP_ID", "DESCRIPTION","PRICE" };
@@ -46,7 +48,7 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		this.setSizeFull();
 
 		table.setContainerDataSource(sc);
-		
+
 		searchField.setInputPrompt("Search contacts");
 		searchField.setWidth("100%");
 		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
@@ -59,11 +61,11 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 
 			}
 		});
-		
+
 		HorizontalLayout mainButtons = new HorizontalLayout(back,newItem,searchField);
 		VerticalLayout bottomLayout = new VerticalLayout(table);	
 
-		
+
 		final HorizontalLayout fieldsButton = new HorizontalLayout();
 		fieldsButton.addComponents(deleteItem,saveItem,discardItem);
 		fieldsLayout.addComponents(fieldsButton);
@@ -73,20 +75,20 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 			fieldsLayout.addComponent(field);
 			field.setWidth("100%");
 			editorFields.bind(field, s);
-			
+
 		}
-		
+
 		fieldsLayout.setMargin(true);
 		fieldsLayout.setVisible(false);
 		editorFields.setBuffered(true);
-			
+
 		table.setVisibleColumns((Object[])visible);
 		table.setSizeFull();
 		table.setEditable(false);		
 		table.setSelectable(true);
 		table.setImmediate(true);
 		table.addValueChangeListener(this);
-		
+
 		VerticalLayout topLayout = new VerticalLayout(mainButtons,fieldsLayout);
 		topLayout.setWidth("100%");
 		topLayout.setHeight("100px");
@@ -99,32 +101,33 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		splitPanel.setSplitPosition(40f);
 		splitPanel.setSizeFull();
 		setCompositionRoot(splitPanel);
-		
+
 	}
 
-	private boolean canChange() {
-		
+	private boolean canChange(MessageBoxListener mbl,  ButtonId ... btnids  ) {
+
 		if (editorFields.getItemDataSource()==null)
 			return true;
-		
+
 		if (! editorFields.isModified()) 
 			return true;
-			
-		MessageBox.showPlain(Icon.QUESTION, "Changed", "Commit changes?", this, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL);
+
+		MessageBox.showPlain(Icon.QUESTION, "Changed", "Commit changes?", mbl, btnids);
 		return false;
-		
+
 	}
-	
+
 	@Override
 	public void enter(ViewChangeEvent event) {
 
 
 	}
-	
+
 	private void commit() {
 		try {
-			sc.commit();
+			editorFields.commit();
 			table.commit();
+			sc.commit();			
 		} catch (UnsupportedOperationException e) {
 			Notification.show("Error",
 					"Error saving. Unsupported Operation Exception. ",
@@ -135,30 +138,36 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 					"Error saving. SQLException.",
 					Notification.Type.ERROR_MESSAGE);
 			e.printStackTrace();
+		} catch (CommitException e) {
+			Notification.show("Error",
+					"Error saving. Commit Exception.",
+					Notification.Type.ERROR_MESSAGE);
+			e.printStackTrace();
 		}
 	}
-	
+
 	private void discard() {
-		  try {
-			  editorFields.discard();
-		      sc.rollback();
-		  } catch (SQLException ignored) {
-		  }
-		  fieldsLayout.setVisible(false);
-		  editorFields.setItemDataSource(null);
-		  setReadOnly(false);
-	}
-	
-	private void addContact() {
-		  /* Roll back changes just in case */
-		  try {
-		      sc.rollback();
-		  } catch (SQLException ignored) {
-		  }
-		  Object tempItemId = sc.addItem();
-		  editorFields.setItemDataSource(sc.getItem(tempItemId));
-		  setReadOnly(false);
+		try {
+			editorFields.discard();
+			sc.rollback();
+		} catch (SQLException ignored) {
 		}
+		fieldsLayout.setVisible(false);
+		editorFields.setItemDataSource(null);
+		setReadOnly(false);
+	}
+
+	private void addContact() {
+		/* Roll back changes just in case */
+		try {
+			sc.rollback();
+		} catch (SQLException ignored) {
+		}
+		Object tempItemId = sc.addItem();
+		editorFields.setItemDataSource(sc.getItem(tempItemId));
+		fieldsLayout.setVisible(true);
+		setReadOnly(false);
+	}
 
 	private class ListFilter implements Filter {
 		private static final long serialVersionUID = 1772636966694615094L;
@@ -178,7 +187,7 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 
 			return sb.toString().contains(needle);
 		}
-		
+
 		@Override
 		public boolean appliesToProperty(Object id) {
 			return true;
@@ -188,39 +197,80 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 	@Override
 	public void buttonClick(ClickEvent event) {
 		final Button source = event.getButton();
-		
+
 		if (source==saveItem) 
-			commit();
+			askForSave();
 		else if (source==discardItem)
 			discard();
 		else if (source==deleteItem)
-			delete();
+			askForDelete();
 		else if (source==back)
-			getUI().getNavigator().navigateTo(MainView.NAME);
+			askForExit();
 		else if (source==newItem)
-			addContact();
-		
+			askForAdd();
+
 	}
 
+	private void askForAdd() {
+		MessageBoxListener mbl = new AskBeforeAddListener();
+		
+		if (!canChange(mbl, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL)) 
+			return;
+		
+		mbl.buttonClicked(ButtonId.IGNORE);
+	}
+	
+	private void askForSave() {
+		MessageBoxListener mbl = new AskBeforeSaveListener();
+		
+		if (!canChange(mbl, ButtonId.YES, ButtonId.NO)) 
+			return;
+		
+		mbl.buttonClicked(ButtonId.IGNORE);
+	}
+	
+	private void askForExit() {
+		
+		MessageBoxListener mbl = new AskBeforeExitListener();
+				
+		if (!canChange(mbl, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL)) 
+			return;
+		
+		mbl.buttonClicked(ButtonId.IGNORE);
+	}
+	
+	private void askForDelete() {
+		if (table.getValue() == null)
+			return;
+		
+		MessageBoxListener mbl = new AskBeforeDeleteListener();
+		
+		MessageBox.showPlain(Icon.QUESTION, "Confirm", "Delete?", mbl, ButtonId.YES, ButtonId.NO);
+	
+	}
+	
 	private void delete() {
-		// TODO 
+		fieldsLayout.setVisible(false);	
+		table.removeItem(table.getValue());
+		editorFields.setItemDataSource(null);
+		commit();
 	}
 
 	@Override
 	public void valueChange(ValueChangeEvent event) {
-						
-		Object contactId = table.getValue();
-		
-		if (contactId == lastContactId)
+
+		if (table.getValue() == lastContactId)
 			return;
+
+		MessageBoxListener mbl = new AskBeforeChangeListener();
 		
-		if (!canChange()) 
+		if (!canChange(mbl, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL)) 
 			return;
-			
-		buttonClicked(ButtonId.YES);
+
+		mbl.buttonClicked(ButtonId.IGNORE);
 
 	}
-	
+
 	private void changeTo(Object contactId) {
 		if (contactId == lastContactId)
 			return;
@@ -230,17 +280,91 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		fieldsLayout.setVisible(contactId != null);		
 	}
 
-	@Override
-	public void buttonClicked(ButtonId buttonId) {
+	private class AskBeforeChangeListener implements MessageBoxListener, Serializable {
+		private static final long serialVersionUID = -3673592681475973325L;
+
+		@Override
+		public void buttonClicked(ButtonId buttonId) {
+
+			if (buttonId.equals(ButtonId.YES))  
+				commit();		
+			if (buttonId.equals(ButtonId.NO))
+				discard();
+			if (buttonId.equals(ButtonId.CANCEL))
+				table.setValue(lastContactId);
+
+			changeTo(table.getValue());
+
+		}
+
+	}
 		
-		if (buttonId.equals(ButtonId.YES))  
-			commit();		
-		else if (buttonId.equals(ButtonId.NO))
-			discard();
-		
-		changeTo(table.getValue());
-		
+	private class AskBeforeSaveListener implements MessageBoxListener, Serializable {
+		private static final long serialVersionUID = 5959274722049449150L;
+
+		@Override
+		public void buttonClicked(ButtonId buttonId) {
+
+			if (buttonId.equals(ButtonId.YES))  
+				commit();		
+
+		}
+
 	}
 	
+	private class AskBeforeExitListener implements MessageBoxListener, Serializable {
+		private static final long serialVersionUID = 5959271122049449150L;
 
+		@Override
+		public void buttonClicked(ButtonId buttonId) {
+
+			if (buttonId.equals(ButtonId.CANCEL))
+				return;	
+			if (buttonId.equals(ButtonId.YES))  
+				commit();		
+			if (buttonId.equals(ButtonId.NO))
+				discard();
+			
+			getUI().getNavigator().navigateTo(BACK);
+
+
+		}
+
+	}
+	
+	private class AskBeforeAddListener implements MessageBoxListener, Serializable {
+		private static final long serialVersionUID = 5959414722049449111L;
+
+		@Override
+		public void buttonClicked(ButtonId buttonId) {
+
+			if (buttonId.equals(ButtonId.CANCEL))
+				return;	
+			if (buttonId.equals(ButtonId.YES))  
+				commit();		
+			if (buttonId.equals(ButtonId.NO))
+				discard();
+			
+			addContact();
+
+
+		}
+
+	}
+
+	private class AskBeforeDeleteListener implements MessageBoxListener, Serializable {
+		private static final long serialVersionUID = 5959414722049449111L;
+
+		@Override
+		public void buttonClicked(ButtonId buttonId) {
+
+			if (buttonId.equals(ButtonId.YES))
+				delete();		
+
+		}
+
+	}
+	
 }
+
+
