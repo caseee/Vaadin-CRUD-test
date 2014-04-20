@@ -19,7 +19,7 @@ import com.vaadin.ui.themes.Reindeer;
 
 
 /**
- * View che implementa una semplice schermata di log-in.
+ * Shows a simple log-in view.
  * @author Marco Casella
  *
  */
@@ -67,7 +67,7 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		// focus the username field when user arrives to the login view
+		// focus the user name field when user arrives to the login view
 		user.focus();
 	}
 
@@ -75,7 +75,7 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 	@Override
 	public void buttonClick(ClickEvent event) {
 		//
-		// Validate the fields using the navigator. By using validors for the
+		// Validate the fields using the navigator. By using validators for the
 		// fields we reduce the amount of queries we have to use to the database
 		// for wrongly entered passwords
 		//
