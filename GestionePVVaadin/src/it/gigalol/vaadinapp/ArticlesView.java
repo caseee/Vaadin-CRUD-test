@@ -20,7 +20,11 @@ import com.vaadin.ui.Button.*;
 
 import de.steinwedel.messagebox.*;
 
-public class ArticlesView extends CustomComponent implements View, Serializable, ClickListener,ValueChangeListener {
+/**
+ * @author Marco Casella
+ *
+ */
+public class ArticlesView extends CustomComponent implements View, Serializable, ClickListener, ValueChangeListener {
 	private static final long serialVersionUID = 2869411776027184262L;
 	public static final String NAME = "articles";
 	public static final String BACK = MainView.NAME;
@@ -37,7 +41,8 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 	private final Button deleteItem = new Button("Delete",this);
 	private final Button saveItem = new Button("Save", this);
 	private final Button discardItem = new Button("Discard",this);
-	private Object lastContactId ;
+	private final Button searchButton = new Button("Search",this);
+	private Object lastId ;
 
 	public ArticlesView() {
 		Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
@@ -52,17 +57,9 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		searchField.setInputPrompt("Search contacts");
 		searchField.setWidth("100%");
 		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
-		searchField.addTextChangeListener(new TextChangeListener() {
-			private static final long serialVersionUID = 7120106518466783986L;
-			@Override
-			public void textChange(final TextChangeEvent event) {
-				sc.removeAllContainerFilters();
-				sc.addContainerFilter(new ListFilter(event.getText()));
 
-			}
-		});
 
-		HorizontalLayout mainButtons = new HorizontalLayout(back,newItem,searchField);
+		HorizontalLayout mainButtons = new HorizontalLayout(back,newItem,searchField,searchButton);
 		VerticalLayout bottomLayout = new VerticalLayout(table);	
 
 
@@ -104,25 +101,40 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 
 	}
 
-	private boolean canChange(MessageBoxListener mbl,  ButtonId ... btnids  ) {
+	/**
+	 * If changes has been made in the fields show a messagebox and return true, return false otherwise
+	 * 
+	 * @param title title of the messagebox
+	 * @param message message of the messagebox
+	 * @param mbl listener for the messagebox
+	 * @param btnids ids of buttons
+	 * @return if action must be confirmed before commit
+	 */
+	private boolean needConfirm(String title, String message, MessageBoxListener mbl,  ButtonId ... btnids  ) {
 
 		if (editorFields.getItemDataSource()==null)
-			return true;
+			return false;
 
 		if (! editorFields.isModified()) 
-			return true;
+			return false;
 
-		MessageBox.showPlain(Icon.QUESTION, "Changed", "Commit changes?", mbl, btnids);
-		return false;
+		MessageBox.showPlain(Icon.QUESTION, title, message, mbl, btnids);
+		return true;
 
 	}
 
+	/* (non-Javadoc)
+	 * @see com.vaadin.navigator.View#enter(com.vaadin.navigator.ViewChangeListener.ViewChangeEvent)
+	 */
 	@Override
 	public void enter(ViewChangeEvent event) {
 
 
 	}
 
+	/**
+	 * Save changes to the SQLContainer
+	 */
 	private void commit() {
 		try {
 			editorFields.commit();
@@ -146,6 +158,9 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		}
 	}
 
+	/**
+	 * Discard changes not yet saved.
+	 */
 	private void discard() {
 		try {
 			editorFields.discard();
@@ -157,7 +172,11 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		setReadOnly(false);
 	}
 
-	private void addContact() {
+	
+	/**
+	 *  Add item to the table.
+	 */
+	private void addItem() {
 		/* Roll back changes just in case */
 		try {
 			sc.rollback();
@@ -169,31 +188,9 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		setReadOnly(false);
 	}
 
-	private class ListFilter implements Filter {
-		private static final long serialVersionUID = 1772636966694615094L;
-		private String needle;
-
-		public ListFilter(String needle) {
-			this.needle = needle.toLowerCase();
-		}
-
-		@Override
-		public boolean passesFilter(Object itemId, Item item) {
-
-			StringBuffer sb = new StringBuffer("");
-
-			for (String s : searchable) 
-				sb.append(item.getItemProperty(s).getValue().toString().toLowerCase());
-
-			return sb.toString().contains(needle);
-		}
-
-		@Override
-		public boolean appliesToProperty(Object id) {
-			return true;
-		}
-	}
-
+	/* (non-Javadoc)
+	 * @see com.vaadin.ui.Button.ClickListener#buttonClick(com.vaadin.ui.Button.ClickEvent)
+	 */
 	@Override
 	public void buttonClick(ClickEvent event) {
 		final Button source = event.getButton();
@@ -201,44 +198,125 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		if (source==saveItem) 
 			askForSave();
 		else if (source==discardItem)
-			discard();
+			askForDiscard();
 		else if (source==deleteItem)
 			askForDelete();
 		else if (source==back)
 			askForExit();
 		else if (source==newItem)
 			askForAdd();
+		else if (source==searchButton)
+			performSearch();
 
 	}
 
+	/**
+	 *  Delete selected item from the table.
+	 */
+	private void delete() {
+		fieldsLayout.setVisible(false);	
+		table.removeItem(table.getValue());
+		editorFields.setItemDataSource(null);
+		commit();
+	}
+
+	/**
+	 * Switch to the itemId
+	 * @param itemId item to switch
+	 */
+	private void changeTo(Object itemId) {
+		if (itemId == lastId)
+			return;
+		lastId = itemId;
+		if (itemId != null)
+			editorFields.setItemDataSource(table.getItem(itemId));
+		fieldsLayout.setVisible(itemId != null);		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
+	 */
+	@Override
+	public void valueChange(ValueChangeEvent event) {
+
+		if (table.getValue() == lastId)
+			return;
+
+		MessageBoxListener mbl = new AskBeforeChangeListener();
+		
+		if (needConfirm("Save changes?", "Save changes?",mbl, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL)) 
+			return;
+
+		mbl.buttonClicked(ButtonId.IGNORE);
+
+	}
+	
+	/**
+	 * Execute a search
+	 */
+	private void performSearch() {
+		  String searchTerm = (String) searchField.getValue();
+		  if (searchTerm == null || searchTerm.equals("")) {
+			  Notification.show("Search term cannot be empty!",Notification.Type.WARNING_MESSAGE);
+		      return;
+		  }
+		  sc.removeAllContainerFilters();
+		  sc.addContainerFilter(new ListFilter(searchTerm));
+		  
+	}
+	
+	/**
+	 *  Create a messagebox listener, if needed shows it, otherwise call the listener with a dummy button.
+	 */
 	private void askForAdd() {
 		MessageBoxListener mbl = new AskBeforeAddListener();
 		
-		if (!canChange(mbl, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL)) 
+		if (needConfirm("Confirm", "Confirm add item?",mbl, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL)) 
 			return;
 		
 		mbl.buttonClicked(ButtonId.IGNORE);
 	}
 	
+	/**
+	 *  Create a messagebox listener, if needed shows it, otherwise call the listener with a dummy button.
+	 */
+	private void askForDiscard() {
+		MessageBoxListener mbl = new AskBeforeDiscardListener();
+		
+		if (needConfirm("Confirm","Discard changes?",mbl, ButtonId.YES, ButtonId.NO)) 
+			return;
+		
+		mbl.buttonClicked(ButtonId.IGNORE);
+	}
+	
+	/**
+	 *  Create a messagebox listener, if needed shows it, otherwise call the listener with a dummy button.
+	 */
 	private void askForSave() {
 		MessageBoxListener mbl = new AskBeforeSaveListener();
 		
-		if (!canChange(mbl, ButtonId.YES, ButtonId.NO)) 
+		if (needConfirm("Confirm", "Save changes?", mbl, ButtonId.YES, ButtonId.NO)) 
 			return;
 		
 		mbl.buttonClicked(ButtonId.IGNORE);
 	}
 	
+	/**
+	 *  Create a messagebox listener, if needed shows it, otherwise call the listener with a dummy button.
+	 */
 	private void askForExit() {
 		
 		MessageBoxListener mbl = new AskBeforeExitListener();
 				
-		if (!canChange(mbl, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL)) 
+		if (needConfirm("Confirm", "Save changes before exit?",mbl, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL)) 
 			return;
 		
 		mbl.buttonClicked(ButtonId.IGNORE);
 	}
 	
+	/**
+	 *  Create a messagebox listener, if needed shows it, otherwise call the listener with a dummy button.
+	 */
 	private void askForDelete() {
 		if (table.getValue() == null)
 			return;
@@ -249,37 +327,29 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 	
 	}
 	
-	private void delete() {
-		fieldsLayout.setVisible(false);	
-		table.removeItem(table.getValue());
-		editorFields.setItemDataSource(null);
-		commit();
-	}
+	/**
+	 *  Class implementing MessageBoxListener interface, discard change if needed 
+	 */
+	private class AskBeforeDiscardListener implements MessageBoxListener, Serializable {
+		private static final long serialVersionUID = -3673592681475973325L;
 
-	@Override
-	public void valueChange(ValueChangeEvent event) {
+		/* (non-Javadoc)
+		 * @see de.steinwedel.messagebox.MessageBoxListener#buttonClicked(de.steinwedel.messagebox.ButtonId)
+		 */
+		@Override
+		public void buttonClicked(ButtonId buttonId) {
 
-		if (table.getValue() == lastContactId)
-			return;
+			if (buttonId.equals(ButtonId.YES))  
+				discard();
 
-		MessageBoxListener mbl = new AskBeforeChangeListener();
-		
-		if (!canChange(mbl, ButtonId.YES, ButtonId.NO, ButtonId.CANCEL)) 
-			return;
 
-		mbl.buttonClicked(ButtonId.IGNORE);
+		}
 
 	}
-
-	private void changeTo(Object contactId) {
-		if (contactId == lastContactId)
-			return;
-		lastContactId = contactId;
-		if (contactId != null)
-			editorFields.setItemDataSource(table.getItem(contactId));
-		fieldsLayout.setVisible(contactId != null);		
-	}
-
+	
+	/**
+	 *  Class implementing MessageBoxListener interface, change selected item if needed 
+	 */
 	private class AskBeforeChangeListener implements MessageBoxListener, Serializable {
 		private static final long serialVersionUID = -3673592681475973325L;
 
@@ -291,7 +361,7 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 			if (buttonId.equals(ButtonId.NO))
 				discard();
 			if (buttonId.equals(ButtonId.CANCEL))
-				table.setValue(lastContactId);
+				table.setValue(lastId);
 
 			changeTo(table.getValue());
 
@@ -299,9 +369,15 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 
 	}
 		
+	/**
+	 *  Class implementing MessageBoxListener interface, save change if needed 
+	 */
 	private class AskBeforeSaveListener implements MessageBoxListener, Serializable {
 		private static final long serialVersionUID = 5959274722049449150L;
 
+		/* (non-Javadoc)
+		 * @see de.steinwedel.messagebox.MessageBoxListener#buttonClicked(de.steinwedel.messagebox.ButtonId)
+		 */
 		@Override
 		public void buttonClicked(ButtonId buttonId) {
 
@@ -312,9 +388,15 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 
 	}
 	
+	/**
+	 *  Class implementing MessageBoxListener interface, change back view if needed 
+	 */
 	private class AskBeforeExitListener implements MessageBoxListener, Serializable {
 		private static final long serialVersionUID = 5959271122049449150L;
 
+		/* (non-Javadoc)
+		 * @see de.steinwedel.messagebox.MessageBoxListener#buttonClicked(de.steinwedel.messagebox.ButtonId)
+		 */
 		@Override
 		public void buttonClicked(ButtonId buttonId) {
 
@@ -332,9 +414,15 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 
 	}
 	
+	/**
+	 *  Class implementing MessageBoxListener interface, add item if needed 
+	 */
 	private class AskBeforeAddListener implements MessageBoxListener, Serializable {
 		private static final long serialVersionUID = 5959414722049449111L;
 
+		/* (non-Javadoc)
+		 * @see de.steinwedel.messagebox.MessageBoxListener#buttonClicked(de.steinwedel.messagebox.ButtonId)
+		 */
 		@Override
 		public void buttonClicked(ButtonId buttonId) {
 
@@ -345,16 +433,22 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 			if (buttonId.equals(ButtonId.NO))
 				discard();
 			
-			addContact();
+			addItem();
 
 
 		}
 
 	}
 
+	/**
+	 *  Class implementing MessageBoxListener interface, delete item if needed 
+	 */
 	private class AskBeforeDeleteListener implements MessageBoxListener, Serializable {
 		private static final long serialVersionUID = 5959414722049449111L;
 
+		/* (non-Javadoc)
+		 * @see de.steinwedel.messagebox.MessageBoxListener#buttonClicked(de.steinwedel.messagebox.ButtonId)
+		 */
 		@Override
 		public void buttonClicked(ButtonId buttonId) {
 
@@ -363,6 +457,59 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 
 		}
 
+	}
+	
+	/**
+	 *  Class implementing Filter interface 
+	 */
+	private class ListFilter implements Filter, Serializable {
+		private static final long serialVersionUID = 1772636966694615094L;
+		private String needle;
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
+		public int hashCode() {
+			return needle.hashCode();
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		@Override
+		public boolean equals(Object obj) {
+			return needle.equals(obj);
+		}
+		
+		/**
+		 * @param needle string to search
+		 */
+		public ListFilter(String needle) {
+			this.needle = needle.toLowerCase();
+		}
+
+		/* (non-Javadoc)
+		 * @see com.vaadin.data.Container.Filter#passesFilter(java.lang.Object, com.vaadin.data.Item)
+		 */
+		@Override
+		public boolean passesFilter(Object itemId, Item item) {
+
+			StringBuffer sb = new StringBuffer("");
+
+			for (String s : searchable) 
+				sb.append(item.getItemProperty(s).getValue().toString().toLowerCase());
+
+			return sb.toString().contains(needle);
+		}
+
+		/* (non-Javadoc)
+		 * @see com.vaadin.data.Container.Filter#appliesToProperty(java.lang.Object)
+		 */
+		@Override
+		public boolean appliesToProperty(Object id) {
+			return false;
+		}
 	}
 	
 }
