@@ -1,5 +1,7 @@
-package it.gigalol.vaadinapp;
+package it.gigalol.vaadinapp.view;
 
+
+import it.gigalol.vaadinapp.Controller;
 
 import java.io.Serializable;
 

@@ -1,4 +1,6 @@
-package it.gigalol.vaadinapp;
+package it.gigalol.vaadinapp.view;
+
+import it.gigalol.vaadinapp.Controller;
 
 import com.vaadin.navigator.*;
 import com.vaadin.navigator.ViewChangeListener.*;

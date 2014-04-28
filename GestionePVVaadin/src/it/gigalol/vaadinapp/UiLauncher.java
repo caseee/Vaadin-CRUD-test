@@ -1,5 +1,9 @@
 package it.gigalol.vaadinapp;
 
+import it.gigalol.vaadinapp.view.ArticlesView;
+import it.gigalol.vaadinapp.view.LoginView;
+import it.gigalol.vaadinapp.view.MainView;
+
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;

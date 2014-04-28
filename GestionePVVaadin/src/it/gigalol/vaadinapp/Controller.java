@@ -1,5 +1,9 @@
 package it.gigalol.vaadinapp;
 
+import it.gigalol.vaadinapp.sql.HSQLDBImpl;
+import it.gigalol.vaadinapp.sql.SqlModel;
+import it.gigalol.vaadinapp.sql.UserBean;
+
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.sql.SQLException;

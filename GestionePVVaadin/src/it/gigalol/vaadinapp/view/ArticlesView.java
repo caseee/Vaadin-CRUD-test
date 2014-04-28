@@ -1,16 +1,16 @@
-package it.gigalol.vaadinapp;
+package it.gigalol.vaadinapp.view;
+
+import it.gigalol.vaadinapp.Controller;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 
 import com.vaadin.data.Container.*;
 import com.vaadin.data.*;
-import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.*;
 import com.vaadin.data.fieldgroup.*;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.sqlcontainer.*;
-import com.vaadin.event.FieldEvents.*;
 import com.vaadin.navigator.*;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinSession;

@@ -1,20 +1,14 @@
-/**
- * 
- */
-package it.gigalol.vaadinapp;
+package it.gigalol.vaadinapp.sql;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.sqlite.SQLiteConfig;
-import org.sqlite.SQLiteOpenMode;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
@@ -24,63 +18,57 @@ import com.vaadin.data.util.sqlcontainer.query.TableQuery;
 import com.vaadin.server.VaadinService;
 
 /**
- * SQLModel implementation for SQLite server. 
- * @author Marco
+ * SQLModel implementation for HyperSql server.
+ * @author Marco Casella
  *
  */
-public class SQLiteImp implements SqlModel, Serializable{
-	private static final long serialVersionUID = 6051487700495192428L;
+public class HSQLDBImpl implements SqlModel {
 	private static final String WEBDIR = "WEB-INF";
-	private static final String DBNAME = "SQLite.db";
-	private static final String INITSQL = "SQLiteInit.sql";
+	private static final String DBNAME = "HSQLDB.db";
+	private static final String DBNAME_EXTENSION = ".properties";
+	private static final String INITSQL = "HSQLDBInit.sql";
 	private static final String FILE_SEPARATOR = "file.separator";
-	private static final String SQLITE_JDBC_DRIVER_NAME = "org.sqlite.JDBC";
-	private static final String SQLITE_JDBC_CONNECTION_STRING_PREAMBLE = "jdbc:sqlite:";
-	private static final String SQLITE_USER = "SA";
-	private static final String SQLITE_PASS = "";
-	private static final String FIND_USER_STATEMENT="SELECT * FROM USERS WHERE USER=?;";
-	private static final int SQLITE_JDBC_START_CONNECTION = 2;
-	private static final int SQLITE_JDBC_MAX_CONNECTION = 10;
+	private static final String HSQLDB_JDBC_DRIVER_NAME = "org.hsqldb.jdbc.JDBCDriver";
+	private static final String HSQLDB_JDBC_CONNECTION_STRING_PREAMBLE = "jdbc:hsqldb:";
+	private static final String HSQLDB_USER = "SA";
+	private static final String HSQLDB_PASS = "";
+	private static final String FIND_USER_STATEMENT="SELECT * FROM USERS WHERE USERNAME = ?;";
+	private static final int HSQLDB_JDBC_START_CONNECTION = 2;
+	private static final int HSQLDB_JDBC_MAX_CONNECTION = 10;
+	
 	private String separator = System.getProperty(FILE_SEPARATOR);
 	private String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
 	
 	private JDBCConnectionPool pool;
-			
-	private SQLContainer ArticlesContainer;
+
 	/* (non-Javadoc)
 	 * @see it.gigalol.vaadinapp.SqlModel#getArticlesContainer()
 	 */
-	public SQLContainer getArticlesContainer() {
-		return ArticlesContainer;
+	public SQLContainer getArticlesContainer() throws SQLException {
+		TableQuery tq = new TableQuery("ARTICLES", pool);
+		tq.setVersionColumn("ID");
+		return new SQLContainer(tq);		 
 	}
-
 	
-	public SQLiteImp() throws java.lang.ClassNotFoundException,SQLException, FileNotFoundException {
+	public HSQLDBImpl() throws java.lang.ClassNotFoundException,SQLException, FileNotFoundException {
 
-		String dbfile = basepath + separator  +WEBDIR+separator+DBNAME;
+		String dbfile = basepath + separator + WEBDIR + separator + DBNAME;
 
 		boolean initdb=true;
 
-		if (new File(dbfile).exists()) initdb = false;
+		if (new File(dbfile+DBNAME_EXTENSION).exists()) initdb = false;
 
-		SQLiteConfig config = new SQLiteConfig();
-		config.setOpenMode(SQLiteOpenMode.READWRITE);
-		Class.forName(SQLITE_JDBC_DRIVER_NAME);
+		Class.forName(HSQLDB_JDBC_DRIVER_NAME);
 		pool = new SimpleJDBCConnectionPool(
-				SQLITE_JDBC_DRIVER_NAME,
-				SQLITE_JDBC_CONNECTION_STRING_PREAMBLE+dbfile, 
-				SQLITE_USER, SQLITE_PASS, 
-				SQLITE_JDBC_START_CONNECTION, 
-				SQLITE_JDBC_MAX_CONNECTION);
+				HSQLDB_JDBC_DRIVER_NAME,
+				HSQLDB_JDBC_CONNECTION_STRING_PREAMBLE+dbfile, 
+				HSQLDB_USER, HSQLDB_PASS, 
+				HSQLDB_JDBC_START_CONNECTION, 
+				HSQLDB_JDBC_MAX_CONNECTION);
 
 		if (pool==null) throw new SQLException();
 
 		if (initdb) popolateDB();
-
-		TableQuery tq = new TableQuery("ARTICLES", pool);
-		tq.setVersionColumn("ID");
-		ArticlesContainer = new SQLContainer(tq);
-
 
 	}
 
@@ -97,8 +85,9 @@ public class SQLiteImp implements SqlModel, Serializable{
 			stmt.setString(1, user);
 			ResultSet rs = stmt.executeQuery();
 
-
-			if (rs.next() && rs.isFirst()) {
+			if (rs == null) 
+				result = null;
+			else if (rs.next() && rs.isFirst()) {
 				String name = rs.getString(UserBean.USERNAME);
 				int level = rs.getInt(UserBean.LEVEL);
 				String hashpass = rs.getString(UserBean.HASH_PASSWORD);
@@ -111,13 +100,12 @@ public class SQLiteImp implements SqlModel, Serializable{
 					result = null;
 				else
 					result = new UserBean(name,level);
+				
 				rs.close();
 				stmt.close();
 				c.close();
 				
-				
 			}
-
 
 		} catch (SQLException e) {
 			
@@ -149,5 +137,4 @@ public class SQLiteImp implements SqlModel, Serializable{
 		
 
 	}
-
 }
