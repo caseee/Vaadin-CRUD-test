@@ -41,19 +41,20 @@ public class SQLiteImp implements SqlModel, Serializable{
 	private static final String FIND_USER_STATEMENT="SELECT * FROM USERS WHERE USER=?;";
 	private static final int SQLITE_JDBC_START_CONNECTION = 2;
 	private static final int SQLITE_JDBC_MAX_CONNECTION = 10;
-	private String separator = System.getProperty(FILE_SEPARATOR);
+    private String separator = System.getProperty(FILE_SEPARATOR);
 	private String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-	
+
+    
 	private JDBCConnectionPool pool;
 			
 	private SQLContainer ArticlesContainer;
+	
 	/* (non-Javadoc)
 	 * @see it.gigalol.vaadinapp.SqlModel#getArticlesContainer()
 	 */
 	public SQLContainer getArticlesContainer() {
 		return ArticlesContainer;
 	}
-
 	
 	public SQLiteImp() throws java.lang.ClassNotFoundException,SQLException, FileNotFoundException {
 

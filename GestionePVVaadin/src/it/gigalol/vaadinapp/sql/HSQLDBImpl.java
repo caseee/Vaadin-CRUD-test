@@ -15,6 +15,7 @@ import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.connection.JDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.query.TableQuery;
+import com.vaadin.data.util.sqlcontainer.query.generator.DefaultSQLGenerator;
 import com.vaadin.server.VaadinService;
 
 /**
@@ -45,7 +46,7 @@ public class HSQLDBImpl implements SqlModel {
 	 * @see it.gigalol.vaadinapp.SqlModel#getArticlesContainer()
 	 */
 	public SQLContainer getArticlesContainer() throws SQLException {
-		TableQuery tq = new TableQuery("ARTICLES", pool);
+		TableQuery tq = new TableQuery(null, null, "ARTICLES", pool, new DefaultSQLGenerator());
 		tq.setVersionColumn("ID");
 		return new SQLContainer(tq);		 
 	}

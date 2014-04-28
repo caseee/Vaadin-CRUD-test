@@ -44,6 +44,10 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 	private final Button searchButton = new Button("Search",this);
 	private Object lastId ;
 
+	private void init() {
+		
+	}
+	
 	public ArticlesView() {
 		Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
 		sc = controller.getArticlesContainer();
@@ -260,6 +264,7 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 			  Notification.show("Search term cannot be empty!",Notification.Type.WARNING_MESSAGE);
 		      return;
 		  }
+		  
 		  sc.removeAllContainerFilters();
 		  sc.addContainerFilter(new ListFilter(searchTerm));
 		  
