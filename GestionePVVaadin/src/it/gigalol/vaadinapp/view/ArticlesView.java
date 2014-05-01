@@ -30,13 +30,16 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 	private static final long serialVersionUID = 2869411776027184262L;
 	public static final String NAME = "articles";
 	public static final String BACK = MainView.NAME;
+	
 	private final String [] searchable = new String [] { "NAME" };
 	private final String [] visible = new String [] { "NAME", "PRICE" };
 	private final String [] editable = new String [] { "NAME", "GROUP_ID", "DESCRIPTION","PRICE" };
-	private final VerticalLayout fieldsLayout = new VerticalLayout();
+		
+	private final Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
+	private final SQLContainer sc = controller.getArticlesContainer();
+	
 	private final FieldGroup editorFields = new FieldGroup();
 	private final Table table = new Table();
-	private final SQLContainer sc;
 	private final TextField searchField = new TextField();
 	private final Button back = new Button("Back", this );
 	private final Button newItem = new Button("New",this);
@@ -44,62 +47,66 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 	private final Button saveItem = new Button("Save", this);
 	private final Button discardItem = new Button("Discard",this);
 	private final Button searchButton = new Button("Search",this);
-	private final Button cancelSearchButton = new Button("Cancel",this);
+	private final Button cancelSearchButton = new Button("Cancel search",this);
+		
+	private final HorizontalLayout leftTopLayout = new HorizontalLayout(back,newItem,searchField,searchButton,cancelSearchButton);
+	private final VerticalLayout leftLayout = new VerticalLayout(leftTopLayout,table);
+	private final HorizontalLayout rightTopLayout = new HorizontalLayout(deleteItem,saveItem,discardItem);
+	private final VerticalLayout rightLayout = new VerticalLayout(rightTopLayout);
+	private final HorizontalSplitPanel rootLayout = new HorizontalSplitPanel(leftLayout,rightLayout);
+	
 	private Object lastId ;
 	
-	public ArticlesView() {
-		Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
-		sc = controller.getArticlesContainer();
-
-		HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
-
+	/**
+	 * Sets the layouts of components
+	 */
+	private void initLayout() {
 		this.setSizeFull();
-
-		table.setContainerDataSource(sc);
-
-		searchField.setInputPrompt("Search contacts");
+		this.setCompositionRoot(rootLayout);
+		rootLayout.setSplitPosition(50f);
+		rootLayout.setSizeFull();
+		leftLayout.setSizeFull();
+		leftTopLayout.setHeight(null);
 		searchField.setWidth("100%");
-		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
-
-		HorizontalLayout mainButtons = new HorizontalLayout(back,newItem,searchField,searchButton,cancelSearchButton);
-		VerticalLayout bottomLayout = new VerticalLayout(table);	
-
-		final HorizontalLayout fieldsButton = new HorizontalLayout();
-		fieldsButton.addComponents(deleteItem,saveItem,discardItem);
-		fieldsLayout.addComponents(fieldsButton);
+		table.setSizeFull();
+		rightLayout.setMargin(true);
+		rightLayout.setVisible(false);
+	}
+	
+	
+	/**
+	 * Initialize fields component
+	 */
+	private void initFields() {
 		for (String s : editable) {
-
 			TextField field = new TextField(s);
-			fieldsLayout.addComponent(field);
+			rightLayout.addComponent(field);
 			field.setWidth("100%");
 			editorFields.bind(field, s);
-
 		}
-
-		fieldsLayout.setMargin(true);
-		fieldsLayout.setVisible(false);
+	}
+	
+	/**
+	 * Sets property of components
+	 */
+	private void initProperty() {
+		table.setContainerDataSource(sc);
+		searchField.setInputPrompt("Search");
+		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
 		editorFields.setBuffered(true);
-
 		table.setVisibleColumns((Object[])visible);
-		table.setSizeFull();
 		table.setEditable(false);		
 		table.setSelectable(true);
 		table.setImmediate(true);
 		table.addValueChangeListener(this);
+	}
+	
+	public ArticlesView() {
 
-		VerticalLayout topLayout = new VerticalLayout(mainButtons,fieldsLayout);
-		topLayout.setWidth("100%");
-		topLayout.setHeight("100px");
-
-		bottomLayout.setHeight("100%");
-		bottomLayout.setWidth("100%");
-
-		splitPanel.setFirstComponent(topLayout);
-		splitPanel.setSecondComponent(table);
-		splitPanel.setSplitPosition(40f);
-		splitPanel.setSizeFull();
-		setCompositionRoot(splitPanel);
-
+		initLayout();
+		initFields();
+		initProperty();
+		
 	}
 
 	/**
@@ -167,8 +174,9 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 			editorFields.discard();
 			sc.rollback();
 		} catch (SQLException ignored) {
+			
 		}
-		fieldsLayout.setVisible(false);
+		rightLayout.setVisible(false);
 		editorFields.setItemDataSource(null);
 		setReadOnly(false);
 	}
@@ -185,7 +193,7 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		}
 		Object tempItemId = sc.addItem();
 		editorFields.setItemDataSource(sc.getItem(tempItemId));
-		fieldsLayout.setVisible(true);
+		rightLayout.setVisible(true);
 		setReadOnly(false);
 	}
 
@@ -225,7 +233,7 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 	 *  Delete selected item from the table.
 	 */
 	private void delete() {
-		fieldsLayout.setVisible(false);	
+		rightLayout.setVisible(false);	
 		table.removeItem(table.getValue());
 		editorFields.setItemDataSource(null);
 		commit();
@@ -241,7 +249,7 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		lastId = itemId;
 		if (itemId != null)
 			editorFields.setItemDataSource(table.getItem(itemId));
-		fieldsLayout.setVisible(itemId != null);		
+		rightLayout.setVisible(itemId != null);		
 	}
 
 	/* (non-Javadoc)
