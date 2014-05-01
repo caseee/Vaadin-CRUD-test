@@ -10,6 +10,8 @@ import com.vaadin.data.*;
 import com.vaadin.data.Property.*;
 import com.vaadin.data.fieldgroup.*;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.filter.Or;
+import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.data.util.sqlcontainer.*;
 import com.vaadin.navigator.*;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -42,11 +44,8 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 	private final Button saveItem = new Button("Save", this);
 	private final Button discardItem = new Button("Discard",this);
 	private final Button searchButton = new Button("Search",this);
+	private final Button cancelSearchButton = new Button("Cancel",this);
 	private Object lastId ;
-
-	private void init() {
-		
-	}
 	
 	public ArticlesView() {
 		Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
@@ -62,10 +61,8 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		searchField.setWidth("100%");
 		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
 
-
-		HorizontalLayout mainButtons = new HorizontalLayout(back,newItem,searchField,searchButton);
+		HorizontalLayout mainButtons = new HorizontalLayout(back,newItem,searchField,searchButton,cancelSearchButton);
 		VerticalLayout bottomLayout = new VerticalLayout(table);	
-
 
 		final HorizontalLayout fieldsButton = new HorizontalLayout();
 		fieldsButton.addComponents(deleteItem,saveItem,discardItem);
@@ -210,10 +207,20 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 		else if (source==newItem)
 			askForAdd();
 		else if (source==searchButton)
-			performSearch();
-
+			searchAction();
+		else if (source==cancelSearchButton)
+			cancelSearchAction();
 	}
 
+	/**
+	 * Cancel searchField value and remove any filter
+	 */
+	private void cancelSearchAction() {
+		searchField.setValue("");
+		search(null);
+		
+	}
+		
 	/**
 	 *  Delete selected item from the table.
 	 */
@@ -256,18 +263,36 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 	}
 	
 	/**
-	 * Execute a search
+	 * Read value from the SearchField and execute a search
 	 */
-	private void performSearch() {
-		  String searchTerm = (String) searchField.getValue();
-		  if (searchTerm == null || searchTerm.equals("")) {
-			  Notification.show("Search term cannot be empty!",Notification.Type.WARNING_MESSAGE);
-		      return;
-		  }
-		  
-		  sc.removeAllContainerFilters();
-		  sc.addContainerFilter(new ListFilter(searchTerm));
-		  
+	private void searchAction() {
+		
+		String searchTerm = (String) searchField.getValue();
+		search(searchTerm);
+		
+	}
+	
+	/**
+	 * Apply filter to the sql container
+	 * @param searchTerm String filter to add, if null cancel all filter
+	 */
+	private void search(String searchTerm) {
+		sc.removeAllContainerFilters();
+		if (searchTerm == null || searchTerm.equals("")) {
+			return;
+		}
+			
+		
+		if (searchable.length == 0)
+			return;
+		
+		Filter [] filters = new Filter[searchable.length];
+				
+		for ( int i = 0; i < searchable.length; i++) {
+			filters[i] = new SimpleStringFilter(searchable[i],searchTerm,true,false);
+		}
+		
+		sc.addContainerFilter(new Or(filters));
 	}
 	
 	/**
@@ -462,59 +487,6 @@ public class ArticlesView extends CustomComponent implements View, Serializable,
 
 		}
 
-	}
-	
-	/**
-	 *  Class implementing Filter interface 
-	 */
-	private class ListFilter implements Filter, Serializable {
-		private static final long serialVersionUID = 1772636966694615094L;
-		private String needle;
-		
-		/* (non-Javadoc)
-		 * @see java.lang.Object#hashCode()
-		 */
-		@Override
-		public int hashCode() {
-			return needle.hashCode();
-		}
-		
-		/* (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		@Override
-		public boolean equals(Object obj) {
-			return needle.equals(obj);
-		}
-		
-		/**
-		 * @param needle string to search
-		 */
-		public ListFilter(String needle) {
-			this.needle = needle.toLowerCase();
-		}
-
-		/* (non-Javadoc)
-		 * @see com.vaadin.data.Container.Filter#passesFilter(java.lang.Object, com.vaadin.data.Item)
-		 */
-		@Override
-		public boolean passesFilter(Object itemId, Item item) {
-
-			StringBuffer sb = new StringBuffer("");
-
-			for (String s : searchable) 
-				sb.append(item.getItemProperty(s).getValue().toString().toLowerCase());
-
-			return sb.toString().contains(needle);
-		}
-
-		/* (non-Javadoc)
-		 * @see com.vaadin.data.Container.Filter#appliesToProperty(java.lang.Object)
-		 */
-		@Override
-		public boolean appliesToProperty(Object id) {
-			return false;
-		}
 	}
 	
 }
