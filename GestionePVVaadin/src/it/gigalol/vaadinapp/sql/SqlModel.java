@@ -19,6 +19,11 @@ public interface SqlModel {
 	 */
 	public SQLContainer getArticlesContainer() throws SQLException;
 
+	/**
+	 * @return  a SQLContainer populated with groups
+	 * @throws SQLException
+	 */
+	public SQLContainer getGroupsContainer() throws SQLException;
 	
 	/**
 	 * Try to authorize a user 

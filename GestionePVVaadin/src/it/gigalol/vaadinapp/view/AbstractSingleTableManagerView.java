@@ -1,11 +1,14 @@
 package it.gigalol.vaadinapp.view;
 
 import it.gigalol.vaadinapp.Controller;
+import it.gigalol.vaadinapp.sql.LinkedTable;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 
 import com.vaadin.data.Container.Filter;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -17,11 +20,14 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
@@ -33,10 +39,15 @@ import de.steinwedel.messagebox.Icon;
 import de.steinwedel.messagebox.MessageBox;
 import de.steinwedel.messagebox.MessageBoxListener;
 
+/**
+ * Abstract class for a vaadin view  to select, search, edit, add, delete rows of a generic table.
+ * @author Marco Casella
+ *
+ */
 public abstract class AbstractSingleTableManagerView extends CustomComponent implements View, Serializable, ClickListener, ValueChangeListener {
 	private static final long serialVersionUID = 2869411776027184262L;
 
-	private final Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
+	protected final Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
 	private final SQLContainer sc = controller.getArticlesContainer();
 	
 	private final FieldGroup editorFields = new FieldGroup();
@@ -58,12 +69,40 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	
 	private Object lastId ;
 	
+	/**
+	 * Get the name of the previous view
+	 * @return the name of the previous view
+	 */
 	protected abstract String getBackViewName();
+	
+	/**
+	 * Get the name of the view
+	 * @return the name of the view
+	 */
 	protected abstract String getViewName();
-	protected abstract String[] getSearchableIds();
-	protected abstract String[] getEditableIds();
-	protected abstract String[] getVisibleIds();
+	
+	/**
+	 * Get the ids of the columns where the search is performed
+	 * @return the ids
+	 */
+	protected abstract String[] getSearchIds();
+	
+	/**
+	 * Get the ids of the columns the user can edit
+	 * @return the ids
+	 */
+	protected abstract String[] getEditIds();
+	
+	/**
+	 * Get the ids of the columns showed in the preview
+	 * @return the ids
+	 */
+	protected abstract String[] getShowIds();
 		
+	/**
+	 * @return linked tables to this table
+	 */
+	protected abstract LinkedTable[] getLinkedTable();
 	
 	/**
 	 * Sets the layouts of components
@@ -80,13 +119,38 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		rightLayout.setMargin(true);
 		rightLayout.setVisible(false);
 	}
-	
-	
+		
 	/**
 	 * Initialize fields component
 	 */
 	private void initFields() {
-		for (String s : getEditableIds()) {
+		
+		for (LinkedTable ltnf : getLinkedTable()) {
+			final LinkedTable lt = ltnf;
+			table.addGeneratedColumn(lt.getIdName(), new ColumnGenerator() {
+				private static final long serialVersionUID = -5277036849741964362L;
+				public Component generateCell(Table source, Object itemId, Object columnId) {
+				      if (sc.getItem(itemId).getItemProperty(lt.getIdName()).getValue() != null) {
+				          Label l = new Label();
+				          String idname = lt.getIdName(); 
+				          Item innerItem = sc.getItem(itemId);
+						Property<Object> innerProperty = innerItem.getItemProperty(idname);
+				          Object LinkedIds = innerProperty.getValue();
+				          SQLContainer sqlc = lt.getSqlContainer();
+				          Item item = sqlc.getItem(LinkedIds); // TODO SISTEMARE
+				          String obj = lt.getShowName();
+						Property<Object> property = item.getItemProperty(obj); 
+				          l.setValue(property.getValue().toString());
+				          l.setSizeUndefined();
+				          return l;
+				      }
+				      return null;
+				  }
+				});
+			
+		}
+		
+		for (String s : getEditIds()) {
 			TextField field = new TextField(s);
 			rightLayout.addComponent(field);
 			field.setWidth("100%");
@@ -102,7 +166,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		searchField.setInputPrompt("Search");
 		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
 		editorFields.setBuffered(true);
-		table.setVisibleColumns((Object[])getSearchableIds());
+		table.setVisibleColumns((Object[])getShowIds());
 		table.setEditable(false);		
 		table.setSelectable(true);
 		table.setImmediate(true);
@@ -299,13 +363,13 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		}
 			
 		
-		if (getSearchableIds().length == 0)
+		if (getSearchIds().length == 0)
 			return;
 		
-		Filter [] filters = new Filter[getSearchableIds().length];
+		Filter [] filters = new Filter[getSearchIds().length];
 				
-		for ( int i = 0; i < getSearchableIds().length; i++) {
-			filters[i] = new SimpleStringFilter(getSearchableIds()[i],searchTerm,true,false);
+		for ( int i = 0; i < getSearchIds().length; i++) {
+			filters[i] = new SimpleStringFilter(getSearchIds()[i],searchTerm,true,false);
 		}
 		
 		sc.addContainerFilter(new Or(filters));

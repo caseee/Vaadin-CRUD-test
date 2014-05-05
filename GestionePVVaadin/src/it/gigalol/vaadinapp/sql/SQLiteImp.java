@@ -48,6 +48,7 @@ public class SQLiteImp implements SqlModel, Serializable{
 	private JDBCConnectionPool pool;
 			
 	private SQLContainer ArticlesContainer;
+	private SQLContainer GroupsContainer;
 	
 	/* (non-Javadoc)
 	 * @see it.gigalol.vaadinapp.SqlModel#getArticlesContainer()
@@ -78,10 +79,14 @@ public class SQLiteImp implements SqlModel, Serializable{
 
 		if (initdb) popolateDB();
 
-		TableQuery tq = new TableQuery("ARTICLES", pool);
-		tq.setVersionColumn("ID");
-		ArticlesContainer = new SQLContainer(tq);
-
+		TableQuery tqa = new TableQuery("ARTICLES", pool);
+		tqa.setVersionColumn("ID");
+		ArticlesContainer = new SQLContainer(tqa);
+		
+		TableQuery tqg = new TableQuery("GROUPS", pool);
+		tqg.setVersionColumn("ID");
+		GroupsContainer = new SQLContainer(tqg);
+		
 
 	}
 
@@ -149,6 +154,11 @@ public class SQLiteImp implements SqlModel, Serializable{
 		sr.runScript(fr);
 		
 
+	}
+
+	@Override
+	public SQLContainer getGroupsContainer() throws SQLException {
+		return GroupsContainer;
 	}
 
 }

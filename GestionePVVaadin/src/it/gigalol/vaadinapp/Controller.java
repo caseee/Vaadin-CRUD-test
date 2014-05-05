@@ -74,4 +74,15 @@ public class Controller implements Serializable {
 	public void logout() {
 		loggedUser=null;
 	}
+
+	public SQLContainer getGroupsContainer() {
+		try {
+			return model.getGroupsContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
 }
