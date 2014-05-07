@@ -48,7 +48,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	private static final long serialVersionUID = 2869411776027184262L;
 
 	protected final Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
-	private final SQLContainer sc = controller.getArticlesContainer();
+	private final SQLContainer sc = getSQLContainer();;
 	
 	private final FieldGroup editorFields = new FieldGroup();
 	private final Table table = new Table();
@@ -68,6 +68,12 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	private final HorizontalSplitPanel rootLayout = new HorizontalSplitPanel(leftLayout,rightLayout);
 	
 	private Object lastId ;
+	
+	/**
+	 * Get the SQLContainer of the table
+	 * @return SQLContainer of the table
+	 */
+	protected abstract SQLContainer getSQLContainer();
 	
 	/**
 	 * Get the name of the previous view
@@ -137,7 +143,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 						Property<Object> innerProperty = innerItem.getItemProperty(idname);
 				          Object LinkedIds = innerProperty.getValue();
 				          SQLContainer sqlc = lt.getSqlContainer();
-				          Item item = sqlc.getItem(LinkedIds); // TODO SISTEMARE
+				          Item item = sqlc.getItem(LinkedIds.toString()); // TODO SISTEMARE
 				          String obj = lt.getShowName();
 						Property<Object> property = item.getItemProperty(obj); 
 				          l.setValue(property.getValue().toString());
@@ -174,7 +180,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	}
 	
 	public AbstractSingleTableManagerView() {
-
+		
 		initLayout();
 		initFields();
 		initProperty();

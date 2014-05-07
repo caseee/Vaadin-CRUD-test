@@ -6,16 +6,10 @@ import com.vaadin.server.VaadinSession;
 import it.gigalol.vaadinapp.Controller;
 import it.gigalol.vaadinapp.sql.LinkedTable;
 
+public class UserView extends AbstractSingleTableManagerView {
 
-/**
- * Extends AbstractSingleTableManagerView to show, search, edit, add and delete articles.
- * @author Marco Casella
- *
- */
-public class ArticlesView extends AbstractSingleTableManagerView {
-
-	public static String NAME = "articles";
-	private static final long serialVersionUID = -2762624119626051272L;
+	public static String NAME = "users";
+	private static final long serialVersionUID = -2762321219626051272L;
 		
 	/* (non-Javadoc)
 	 * @see it.gigalol.vaadinapp.view.AbstractSingleTableManagerView#getBackViewName()
@@ -38,7 +32,7 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected String[] getSearchIds() {
-		return new String [] { "NAME", "DESCRIPTION" };
+		return new String [] { "DESCRIPTION" };
 	}
 	
 	/* (non-Javadoc)
@@ -46,7 +40,7 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected String[] getEditIds() {
-		return new String [] { "NAME", "GROUP_ID", "DESCRIPTION","PRICE" };
+		return new String [] { "FATHER_ID", "DESCRIPTION" };
 	}
 	
 	/* (non-Javadoc)
@@ -54,7 +48,7 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected String[] getShowIds() {
-		return new String [] { "NAME", "PRICE", "GROUP_ID" };
+		return new String [] { "FATHER_ID", "DESCRIPTION" };
 	}
 
 	/* (non-Javadoc)
@@ -62,7 +56,7 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected LinkedTable[] getLinkedTable() {
-		return new LinkedTable [] {new LinkedTable("GROUP_ID", VaadinSession.getCurrent().getAttribute(Controller.class).getGroupsContainer(), "DESCRIPTION")};
+		return new LinkedTable[] {};
 	}
 
 	/* (non-Javadoc)
@@ -70,9 +64,7 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected SQLContainer getSQLContainer() {
-		return VaadinSession.getCurrent().getAttribute(Controller.class).getArticlesContainer();
+		return VaadinSession.getCurrent().getAttribute(Controller.class).getGroupsContainer();
 	}
 		
 }
-
-
