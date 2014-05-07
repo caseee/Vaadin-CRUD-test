@@ -28,7 +28,7 @@ import com.vaadin.server.VaadinService;
  * @author Marco
  *
  */
-public class SQLiteImp implements SqlModel, Serializable{
+public abstract class SQLiteImp implements SqlModel, Serializable{
 	private static final long serialVersionUID = 6051487700495192428L;
 	private static final String WEBDIR = "WEB-INF";
 	private static final String DBNAME = "SQLite.db";
