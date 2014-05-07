@@ -85,4 +85,15 @@ public class Controller implements Serializable {
 			return null;
 		}
 	}
+	
+	public SQLContainer getUsersContainer() {
+		try {
+			return model.getUsersContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
 }

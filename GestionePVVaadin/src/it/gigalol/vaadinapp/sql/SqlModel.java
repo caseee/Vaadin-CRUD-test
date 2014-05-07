@@ -11,6 +11,12 @@ import com.vaadin.data.util.sqlcontainer.SQLContainer;
  */
 public interface SqlModel {
 	
+	/**
+	 * Return a SQLContainer populated with users
+	 * @return the sql container
+	 * @throws SQLException
+	 */
+	public SQLContainer getUsersContainer() throws SQLException;
 	
 	/**
 	 * Return a SQLContainer populated with articles

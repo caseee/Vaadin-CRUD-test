@@ -121,6 +121,11 @@ public class HSQLDBImpl implements SqlModel {
 	}
 
 		
+	/**
+	 * Uses SqlRunner class to run a sql script and create the tables of databases
+	 * @throws FileNotFoundException if script file is not found
+	 * @throws SQLException if the script execution fails
+	 */
 	private void popolateDB() throws FileNotFoundException,SQLException  {
 
 		String dbinit = basepath + separator  +WEBDIR+separator+INITSQL;  
@@ -139,9 +144,22 @@ public class HSQLDBImpl implements SqlModel {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see it.gigalol.vaadinapp.sql.SqlModel#getGroupsContainer()
+	 */
 	@Override
 	public SQLContainer getGroupsContainer() throws SQLException {
-		TableQuery tqg = new TableQuery("GROUPS", pool);
+		TableQuery tqg = new TableQuery("GROUPS", pool, new DefaultSQLGenerator());
+		tqg.setVersionColumn("ID");
+		return new SQLContainer(tqg);
+	}
+
+	/* (non-Javadoc)
+	 * @see it.gigalol.vaadinapp.sql.SqlModel#getUsersContainer()
+	 */
+	@Override
+	public SQLContainer getUsersContainer() throws SQLException {
+		TableQuery tqg = new TableQuery("USERS", pool, new DefaultSQLGenerator());
 		tqg.setVersionColumn("ID");
 		return new SQLContainer(tqg);
 	}
