@@ -149,8 +149,9 @@ public class HSQLDBImpl implements SqlModel {
 	 */
 	@Override
 	public SQLContainer getGroupsContainer() throws SQLException {
-		TableQuery tqg = new TableQuery("GROUPS", pool, new DefaultSQLGenerator());
+		TableQuery tqg = new TableQuery("GROUPS", pool);
 		tqg.setVersionColumn("ID");
+		
 		return new SQLContainer(tqg);
 	}
 

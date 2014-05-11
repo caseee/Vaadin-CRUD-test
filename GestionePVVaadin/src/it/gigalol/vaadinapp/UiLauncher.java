@@ -54,6 +54,7 @@ public class UiLauncher extends UI {
 		getNavigator().addView(MainView.NAME, MainView.class);
 		
 		getNavigator().addView(ArticlesView.NAME, ArticlesView.class);
+		
 		getNavigator().addView(GroupsView.NAME, GroupsView.class);
 
 		// In caso di cambio di vista, viene controllato che vista mostrare

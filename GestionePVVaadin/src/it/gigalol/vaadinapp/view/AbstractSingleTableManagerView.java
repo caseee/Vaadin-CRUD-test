@@ -15,11 +15,13 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
+import com.vaadin.data.util.sqlcontainer.RowId;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
@@ -133,6 +135,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		
 		for (LinkedTable ltnf : getLinkedTable()) {
 			final LinkedTable lt = ltnf;
+		
 			table.addGeneratedColumn(lt.getIdName(), new ColumnGenerator() {
 				private static final long serialVersionUID = -5277036849741964362L;
 				public Component generateCell(Table source, Object itemId, Object columnId) {
@@ -142,8 +145,10 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 				          Item innerItem = sc.getItem(itemId);
 						Property<Object> innerProperty = innerItem.getItemProperty(idname);
 				          Object LinkedIds = innerProperty.getValue();
+				          RowId rw = new RowId(LinkedIds);
 				          SQLContainer sqlc = lt.getSqlContainer();
-				          Item item = sqlc.getItem(LinkedIds.toString()); // TODO SISTEMARE
+				          sqlc.refresh();
+				          Item item = sqlc.getItem(rw); 
 				          String obj = lt.getShowName();
 						Property<Object> property = item.getItemProperty(obj); 
 				          l.setValue(property.getValue().toString());
@@ -157,11 +162,28 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		}
 		
 		for (String s : getEditIds()) {
-			TextField field = new TextField(s);
-			rightLayout.addComponent(field);
-			field.setWidth("100%");
-			editorFields.bind(field, s);
+			//TODO External ids as combobox
+			// Search if is a external id
+//			LinkedTable ltf = null;
+//			for (LinkedTable ltnf : getLinkedTable()) 
+//				if (ltnf.getShowName().equals(s)) 
+//					ltf=ltnf;
+//			
+//			if (ltf==null) {
+				TextField field = new TextField(s);
+				rightLayout.addComponent(field);
+				field.setWidth("100%");
+				editorFields.bind(field, s);
+//			} 
+//			else  {
+//				ComboBox field = new ComboBox(s);
+//				rightLayout.addComponent(field);
+//				field.setWidth("100%");
+//				editorFields.bind(field, s);
+//			}
+			
 		}
+		
 	}
 	
 	/**
