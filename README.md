@@ -1,7 +1,9 @@
-Gestione Punti Vendita
+Vaadin CRM
 ==
 
-Eclipse Project RE: jre7 
+Vaadin Version: 7.1.15
+
+Eclipse Project JRE: jre7 
 
 Eclipse Plugin:
 
@@ -16,3 +18,5 @@ Other:
 https://developer.mozilla.org/en-US/docs/Mozilla/Projects/XULRunner
 
 http://download.jboss.org/jbosstools/updates/m2eclipse-wtp/
+
+http://vaadin.com/addon/messagebox
