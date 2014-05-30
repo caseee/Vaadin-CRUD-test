@@ -37,11 +37,11 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 	public LoginView() {
 		setSizeFull();
 		// Create the user input field
-		user = new TextField("Nome Utente:");
+		user = new TextField("User Name:");
 		user.setWidth(COMPONENT_WIDTH);
 		user.setRequired(true);
 		//user.addValidator(new UserValidator());
-		user.setInputPrompt("Il tuo nome utente");
+		user.setInputPrompt("Your user name.");
 		user.setInvalidAllowed(false);
 		// Create the password input field
 		password = new PasswordField("Password:");
@@ -55,7 +55,7 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 		loginButton.setWidth(COMPONENT_WIDTH);
 		// Add both to a panel
 		VerticalLayout fields = new VerticalLayout(user, password, loginButton);
-		fields.setCaption("Inserire i dati di accesso per l'applicazione. (Default admin/nimad)");
+		fields.setCaption("Enter application user credentials. (Default admin/nimad)");
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));
 		fields.setSizeUndefined();

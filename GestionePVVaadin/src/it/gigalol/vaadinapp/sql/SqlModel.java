@@ -26,10 +26,10 @@ public interface SqlModel {
 	public SQLContainer getArticlesContainer() throws SQLException;
 
 	/**
-	 * @return  a SQLContainer populated with groups
+	 * @return  a SQLContainer populated with CATEGORIES
 	 * @throws SQLException
 	 */
-	public SQLContainer getGroupsContainer() throws SQLException;
+	public SQLContainer getCategoriesContainer() throws SQLException;
 	
 	/**
 	 * Try to authorize a user 

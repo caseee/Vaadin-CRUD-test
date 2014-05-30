@@ -157,7 +157,7 @@ public abstract class SQLiteImp implements SqlModel, Serializable{
 	}
 
 	@Override
-	public SQLContainer getGroupsContainer() throws SQLException {
+	public SQLContainer getCategoriesContainer() throws SQLException {
 		return GroupsContainer;
 	}
 

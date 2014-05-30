@@ -46,7 +46,7 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected String[] getEditIds() {
-		return new String [] { "NAME", "GROUP_ID", "DESCRIPTION","PRICE" };
+		return new String [] { "NAME", "CATEGORY", "DESCRIPTION","PRICE" };
 	}
 	
 	/* (non-Javadoc)
@@ -54,7 +54,7 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected String[] getShowIds() {
-		return new String [] { "NAME", "PRICE", "GROUP_ID" };
+		return new String [] { "NAME", "PRICE", "CATEGORY" };
 	}
 
 	/* (non-Javadoc)
@@ -62,7 +62,8 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected LinkedTable[] getLinkedTable() {
-		return new LinkedTable [] {new LinkedTable("GROUP_ID", VaadinSession.getCurrent().getAttribute(Controller.class).getGroupsContainer(), "DESCRIPTION")};
+		return new LinkedTable [] { new LinkedTable("CATEGORY", 
+				VaadinSession.getCurrent().getAttribute(Controller.class).getCategoriesContainer(), "CATEGORY", "ID", Integer.class, String.class) };
 	}
 
 	/* (non-Javadoc)

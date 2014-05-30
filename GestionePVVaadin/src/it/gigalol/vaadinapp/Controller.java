@@ -75,9 +75,9 @@ public class Controller implements Serializable {
 		loggedUser=null;
 	}
 
-	public SQLContainer getGroupsContainer() {
+	public SQLContainer getCategoriesContainer() {
 		try {
-			return model.getGroupsContainer();
+			return model.getCategoriesContainer();
 		} catch (SQLException e) {
 			log(Level.SEVERE, "Error retrieving data.");
 			e.printStackTrace();

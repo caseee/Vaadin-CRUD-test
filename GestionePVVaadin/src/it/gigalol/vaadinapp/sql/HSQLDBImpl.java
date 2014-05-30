@@ -148,8 +148,8 @@ public class HSQLDBImpl implements SqlModel {
 	 * @see it.gigalol.vaadinapp.sql.SqlModel#getGroupsContainer()
 	 */
 	@Override
-	public SQLContainer getGroupsContainer() throws SQLException {
-		TableQuery tqg = new TableQuery("GROUPS", pool);
+	public SQLContainer getCategoriesContainer() throws SQLException {
+		TableQuery tqg = new TableQuery("CATEGORIES", pool);
 		tqg.setVersionColumn("ID");
 		
 		return new SQLContainer(tqg);

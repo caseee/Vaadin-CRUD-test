@@ -64,7 +64,7 @@ public class GroupsView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected SQLContainer getSQLContainer() {
-		return VaadinSession.getCurrent().getAttribute(Controller.class).getGroupsContainer();
+		return VaadinSession.getCurrent().getAttribute(Controller.class).getCategoriesContainer();
 	}
 		
 }
