@@ -376,7 +376,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 
 			for (LinkedComboBox lcb : linkedComboBoxes) {
 				//String externalIdName = lcb.getLinkedTable().getIdName();
-				String internalName = lcb.getLinkedTable().getShowName();
+				String internalName = lcb.getLinkedTable().getIdName();
 				Item internalItem = sc.getItem(itemId);
 				Property<?> internalId = internalItem.getItemProperty(internalName);
 				RowId irw = new RowId(internalId.getValue());

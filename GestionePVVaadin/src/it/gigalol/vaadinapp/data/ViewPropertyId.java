@@ -1,5 +1,7 @@
 package it.gigalol.vaadinapp.data;
 
+import java.io.Serializable;
+
 import it.gigalol.vaadinapp.sql.LinkedTable;
 
 /**
@@ -7,7 +9,9 @@ import it.gigalol.vaadinapp.sql.LinkedTable;
  * @author Marco Casella
  * 
  */
-public class ViewPropertyId {
+public class ViewPropertyId implements Serializable {
+
+	private static final long serialVersionUID = -813797253534433554L;
 
 	/**
 	 * @return the name

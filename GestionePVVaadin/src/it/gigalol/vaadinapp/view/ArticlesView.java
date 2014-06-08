@@ -32,11 +32,11 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 		LinkedTable categoryLink = new LinkedTable("CATEGORY", 	VaadinSession.getCurrent().getAttribute(Controller.class).getCategoriesContainer(), 
 				"CATEGORY", "ID", Integer.class, String.class);
 
-		ListOfViewPropertyId.add(new ViewPropertyId("ID",			PropertyIdVisibility.Hidden, PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));
-		ListOfViewPropertyId.add(new ViewPropertyId("CATEGORY",		PropertyIdVisibility.Always, PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	categoryLink));
-		ListOfViewPropertyId.add(new ViewPropertyId("NAME",			PropertyIdVisibility.Always, PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	null));
-		ListOfViewPropertyId.add(new ViewPropertyId("DESCRIPTION",	PropertyIdVisibility.OnlyInDetail, PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	null));
-		ListOfViewPropertyId.add(new ViewPropertyId("PRICE",		PropertyIdVisibility.Always, PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("ID",			PropertyIdVisibility.Hidden, 		PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("CATEGORY",		PropertyIdVisibility.Always, 		PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	categoryLink));
+		ListOfViewPropertyId.add(new ViewPropertyId("NAME",			PropertyIdVisibility.Always, 		PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("DESCRIPTION",	PropertyIdVisibility.OnlyInDetail, 	PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("PRICE",		PropertyIdVisibility.Always, 		PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
 				
 		super.build();
 		
