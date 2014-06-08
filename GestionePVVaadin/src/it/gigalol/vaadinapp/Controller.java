@@ -96,4 +96,27 @@ public class Controller implements Serializable {
 			return null;
 		}
 	}
+	
+	public SQLContainer getColorsContainer() {
+		try {
+			return model.getColorsContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
+
+	public SQLContainer getSizesContainer() {
+		try {
+			return model.getSizesContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
+	
 }

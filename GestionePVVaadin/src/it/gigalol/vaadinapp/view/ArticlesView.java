@@ -26,20 +26,26 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	private static final long serialVersionUID = -2762624119626051272L;
 		
 	
-	public ArticlesView() {
+	public boolean initChild() {
 				
 		ListOfViewPropertyId = new ArrayList<ViewPropertyId> ();
+		
 		LinkedTable categoryLink = new LinkedTable("CATEGORY", 	VaadinSession.getCurrent().getAttribute(Controller.class).getCategoriesContainer(), 
 				"CATEGORY", "ID", Integer.class, String.class);
+		LinkedTable colorsLink = new LinkedTable("COLOR", 	VaadinSession.getCurrent().getAttribute(Controller.class).getColorsContainer(), 
+				"NAME", "ID", Integer.class, String.class);
+		LinkedTable sizeLink = new LinkedTable("SIZE", 	VaadinSession.getCurrent().getAttribute(Controller.class).getSizesContainer(), 
+				"NAME", "ID", Integer.class, String.class);
 
 		ListOfViewPropertyId.add(new ViewPropertyId("ID",			PropertyIdVisibility.Hidden, 		PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));
 		ListOfViewPropertyId.add(new ViewPropertyId("CATEGORY",		PropertyIdVisibility.Always, 		PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	categoryLink));
 		ListOfViewPropertyId.add(new ViewPropertyId("NAME",			PropertyIdVisibility.Always, 		PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	null));
 		ListOfViewPropertyId.add(new ViewPropertyId("DESCRIPTION",	PropertyIdVisibility.OnlyInDetail, 	PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("COLOR",		PropertyIdVisibility.OnlyInDetail, 	PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	colorsLink));
+		ListOfViewPropertyId.add(new ViewPropertyId("SIZE",			PropertyIdVisibility.OnlyInDetail, 	PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	sizeLink));
 		ListOfViewPropertyId.add(new ViewPropertyId("PRICE",		PropertyIdVisibility.Always, 		PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
 				
-		super.build();
-		
+		return true;
 	}
 	
 	
@@ -71,6 +77,13 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	@Override
 	public List<ViewPropertyId> getViewPropertyId() {
 		return ListOfViewPropertyId;
+	}
+
+
+	@Override
+	protected int getMinimunUserLevel() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 		
 }

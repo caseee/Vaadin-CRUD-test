@@ -1,6 +1,7 @@
 package it.gigalol.vaadinapp;
 
 import it.gigalol.vaadinapp.view.ArticlesView;
+import it.gigalol.vaadinapp.view.ColorsView;
 import it.gigalol.vaadinapp.view.GroupsView;
 import it.gigalol.vaadinapp.view.LoginView;
 import it.gigalol.vaadinapp.view.MainView;
@@ -56,6 +57,8 @@ public class UiLauncher extends UI {
 		getNavigator().addView(ArticlesView.NAME, ArticlesView.class);
 		
 		getNavigator().addView(GroupsView.NAME, GroupsView.class);
+		
+		getNavigator().addView(ColorsView.NAME, ColorsView.class);
 
 		// In caso di cambio di vista, viene controllato che vista mostrare
 		getNavigator().addViewChangeListener(new ViewChangeListener() {

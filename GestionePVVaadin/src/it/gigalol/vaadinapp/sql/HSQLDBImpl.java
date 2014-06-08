@@ -164,4 +164,36 @@ public class HSQLDBImpl implements SqlModel {
 		tqg.setVersionColumn("ID");
 		return new SQLContainer(tqg);
 	}
+	
+	
+	private SQLContainer getContainer(String tableName) throws SQLException {
+		TableQuery tqg = new TableQuery(tableName, pool, new DefaultSQLGenerator());
+		tqg.setVersionColumn("ID");
+		return new SQLContainer(tqg);
+	}
+
+	@Override
+	public SQLContainer getColorsContainer() throws SQLException {
+		return getContainer("COLORS");
+	}
+
+	@Override
+	public SQLContainer getSitesContainer() throws SQLException {
+		return getContainer("SITES");
+	}
+
+	@Override
+	public SQLContainer getSeasonsContainer() throws SQLException {
+		return getContainer("SEASONS");
+	}
+
+	@Override
+	public SQLContainer getSizesContainer() throws SQLException {
+		return getContainer("SIZES");
+	}
+
+	@Override
+	public SQLContainer getRegistryContainer() throws SQLException {
+		return getContainer("REGISTRY");
+	}
 }

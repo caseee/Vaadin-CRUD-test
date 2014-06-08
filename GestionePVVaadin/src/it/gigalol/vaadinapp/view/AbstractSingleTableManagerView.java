@@ -62,7 +62,6 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	private final Table table = new Table();
 	private final TextField searchField = new TextField();
 	private final Button back = new Button("Back", this );
-	private final Button selectBtn = new Button("Select",this);
 	private final Button newItem = new Button("New",this);
 	private final Button deleteItem = new Button("Delete",this);
 	private final Button saveItem = new Button("Save", this);
@@ -83,6 +82,13 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	 */
 	protected abstract SQLContainer getSQLContainer();
 
+
+	/**
+	 * Initialize child class
+	 * @return true if success
+	 */
+	protected abstract boolean initChild();
+	
 	/**
 	 * Get the name of the previous view
 	 * @return the name of the previous view
@@ -94,6 +100,12 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	 * @return the name of the view
 	 */
 	protected abstract String getViewName();
+	
+	/**
+	 * Get the minimum user level to use the view
+	 * @return minimum user level
+	 */
+	protected abstract int getMinimunUserLevel();
 
 	/**
 	 * Get the ids of the columns where the search is performed
@@ -110,7 +122,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		rootLayout.setSplitPosition(50f);
 		rootLayout.setSizeFull();
 		leftLayout.setSizeFull();
-		leftTopLayout.setHeight(null);
+		leftTopLayout.setHeight("200px");
 		searchField.setWidth("100%");
 		table.setSizeFull();
 		rightLayout.setMargin(true);
@@ -182,10 +194,10 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 					TextField field = new TextField(vpi.getName());				
 					cbfield.addValueChangeListener(new ComboboxChangeListener(field));					
 					hl.addComponent(cbfield);
-					Button btn = new Button("Edit");
-					btn.setWidth("50px");
-					btn.setHeight("100%");
-					hl.addComponent(btn);
+//					Button btn = new Button("Edit");
+//					btn.setWidth("50px");
+//					btn.setHeight("100%");
+//					hl.addComponent(btn);
 					rightLayout.addComponent(hl);
 					cbfield.setWidth("100%");
 					editorFields.bind(field, vpi.getName());
@@ -219,8 +231,17 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		table.addValueChangeListener(this);
 	}
 
-	protected void build() {
+	private void authTest() {
+		// FIXME
+		if (controller.getLoggedUser().getLevel() < getMinimunUserLevel())
+			getUI().getNavigator().navigateTo(getBackViewName());
+		
+	}
+	
+	public AbstractSingleTableManagerView() {
 
+		initChild();
+		//authTest();
 		initLayout();
 		initFields();
 		initProperty();
@@ -336,13 +357,8 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 			searchAction();
 		else if (source==cancelSearchButton)
 			cancelSearchAction();
-		else if (source==selectBtn)
-			selectAction();
 	}
 
-	private void selectAction() {
-		//TODO
-	}
 	
 	/**
 	 * Cancel searchField value and remove any filter
@@ -381,6 +397,8 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 				Property<?> internalId = internalItem.getItemProperty(internalName);
 				RowId irw = new RowId(internalId.getValue());
 				Item externalItem = lcb.getLinkedTable().getSqlContainer().getItem(irw);
+				if (externalItem==null)
+					continue;
 				Property<?> externalId = externalItem.getItemProperty(lcb.getLinkedTable().getExternalIdName());
 				RowId erw = new RowId(externalId.getValue());
 				lcb.getCombobox().select(erw);

@@ -59,12 +59,20 @@ public class MainView extends CustomComponent implements View {
 		}
 	});
 	
+	Button Colors = new Button("Colors", new Button.ClickListener() {
+		private static final long serialVersionUID = -9123442014270147559L;
+		public void buttonClick(ClickEvent event) {
+			// Navigate to main view
+			getUI().getNavigator().navigateTo(ColorsView.NAME);
+		}
+	});
+	
 	public MainView() {
 
 		java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "MAIN VIEW CREATED" );
 
 		// Add both to a panel
-		VerticalLayout fields = new VerticalLayout(groups, articoli, logout );
+		VerticalLayout fields = new VerticalLayout(groups, articoli, logout, Colors );
 		fields.setCaption("Pagina Principale");
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));

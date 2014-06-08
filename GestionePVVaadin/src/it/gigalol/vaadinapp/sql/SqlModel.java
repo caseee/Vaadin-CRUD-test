@@ -32,6 +32,37 @@ public interface SqlModel {
 	public SQLContainer getCategoriesContainer() throws SQLException;
 	
 	/**
+	 * @return  a SQLContainer populated with COLORS
+	 * @throws SQLException
+	 */
+	public SQLContainer getColorsContainer() throws SQLException;
+	
+	/**
+	 * @return  a SQLContainer populated with SITES
+	 * @throws SQLException
+	 */
+	public SQLContainer getSitesContainer() throws SQLException;
+	
+	/**
+	 * @return  a SQLContainer populated with SEASONS
+	 * @throws SQLException
+	 */
+	public SQLContainer getSeasonsContainer() throws SQLException;
+	
+	/**
+	 * @return  a SQLContainer populated with SIZES
+	 * @throws SQLException
+	 */
+	public SQLContainer getSizesContainer() throws SQLException;
+	
+	
+	/**
+	 * @return  a SQLContainer populated with REGISTRY
+	 * @throws SQLException
+	 */
+	public SQLContainer getRegistryContainer() throws SQLException;
+	
+	/**
 	 * Try to authorize a user 
 	 * @param user User name of the user
 	 * @param pass Password of the user
