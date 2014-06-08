@@ -13,8 +13,7 @@ public class LinkedTable implements Serializable {
 	private Class<?> idType;
 	private Class<?> showType;
 	private String externalIdName;
-	
-	
+		
 	/**
 	 * @return the idName
 	 */
@@ -36,6 +35,14 @@ public class LinkedTable implements Serializable {
 		return showName;
 	}
 	
+	/**
+	 * @param idName property name of the source id (foreign key)
+	 * @param sqlContainer sql contanier of the destination table
+	 * @param showName property name of the destination table to show
+	 * @param externalIdName property name of the destination table key (primar
+	 * @param internalClass 
+	 * @param externalClass
+	 */
 	public LinkedTable(String idName, 
 			SQLContainer sqlContainer, 
 			String showName,

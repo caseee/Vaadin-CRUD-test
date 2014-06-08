@@ -1,7 +1,6 @@
 package it.gigalol.vaadinapp.view;
 
 import it.gigalol.vaadinapp.Controller;
-import it.gigalol.vaadinapp.data.ConverterFactory;
 import it.gigalol.vaadinapp.data.LinkedComboBox;
 import it.gigalol.vaadinapp.sql.LinkedTable;
 
@@ -17,7 +16,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.fieldgroup.FieldGroupFieldFactory;
 import com.vaadin.data.util.filter.Or;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.data.util.sqlcontainer.RowId;
@@ -29,7 +27,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
@@ -55,11 +52,13 @@ import de.steinwedel.messagebox.MessageBoxListener;
 public abstract class AbstractSingleTableManagerView extends CustomComponent implements View, Serializable, ClickListener, ValueChangeListener {
 	private static final long serialVersionUID = 2869411776027184262L;
 	protected final Controller controller = VaadinSession.getCurrent().getAttribute(Controller.class);
+	protected boolean allowSelection = false; 
 	private final SQLContainer sc = getSQLContainer();
 	private final FieldGroup editorFields = new FieldGroup();
 	private final Table table = new Table();
 	private final TextField searchField = new TextField();
 	private final Button back = new Button("Back", this );
+	private final Button selectBtn = new Button("Select",this);
 	private final Button newItem = new Button("New",this);
 	private final Button deleteItem = new Button("Delete",this);
 	private final Button saveItem = new Button("Save", this);
@@ -135,47 +134,42 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	 * Initialize fields component
 	 */
 	private void initFields() {
-
-		//editorFields.setFieldFactory(this);
 		
+		// For every external table
 		for (LinkedTable ltnf : getLinkedTable()) {
 			final LinkedTable lt = ltnf;
-			
-			// Se trova un campo esterno aggiunge una colonna generata
+			// Add references to the external container
+			sc.addReference(lt.getSqlContainer(),lt.getIdName() , lt.getExternalIdName());
+			// Add a custom column generator 
 			table.addGeneratedColumn(lt.getIdName(), new ColumnGenerator() {
 				private static final long serialVersionUID = -5277036849741964362L;
-				// generatore di celle generate
 				public Component generateCell(Table source, Object itemId, Object columnId) {
-					if (sc.getItem(itemId).getItemProperty(lt.getIdName()).getValue() != null) {
-						// Rappresenta la scritta generata
-						Label l = new Label();
-						String idname = lt.getIdName(); 
-						Item innerItem = sc.getItem(itemId);
-						Property<?> innerProperty = innerItem.getItemProperty(idname);
-						Object LinkedIds = innerProperty.getValue();
-						RowId rw = new RowId(LinkedIds);
-						SQLContainer sqlc = lt.getSqlContainer();
-						sqlc.refresh();
-						Item item = sqlc.getItem(rw); 
-						String obj = lt.getShowName();
-						Property<?> property = item.getItemProperty(obj); 
-						l.setValue(property.getValue().toString());
-						l.setSizeUndefined();
-						return l;
-					}
-					return null;
+					if (sc.getItem(itemId).getItemProperty(lt.getIdName()).getValue() == null) 
+						return null;
+					// Convert internal id property to external show property 
+					Label l = new Label();
+					// Retrieve the item in the external table
+					Item item = sc.getReferencedItem(itemId, lt.getSqlContainer());
+					// Get the property used to show item
+					Property<?> property = item.getItemProperty(lt.getShowName()); 
+					l.setValue(property.getValue().toString());
+					l.setSizeUndefined();
+					return l;
 				}
 			});
 
 		}
 
+		
+		// For each Id marked as editable add a elements in the editorFields
 		for (String s : getEditIds()) {
 			// Search if is a external id
 			LinkedTable ltf = null;
 			for (LinkedTable ltnf : getLinkedTable()) 
 				if (ltnf.getShowName().equals(s)) 
 					ltf=ltnf;
-
+			
+			// If the field is local add the textbox field
 			if (ltf==null) {
 				TextField field = new TextField(s);
 				rightLayout.addComponent(field);
@@ -183,7 +177,13 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 				editorFields.bind(field, s);
 			} 
 			else  {
-				//FIXME
+				// If the field is in a linked table
+				// add a combobox with external table data
+				// show in the combobox the showId
+				// create a hidden textfield update with the id
+				// when the combobox selected item is changed
+				// the combobox is added to the view
+				// the textfield is bind to the data source
 				HorizontalLayout hl = new HorizontalLayout();
 				hl.setSizeFull();
 				final ComboBox cbfield = new ComboBox(s);
@@ -194,11 +194,8 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 				cbfield.setItemCaptionPropertyId(ltf.getShowName());
 				cbfield.setImmediate(true);
 				cbfield.setNewItemsAllowed(false);
-				
-				sc.addReference(ltf.getSqlContainer(), ltf.getIdName(), ltf.getExternalIdName());
-				
-				//cbfield.setConverter( ConverterFactory.createIstance (lcb.getLinkedTable()));
-				
+				TextField field = new TextField(s);				
+				cbfield.addValueChangeListener(new ComboboxChangeListener(field));					
 				hl.addComponent(cbfield);
 				Button btn = new Button("Edit");
 				btn.setWidth("50px");
@@ -206,8 +203,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 				hl.addComponent(btn);
 				rightLayout.addComponent(hl);
 				cbfield.setWidth("100%");
-				editorFields.bind(cbfield, s);
-
+				editorFields.bind(field, s);
 				linkedComboBoxes.add(lcb);
 			}
 
@@ -347,8 +343,14 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 			searchAction();
 		else if (source==cancelSearchButton)
 			cancelSearchAction();
+		else if (source==selectBtn)
+			selectAction();
 	}
 
+	private void selectAction() {
+		//TODO
+	}
+	
 	/**
 	 * Cancel searchField value and remove any filter
 	 */
@@ -525,7 +527,6 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 			if (buttonId.equals(ButtonId.YES))  
 				discard();
 
-
 		}
 
 	}
@@ -592,7 +593,6 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 
 			getUI().getNavigator().navigateTo(getBackViewName());
 
-
 		}
 
 	}
@@ -618,7 +618,6 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 
 			addItem();
 
-
 		}
 
 	}
@@ -641,4 +640,32 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	}
 	 
 
+	/**
+	 * Class implementing the ValueChangeListener used to change the textfield value with the key
+	 * of the selected external row in the combobox
+	 */
+	private class ComboboxChangeListener implements ValueChangeListener {
+
+		private TextField field;
+		private static final long serialVersionUID = 90074393261185094L;
+
+		/**
+		 * @param hiddend field binded to the actual data
+		 */
+		ComboboxChangeListener(TextField field) {
+			this.field = field;
+		}
+		
+		/* (non-Javadoc)
+		 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
+		 */
+		@Override
+		public void valueChange(ValueChangeEvent event) {
+			field.setValue(event.getProperty().getValue().toString());
+			
+		}
+		
+	}
+	
+	
 }
