@@ -2,10 +2,14 @@ package it.gigalol.vaadinapp.view;
 
 import it.gigalol.vaadinapp.Controller;
 import it.gigalol.vaadinapp.data.LinkedComboBox;
+import it.gigalol.vaadinapp.data.PropertyIdSearch;
+import it.gigalol.vaadinapp.data.PropertyIdVisibility;
+import it.gigalol.vaadinapp.data.ViewPropertyId;
 import it.gigalol.vaadinapp.sql.LinkedTable;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -95,24 +99,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	 * Get the ids of the columns where the search is performed
 	 * @return the ids
 	 */
-	protected abstract String[] getSearchIds();
-
-	/**
-	 * Get the ids of the columns the user can edit
-	 * @return the ids
-	 */
-	protected abstract String[] getEditIds();
-
-	/**
-	 * Get the ids of the columns showed in the preview
-	 * @return the ids
-	 */
-	protected abstract String[] getShowIds();
-
-	/**
-	 * @return linked tables to this table
-	 */
-	protected abstract LinkedTable[] getLinkedTable();
+	protected abstract List < ViewPropertyId> getViewPropertyId();
 
 	/**
 	 * Sets the layouts of components
@@ -135,78 +122,78 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	 */
 	private void initFields() {
 		
-		// For every external table
-		for (LinkedTable ltnf : getLinkedTable()) {
-			final LinkedTable lt = ltnf;
-			// Add references to the external container
-			sc.addReference(lt.getSqlContainer(),lt.getIdName() , lt.getExternalIdName());
-			// Add a custom column generator 
-			table.addGeneratedColumn(lt.getIdName(), new ColumnGenerator() {
-				private static final long serialVersionUID = -5277036849741964362L;
-				public Component generateCell(Table source, Object itemId, Object columnId) {
-					if (sc.getItem(itemId).getItemProperty(lt.getIdName()).getValue() == null) 
-						return null;
-					// Convert internal id property to external show property 
-					Label l = new Label();
-					// Retrieve the item in the external table
-					Item item = sc.getReferencedItem(itemId, lt.getSqlContainer());
-					// Get the property used to show item
-					Property<?> property = item.getItemProperty(lt.getShowName()); 
-					l.setValue(property.getValue().toString());
-					l.setSizeUndefined();
-					return l;
-				}
-			});
+		for (ViewPropertyId vpi : getViewPropertyId()) {
 
-		}
+			// For every external table
+			if (vpi.getLinked() != null) {
+				final LinkedTable lt = vpi.getLinked();
+				// Add references to the external container
+				sc.addReference(lt.getSqlContainer(),lt.getIdName() , lt.getExternalIdName());
+				// Add a custom column generator 
+				table.addGeneratedColumn(lt.getIdName(), new ColumnGenerator() {
+					private static final long serialVersionUID = -5277036849741964362L;
+					public Component generateCell(Table source, Object itemId, Object columnId) {
+						if (sc.getItem(itemId).getItemProperty(lt.getIdName()).getValue() == null) 
+							return null;
+						// Convert internal id property to external show property 
+						Label l = new Label();
+						// Retrieve the item in the external table
+						Item item = sc.getReferencedItem(itemId, lt.getSqlContainer());
+						// Get the property used to show item
+						Property<?> property = item.getItemProperty(lt.getShowName()); 
+						l.setValue(property.getValue().toString());
+						l.setSizeUndefined();
+						return l;
+					}
+				});
 
-		
-		// For each Id marked as editable add a elements in the editorFields
-		for (String s : getEditIds()) {
-			// Search if is a external id
-			LinkedTable ltf = null;
-			for (LinkedTable ltnf : getLinkedTable()) 
-				if (ltnf.getShowName().equals(s)) 
-					ltf=ltnf;
-			
-			// If the field is local add the textbox field
-			if (ltf==null) {
-				TextField field = new TextField(s);
-				rightLayout.addComponent(field);
-				field.setWidth("100%");
-				editorFields.bind(field, s);
-			} 
-			else  {
-				// If the field is in a linked table
-				// add a combobox with external table data
-				// show in the combobox the showId
-				// create a hidden textfield update with the id
-				// when the combobox selected item is changed
-				// the combobox is added to the view
-				// the textfield is bind to the data source
-				HorizontalLayout hl = new HorizontalLayout();
-				hl.setSizeFull();
-				final ComboBox cbfield = new ComboBox(s);
-				final LinkedComboBox lcb = new LinkedComboBox(cbfield,ltf );
-				cbfield.setWidth("100%");
-				cbfield.setNullSelectionAllowed(false);
-				cbfield.setContainerDataSource(ltf.getSqlContainer());
-				cbfield.setItemCaptionPropertyId(ltf.getShowName());
-				cbfield.setImmediate(true);
-				cbfield.setNewItemsAllowed(false);
-				TextField field = new TextField(s);				
-				cbfield.addValueChangeListener(new ComboboxChangeListener(field));					
-				hl.addComponent(cbfield);
-				Button btn = new Button("Edit");
-				btn.setWidth("50px");
-				btn.setHeight("100%");
-				hl.addComponent(btn);
-				rightLayout.addComponent(hl);
-				cbfield.setWidth("100%");
-				editorFields.bind(field, s);
-				linkedComboBoxes.add(lcb);
 			}
 
+
+			// For each Id marked as editable add a elements in the editorFields
+			if ( vpi.getVisibility() != PropertyIdVisibility.Hidden) {
+
+				// If the field is local add the textbox field
+				if (vpi.getLinked() == null) {
+					TextField field = new TextField(vpi.getName());
+					rightLayout.addComponent(field);
+					field.setWidth("100%");
+					editorFields.bind(field, vpi.getName());
+				} 
+				else  {
+					// If the field is in a linked table
+					// add a combobox with external table data
+					// show in the combobox the showId
+					// create a hidden textfield update with the id
+					// when the combobox selected item is changed
+					// the combobox is added to the view
+					// the textfield is bind to the data source
+					LinkedTable ltf=vpi.getLinked();
+					HorizontalLayout hl = new HorizontalLayout();
+					hl.setSizeFull();
+					final ComboBox cbfield = new ComboBox(vpi.getName());
+					final LinkedComboBox lcb = new LinkedComboBox(cbfield,ltf );
+					cbfield.setWidth("100%");
+					cbfield.setNullSelectionAllowed(false);
+					cbfield.setContainerDataSource(ltf.getSqlContainer());
+					cbfield.setItemCaptionPropertyId(ltf.getShowName());
+					cbfield.setImmediate(true);
+					cbfield.setNewItemsAllowed(false);
+					TextField field = new TextField(vpi.getName());				
+					cbfield.addValueChangeListener(new ComboboxChangeListener(field));					
+					hl.addComponent(cbfield);
+					Button btn = new Button("Edit");
+					btn.setWidth("50px");
+					btn.setHeight("100%");
+					hl.addComponent(btn);
+					rightLayout.addComponent(hl);
+					cbfield.setWidth("100%");
+					editorFields.bind(field, vpi.getName());
+					linkedComboBoxes.add(lcb);
+				}
+
+			}
+		
 		}
 
 	}
@@ -219,14 +206,20 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		searchField.setInputPrompt("Search");
 		searchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
 		editorFields.setBuffered(true);
-		table.setVisibleColumns((Object[])getShowIds());
+		
+		List <String> visible = new ArrayList<String>();
+		for (ViewPropertyId vpi : getViewPropertyId())
+			if (vpi.getVisibility() == PropertyIdVisibility.Always)
+				visible.add(vpi.getName());
+		
+		table.setVisibleColumns(visible.toArray());;
 		table.setEditable(false);		
 		table.setSelectable(true);
 		table.setImmediate(true);
 		table.addValueChangeListener(this);
 	}
 
-	public AbstractSingleTableManagerView() {
+	protected void build() {
 
 		initLayout();
 		initFields();
@@ -384,7 +377,6 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 			for (LinkedComboBox lcb : linkedComboBoxes) {
 				//String externalIdName = lcb.getLinkedTable().getIdName();
 				String internalName = lcb.getLinkedTable().getShowName();
-				//Class<?> cl = lcb.getLinkedTable().getIdType();
 				Item internalItem = sc.getItem(itemId);
 				Property<?> internalId = internalItem.getItemProperty(internalName);
 				RowId irw = new RowId(internalId.getValue());
@@ -437,15 +429,21 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 			return;
 		}
 
+		int nsearch=0;
+		for (ViewPropertyId vpi : getViewPropertyId())
+			if (vpi.getSearchable() == PropertyIdSearch.Searchable)
+				nsearch++;
 
-		if (getSearchIds().length == 0)
+		if (nsearch == 0)
 			return;
 
-		Filter [] filters = new Filter[getSearchIds().length];
+		Filter [] filters = new Filter[nsearch];
 
-		for ( int i = 0; i < getSearchIds().length; i++) {
-			filters[i] = new SimpleStringFilter(getSearchIds()[i],searchTerm,true,false);
-		}
+		nsearch=0;
+		for (ViewPropertyId vpi : getViewPropertyId())
+			if (vpi.getSearchable() == PropertyIdSearch.Searchable)
+				filters[nsearch++] = new SimpleStringFilter(vpi.getName(),searchTerm,true,false);
+		
 
 		sc.addContainerFilter(new Or(filters));
 	}

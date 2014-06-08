@@ -1,6 +1,7 @@
 package it.gigalol.vaadinapp.data;
 
 public enum PropertyIdVisibility {
-	Visible,
-	Hidden
+	Hidden,
+	OnlyInDetail,
+	Always	
 }

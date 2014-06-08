@@ -39,7 +39,7 @@ public class LinkedTable implements Serializable {
 	 * @param idName property name of the source id (foreign key)
 	 * @param sqlContainer sql contanier of the destination table
 	 * @param showName property name of the destination table to show
-	 * @param externalIdName property name of the destination table key (primar
+	 * @param externalIdName property name of the destination table key (primary key or candidate)
 	 * @param internalClass 
 	 * @param externalClass
 	 */

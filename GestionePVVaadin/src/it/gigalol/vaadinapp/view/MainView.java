@@ -55,7 +55,7 @@ public class MainView extends CustomComponent implements View {
 		private static final long serialVersionUID = -9123442014270147559L;
 		public void buttonClick(ClickEvent event) {
 			// Navigate to main view
-			getUI().getNavigator().navigateTo(GroupsView.NAME);
+//			getUI().getNavigator().navigateTo(GroupsView.NAME);
 		}
 	});
 	
