@@ -71,7 +71,6 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	private final Button cancelSearchButton = new Button("Cancel search",this);
 	private final HorizontalLayout leftTopLayout = new HorizontalLayout();
 	private final VerticalLayout leftLayout = new VerticalLayout();
-	private final HorizontalLayout leftSecondLayout = new HorizontalLayout();
 	private final VerticalLayout rightLayout = new VerticalLayout();
 	private final HorizontalSplitPanel rootLayout = new HorizontalSplitPanel();
 	private final List<LinkedComboBox> linkedComboBoxes = new Vector<LinkedComboBox>();
