@@ -60,10 +60,18 @@ public class MainView extends CustomComponent implements View {
 	});
 	
 	Button Colors = new Button("Colors", new Button.ClickListener() {
-		private static final long serialVersionUID = -9123442014270147559L;
+		private static final long serialVersionUID = -9123442014233347559L;
 		public void buttonClick(ClickEvent event) {
 			// Navigate to main view
 			getUI().getNavigator().navigateTo(ColorsView.NAME);
+		}
+	});
+	
+	Button Users = new Button("Users", new Button.ClickListener() {
+		private static final long serialVersionUID = -3123442014270147559L;
+		public void buttonClick(ClickEvent event) {
+			// Navigate to main view
+			getUI().getNavigator().navigateTo(UsersView.NAME);
 		}
 	});
 	
@@ -72,7 +80,7 @@ public class MainView extends CustomComponent implements View {
 		java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "MAIN VIEW CREATED" );
 
 		// Add both to a panel
-		VerticalLayout fields = new VerticalLayout(groups, articoli, logout, Colors );
+		VerticalLayout fields = new VerticalLayout(groups, articoli, logout, Colors, Users);
 		fields.setCaption("Pagina Principale");
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));

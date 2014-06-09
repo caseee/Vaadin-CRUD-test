@@ -5,6 +5,7 @@ import it.gigalol.vaadinapp.view.ColorsView;
 import it.gigalol.vaadinapp.view.GroupsView;
 import it.gigalol.vaadinapp.view.LoginView;
 import it.gigalol.vaadinapp.view.MainView;
+import it.gigalol.vaadinapp.view.UsersView;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -59,7 +60,9 @@ public class UiLauncher extends UI {
 		getNavigator().addView(GroupsView.NAME, GroupsView.class);
 		
 		getNavigator().addView(ColorsView.NAME, ColorsView.class);
-
+		
+		getNavigator().addView(UsersView.NAME, UsersView.class);
+		
 		// In caso di cambio di vista, viene controllato che vista mostrare
 		getNavigator().addViewChangeListener(new ViewChangeListener() {
 
