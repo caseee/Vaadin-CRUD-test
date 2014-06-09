@@ -26,6 +26,7 @@ import com.vaadin.data.util.sqlcontainer.RowId;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Sizeable;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -68,11 +69,11 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	private final Button discardItem = new Button("Discard",this);
 	private final Button searchButton = new Button("Search",this);
 	private final Button cancelSearchButton = new Button("Cancel search",this);
-	private final HorizontalLayout leftTopLayout = new HorizontalLayout(back,newItem,searchField,searchButton,cancelSearchButton);
-	private final VerticalLayout leftLayout = new VerticalLayout(leftTopLayout,table);
-	private final HorizontalLayout rightTopLayout = new HorizontalLayout(deleteItem,saveItem,discardItem);
-	private final VerticalLayout rightLayout = new VerticalLayout(rightTopLayout);
-	private final HorizontalSplitPanel rootLayout = new HorizontalSplitPanel(leftLayout,rightLayout);
+	private final HorizontalLayout leftTopLayout = new HorizontalLayout();
+	private final VerticalLayout leftLayout = new VerticalLayout();
+	private final HorizontalLayout leftSecondLayout = new HorizontalLayout();
+	private final VerticalLayout rightLayout = new VerticalLayout();
+	private final HorizontalSplitPanel rootLayout = new HorizontalSplitPanel();
 	private final List<LinkedComboBox> linkedComboBoxes = new Vector<LinkedComboBox>();
 	private Object lastId ;
 
@@ -119,10 +120,15 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	private void initLayout() {
 		this.setSizeFull();
 		this.setCompositionRoot(rootLayout);
+		leftLayout.setHeight("" );
 		rootLayout.setSplitPosition(50f);
 		rootLayout.setSizeFull();
-		leftLayout.setSizeFull();
-		leftTopLayout.setHeight("200px");
+		leftTopLayout.addComponents(back,newItem,searchField,searchButton,cancelSearchButton,deleteItem,saveItem,discardItem);
+		leftLayout.addComponents(leftTopLayout,rightLayout);
+		rootLayout.addComponents(leftLayout,table);
+	
+		leftTopLayout.setWidth(100,Unit.PERCENTAGE);
+
 		searchField.setWidth("100%");
 		table.setSizeFull();
 		rightLayout.setMargin(true);
@@ -223,8 +229,8 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		for (ViewPropertyId vpi : getViewPropertyId())
 			if (vpi.getVisibility() == PropertyIdVisibility.Always)
 				visible.add(vpi.getName());
+		table.setVisibleColumns(visible.toArray());
 		
-		table.setVisibleColumns(visible.toArray());;
 		table.setEditable(false);		
 		table.setSelectable(true);
 		table.setImmediate(true);
