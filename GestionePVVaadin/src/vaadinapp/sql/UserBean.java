@@ -1,4 +1,4 @@
-package it.gigalol.vaadinapp.sql;
+package vaadinapp.sql;
 
 import java.io.Serializable;
 

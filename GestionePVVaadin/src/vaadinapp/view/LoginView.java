@@ -1,9 +1,9 @@
-package it.gigalol.vaadinapp.view;
+package vaadinapp.view;
 
-
-import it.gigalol.vaadinapp.Controller;
 
 import java.io.Serializable;
+
+import vaadinapp.Controller;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;

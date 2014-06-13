@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.gigalol.vaadinapp.sql;
+package vaadinapp.sql;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,13 +1,13 @@
-package it.gigalol.vaadinapp;
-
-import it.gigalol.vaadinapp.view.ArticlesView;
-import it.gigalol.vaadinapp.view.ColorsView;
-import it.gigalol.vaadinapp.view.GroupsView;
-import it.gigalol.vaadinapp.view.LoginView;
-import it.gigalol.vaadinapp.view.MainView;
-import it.gigalol.vaadinapp.view.UsersView;
+package vaadinapp;
 
 import javax.servlet.annotation.WebServlet;
+
+import vaadinapp.view.ArticlesView;
+import vaadinapp.view.ColorsView;
+import vaadinapp.view.GroupsView;
+import vaadinapp.view.LoginView;
+import vaadinapp.view.MainView;
+import vaadinapp.view.UsersView;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;

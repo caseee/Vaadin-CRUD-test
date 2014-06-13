@@ -1,4 +1,4 @@
-package it.gigalol.vaadinapp.sql;
+package vaadinapp.sql;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -165,35 +165,51 @@ public class HSQLDBImpl implements SqlModel {
 		return new SQLContainer(tqg);
 	}
 	
-	
 	private SQLContainer getContainer(String tableName) throws SQLException {
 		TableQuery tqg = new TableQuery(tableName, pool, new DefaultSQLGenerator());
 		tqg.setVersionColumn("ID");
 		return new SQLContainer(tqg);
 	}
 
+	/* (non-Javadoc)
+	 * @see it.gigalol.vaadinapp.sql.SqlModel#getColorsContainer()
+	 */
 	@Override
 	public SQLContainer getColorsContainer() throws SQLException {
 		return getContainer("COLORS");
 	}
 
+	/* (non-Javadoc)
+	 * @see it.gigalol.vaadinapp.sql.SqlModel#getSitesContainer()
+	 */
 	@Override
 	public SQLContainer getSitesContainer() throws SQLException {
 		return getContainer("SITES");
 	}
 
+	/* (non-Javadoc)
+	 * @see it.gigalol.vaadinapp.sql.SqlModel#getSeasonsContainer()
+	 */
 	@Override
 	public SQLContainer getSeasonsContainer() throws SQLException {
 		return getContainer("SEASONS");
 	}
 
+	/* (non-Javadoc)
+	 * @see it.gigalol.vaadinapp.sql.SqlModel#getSizesContainer()
+	 */
 	@Override
 	public SQLContainer getSizesContainer() throws SQLException {
 		return getContainer("SIZES");
 	}
 
+	/* (non-Javadoc)
+	 * @see it.gigalol.vaadinapp.sql.SqlModel#getRegistryContainer()
+	 */
 	@Override
 	public SQLContainer getRegistryContainer() throws SQLException {
 		return getContainer("REGISTRY");
 	}
+	
+	
 }

@@ -1,4 +1,4 @@
-package it.gigalol.vaadinapp.data;
+package vaadinapp.data;
 
 import java.io.Serializable;
 

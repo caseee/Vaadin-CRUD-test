@@ -1,14 +1,16 @@
-package it.gigalol.vaadinapp.view;
+package vaadinapp.view;
 
-import it.gigalol.vaadinapp.Controller;
-import it.gigalol.vaadinapp.data.PropertyIdBehavior;
-import it.gigalol.vaadinapp.data.PropertyIdSearch;
-import it.gigalol.vaadinapp.data.PropertyIdVisibility;
-import it.gigalol.vaadinapp.data.ViewPropertyId;
+
 
 
 import java.util.ArrayList;
 import java.util.List;
+
+import vaadinapp.Controller;
+import vaadinapp.data.PropertyIdBehavior;
+import vaadinapp.data.PropertyIdSearch;
+import vaadinapp.data.PropertyIdVisibility;
+import vaadinapp.data.ViewPropertyId;
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.server.VaadinSession;

@@ -1,17 +1,17 @@
-package it.gigalol.vaadinapp.view;
-
-import it.gigalol.vaadinapp.Controller;
-import it.gigalol.vaadinapp.data.LinkedComboBox;
-import it.gigalol.vaadinapp.data.LinkedProperty;
-import it.gigalol.vaadinapp.data.PropertyIdSearch;
-import it.gigalol.vaadinapp.data.PropertyIdVisibility;
-import it.gigalol.vaadinapp.data.ViewPropertyId;
+package vaadinapp.view;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+
+import vaadinapp.Controller;
+import vaadinapp.data.LinkedComboBox;
+import vaadinapp.data.LinkedProperty;
+import vaadinapp.data.PropertyIdSearch;
+import vaadinapp.data.PropertyIdVisibility;
+import vaadinapp.data.ViewPropertyId;
 
 import com.vaadin.data.Container.Filter;
 import com.vaadin.data.Item;

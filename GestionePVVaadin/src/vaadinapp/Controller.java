@@ -1,13 +1,13 @@
-package it.gigalol.vaadinapp;
-
-import it.gigalol.vaadinapp.sql.HSQLDBImpl;
-import it.gigalol.vaadinapp.sql.SqlModel;
-import it.gigalol.vaadinapp.sql.UserBean;
+package vaadinapp;
 
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.logging.*;
+
+import vaadinapp.sql.HSQLDBImpl;
+import vaadinapp.sql.SqlModel;
+import vaadinapp.sql.UserBean;
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.ui.UI;
@@ -79,7 +79,7 @@ public class Controller implements Serializable {
 		try {
 			return model.getCategoriesContainer();
 		} catch (SQLException e) {
-			log(Level.SEVERE, "Error retrieving data.");
+			log(Level.SEVERE, "Error retrieving Categories data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
 			return null;
@@ -90,7 +90,7 @@ public class Controller implements Serializable {
 		try {
 			return model.getUsersContainer();
 		} catch (SQLException e) {
-			log(Level.SEVERE, "Error retrieving data.");
+			log(Level.SEVERE, "Error retrieving Users data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
 			return null;
@@ -101,7 +101,7 @@ public class Controller implements Serializable {
 		try {
 			return model.getColorsContainer();
 		} catch (SQLException e) {
-			log(Level.SEVERE, "Error retrieving data.");
+			log(Level.SEVERE, "Error retrieving Colors data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
 			return null;
@@ -112,11 +112,36 @@ public class Controller implements Serializable {
 		try {
 			return model.getSizesContainer();
 		} catch (SQLException e) {
-			log(Level.SEVERE, "Error retrieving data.");
+			log(Level.SEVERE, "Error retrieving Sizes data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
 			return null;
 		}
 	}
+
+	public SQLContainer getSitesContainer() {
+		try {
+			return model.getSitesContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving Sites data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
+	
+	public SQLContainer getRegistryContainer() {
+		try {
+			return model.getRegistryContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving Registry data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
+	
+
+	
 	
 }
