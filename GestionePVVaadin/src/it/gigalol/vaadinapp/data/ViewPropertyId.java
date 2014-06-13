@@ -2,8 +2,6 @@ package it.gigalol.vaadinapp.data;
 
 import java.io.Serializable;
 
-import it.gigalol.vaadinapp.sql.LinkedTable;
-
 /**
  * This class represents the behavior of Property Id (Column) of a table in a View
  * @author Marco Casella

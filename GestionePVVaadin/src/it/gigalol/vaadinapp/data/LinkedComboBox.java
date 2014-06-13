@@ -2,8 +2,6 @@ package it.gigalol.vaadinapp.data;
 
 import java.io.Serializable;
 
-import it.gigalol.vaadinapp.sql.LinkedTable;
-
 import com.vaadin.ui.ComboBox;
 
 public class LinkedComboBox implements Serializable {

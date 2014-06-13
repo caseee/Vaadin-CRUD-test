@@ -7,11 +7,11 @@ import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.server.VaadinSession;
 
 import it.gigalol.vaadinapp.Controller;
+import it.gigalol.vaadinapp.data.LinkedTable;
 import it.gigalol.vaadinapp.data.PropertyIdBehavior;
 import it.gigalol.vaadinapp.data.PropertyIdSearch;
 import it.gigalol.vaadinapp.data.PropertyIdVisibility;
 import it.gigalol.vaadinapp.data.ViewPropertyId;
-import it.gigalol.vaadinapp.sql.LinkedTable;
 
 
 /**

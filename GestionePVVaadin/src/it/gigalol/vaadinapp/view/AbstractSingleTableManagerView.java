@@ -2,10 +2,10 @@ package it.gigalol.vaadinapp.view;
 
 import it.gigalol.vaadinapp.Controller;
 import it.gigalol.vaadinapp.data.LinkedComboBox;
+import it.gigalol.vaadinapp.data.LinkedTable;
 import it.gigalol.vaadinapp.data.PropertyIdSearch;
 import it.gigalol.vaadinapp.data.PropertyIdVisibility;
 import it.gigalol.vaadinapp.data.ViewPropertyId;
-import it.gigalol.vaadinapp.sql.LinkedTable;
 
 import java.io.Serializable;
 import java.sql.SQLException;
