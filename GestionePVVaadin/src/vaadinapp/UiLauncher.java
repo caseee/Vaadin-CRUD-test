@@ -55,13 +55,8 @@ public class UiLauncher extends UI {
 		// Aggiunge la vista principale dell'applicazione
 		getNavigator().addView(MainView.NAME, MainView.class);
 		
-		getNavigator().addView(ArticlesView.NAME, ArticlesView.class);
-		
-		getNavigator().addView(GroupsView.NAME, GroupsView.class);
-		
-		getNavigator().addView(ColorsView.NAME, ColorsView.class);
-		
-		getNavigator().addView(UsersView.NAME, UsersView.class);
+		for ( AppView view : controller.getViews())
+			getNavigator().addView(view.getViewName(),view.getViewClass());
 		
 		// In caso di cambio di vista, viene controllato che vista mostrare
 		getNavigator().addViewChangeListener(new ViewChangeListener() {
@@ -95,7 +90,7 @@ public class UiLauncher extends UI {
 		});
 			
 	}
-	
-	
+		
 	
 }
+

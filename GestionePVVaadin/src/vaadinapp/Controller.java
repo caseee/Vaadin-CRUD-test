@@ -3,11 +3,13 @@ package vaadinapp;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.*;
 
 import vaadinapp.sql.HSQLDBImpl;
 import vaadinapp.sql.SqlModel;
 import vaadinapp.sql.UserBean;
+import vaadinapp.view.*;
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.ui.UI;
@@ -21,7 +23,14 @@ public class Controller implements Serializable {
 	private static final long serialVersionUID = 3911062516609139081L;
 	private static final String LOGGER_TYPE = "global";
 	private static SqlModel model; 	
-	
+	private ArrayList <AppView> views = new ArrayList <AppView>();
+	/**
+	 * @return the views
+	 */
+	public ArrayList<AppView> getViews() {
+		return views;
+	}
+
 	private UserBean loggedUser = null;
 	
 	public UserBean getLoggedUser() {
@@ -45,6 +54,15 @@ public class Controller implements Serializable {
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
 		}
+		
+		
+		views.add(new AppView("Users", UsersView.class, 50));
+		views.add(new AppView("Articles", ArticlesView.class, 1));
+		views.add(new AppView("Groups", GroupsView.class, 1));
+		views.add(new AppView("Sites", SitesView.class, 50));
+		views.add(new AppView("Colors", ColorsView.class, 1));
+		
+		
 	}
 	
 	public void log(Level level, String log) {

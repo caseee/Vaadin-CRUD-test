@@ -246,7 +246,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	public AbstractSingleTableManagerView() {
 
 		initChild();
-		//authTest();
+		authTest();
 		initLayout();
 		initFields();
 		initProperty();

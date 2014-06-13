@@ -1,5 +1,6 @@
 package vaadinapp.view;
 
+import vaadinapp.AppView;
 import vaadinapp.Controller;
 
 import com.vaadin.navigator.*;
@@ -26,13 +27,14 @@ public class MainView extends CustomComponent implements View {
 		@Override
 		public void buttonClick(ClickEvent event) {
 
-			// "Disconnette" l'utente
+			// logout
 			getSession().getAttribute(Controller.class).logout();
 
-			// Refresh questa view, dovrebbe redirezionare alla vista di login
+			// redirect to log-in view
 			getUI().getNavigator().navigateTo(NAME);
 		}
 	});
+	
 	ClickListener mainClickListener = new ClickListener() {
 		private static final long serialVersionUID = -2254580865064907743L;
 		@Override
@@ -46,7 +48,6 @@ public class MainView extends CustomComponent implements View {
 	Button articoli = new Button("Articoli", new Button.ClickListener() {
 		private static final long serialVersionUID = -9123442014270147559L;
 		public void buttonClick(ClickEvent event) {
-			// Navigate to main view
 			getUI().getNavigator().navigateTo(ArticlesView.NAME);
 		}
 	});
@@ -54,7 +55,6 @@ public class MainView extends CustomComponent implements View {
 	Button groups = new Button("Groups", new Button.ClickListener() {
 		private static final long serialVersionUID = -9123442014270147559L;
 		public void buttonClick(ClickEvent event) {
-			// Navigate to main view
 			getUI().getNavigator().navigateTo(GroupsView.NAME);
 		}
 	});
@@ -62,7 +62,6 @@ public class MainView extends CustomComponent implements View {
 	Button Colors = new Button("Colors", new Button.ClickListener() {
 		private static final long serialVersionUID = -9123442014233347559L;
 		public void buttonClick(ClickEvent event) {
-			// Navigate to main view
 			getUI().getNavigator().navigateTo(ColorsView.NAME);
 		}
 	});
@@ -70,17 +69,42 @@ public class MainView extends CustomComponent implements View {
 	Button Users = new Button("Users", new Button.ClickListener() {
 		private static final long serialVersionUID = -3123442014270147559L;
 		public void buttonClick(ClickEvent event) {
-			// Navigate to main view
 			getUI().getNavigator().navigateTo(UsersView.NAME);
 		}
 	});
+	
+	Button Sites = new Button("Sites", new Button.ClickListener() {
+		private static final long serialVersionUID = -3123442014255147559L;
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(SitesView.NAME);
+		}
+	});
+	
 	
 	public MainView() {
 
 		java.util.logging.Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "MAIN VIEW CREATED" );
 
 		// Add both to a panel
-		VerticalLayout fields = new VerticalLayout(groups, articoli, logout, Colors, Users);
+		VerticalLayout fields = new VerticalLayout(logout);
+		
+		for (AppView view : VaadinSession.getCurrent().getAttribute(Controller.class).getViews()) {
+			final AppView finalView = view;
+			if (view.getLevelRequired() <= VaadinSession.getCurrent().getAttribute(Controller.class).getLoggedUser().getLevel() )
+				fields.addComponent(new Button(view.getViewName(), new Button.ClickListener() {
+
+					private static final long serialVersionUID = 15619813541891L;
+
+					@Override
+					public void buttonClick(ClickEvent event) {
+						getUI().getNavigator().navigateTo(finalView.getViewName());
+					}
+					
+					
+				}));
+		}
+
+		
 		fields.setCaption("Pagina Principale");
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));
