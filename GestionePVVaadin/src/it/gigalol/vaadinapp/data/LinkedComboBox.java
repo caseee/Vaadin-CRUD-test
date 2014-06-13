@@ -8,8 +8,8 @@ public class LinkedComboBox implements Serializable {
 
 	private static final long serialVersionUID = -7690045230744956750L;
 	private ComboBox cb;
-	private LinkedTable lt;
-	public LinkedComboBox( ComboBox cb , LinkedTable lt) {
+	private LinkedProperty lt;
+	public LinkedComboBox( ComboBox cb , LinkedProperty lt) {
 		this.cb=cb;
 		this.lt=lt;
 	}
@@ -18,7 +18,7 @@ public class LinkedComboBox implements Serializable {
 		return cb;
 	}
 	
-	public LinkedTable getLinkedTable() {
+	public LinkedProperty getLinkedTable() {
 		return lt;
 	}
 }

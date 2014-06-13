@@ -28,7 +28,7 @@ public class ViewPropertyId implements Serializable {
 	/**
 	 * @return the linked
 	 */
-	public LinkedTable getLinked() {
+	public LinkedProperty getLinked() {
 		return linked;
 	}
 
@@ -51,7 +51,7 @@ public class ViewPropertyId implements Serializable {
 	 */
 	public ViewPropertyId(String name, PropertyIdVisibility visibility,
 			PropertyIdBehavior behavior, PropertyIdSearch searchable,
-			LinkedTable linked) {
+			LinkedProperty linked) {
 		super();
 		this.name = name;
 		this.visibility = visibility;
@@ -72,7 +72,7 @@ public class ViewPropertyId implements Serializable {
 	private PropertyIdVisibility visibility;
 	private PropertyIdBehavior behavior;
 	private PropertyIdSearch searchable;
-	private LinkedTable linked = null;
+	private LinkedProperty linked = null;
 	
 	
 	

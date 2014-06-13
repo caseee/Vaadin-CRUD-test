@@ -4,7 +4,12 @@ import java.io.Serializable;
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 
-public class LinkedTable implements Serializable {
+/**
+ * Represents a Property stored in another table (SQLContainer) with a foreign key references
+ * @author Marco Casella
+ *
+ */
+public class LinkedProperty implements Serializable {
 	
 	private static final long serialVersionUID = 3692608420961807340L;
 	private String idName;
@@ -43,7 +48,7 @@ public class LinkedTable implements Serializable {
 	 * @param internalClass 
 	 * @param externalClass
 	 */
-	public LinkedTable(String idName, 
+	public LinkedProperty(String idName, 
 			SQLContainer sqlContainer, 
 			String showName,
 			String externalIdName,

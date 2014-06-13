@@ -7,7 +7,7 @@ import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.server.VaadinSession;
 
 import it.gigalol.vaadinapp.Controller;
-import it.gigalol.vaadinapp.data.LinkedTable;
+import it.gigalol.vaadinapp.data.LinkedProperty;
 import it.gigalol.vaadinapp.data.PropertyIdBehavior;
 import it.gigalol.vaadinapp.data.PropertyIdSearch;
 import it.gigalol.vaadinapp.data.PropertyIdVisibility;
@@ -30,11 +30,11 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 				
 		ListOfViewPropertyId = new ArrayList<ViewPropertyId> ();
 		
-		LinkedTable categoryLink = new LinkedTable("CATEGORY", 	VaadinSession.getCurrent().getAttribute(Controller.class).getCategoriesContainer(), 
+		LinkedProperty categoryLink = new LinkedProperty("CATEGORY", 	VaadinSession.getCurrent().getAttribute(Controller.class).getCategoriesContainer(), 
 				"CATEGORY", "ID", Integer.class, String.class);
-		LinkedTable colorsLink = new LinkedTable("COLOR", 	VaadinSession.getCurrent().getAttribute(Controller.class).getColorsContainer(), 
+		LinkedProperty colorsLink = new LinkedProperty("COLOR", 	VaadinSession.getCurrent().getAttribute(Controller.class).getColorsContainer(), 
 				"NAME", "ID", Integer.class, String.class);
-		LinkedTable sizeLink = new LinkedTable("SIZE", 	VaadinSession.getCurrent().getAttribute(Controller.class).getSizesContainer(), 
+		LinkedProperty sizeLink = new LinkedProperty("SIZE", 	VaadinSession.getCurrent().getAttribute(Controller.class).getSizesContainer(), 
 				"NAME", "ID", Integer.class, String.class);
 
 		ListOfViewPropertyId.add(new ViewPropertyId("ID",			PropertyIdVisibility.Hidden, 		PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));

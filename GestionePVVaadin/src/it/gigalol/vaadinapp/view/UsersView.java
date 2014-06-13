@@ -1,7 +1,7 @@
 package it.gigalol.vaadinapp.view;
 
 import it.gigalol.vaadinapp.Controller;
-import it.gigalol.vaadinapp.data.LinkedTable;
+import it.gigalol.vaadinapp.data.LinkedProperty;
 import it.gigalol.vaadinapp.data.PropertyIdBehavior;
 import it.gigalol.vaadinapp.data.PropertyIdSearch;
 import it.gigalol.vaadinapp.data.PropertyIdVisibility;
@@ -59,7 +59,7 @@ public class UsersView extends AbstractSingleTableManagerView {
 	protected boolean initChild() {
 		ListOfViewPropertyId = new ArrayList<ViewPropertyId> ();
 
-		LinkedTable siteLink = new LinkedTable("SITE", 	VaadinSession.getCurrent().getAttribute(Controller.class).getCategoriesContainer(), 
+		LinkedProperty siteLink = new LinkedProperty("SITE", 	VaadinSession.getCurrent().getAttribute(Controller.class).getCategoriesContainer(), 
 				"NAME", "ID", Integer.class, String.class);
 		
 		ListOfViewPropertyId.add(new ViewPropertyId("ID",	PropertyIdVisibility.Hidden, PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));

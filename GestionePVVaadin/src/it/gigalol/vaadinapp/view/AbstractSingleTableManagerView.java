@@ -2,7 +2,7 @@ package it.gigalol.vaadinapp.view;
 
 import it.gigalol.vaadinapp.Controller;
 import it.gigalol.vaadinapp.data.LinkedComboBox;
-import it.gigalol.vaadinapp.data.LinkedTable;
+import it.gigalol.vaadinapp.data.LinkedProperty;
 import it.gigalol.vaadinapp.data.PropertyIdSearch;
 import it.gigalol.vaadinapp.data.PropertyIdVisibility;
 import it.gigalol.vaadinapp.data.ViewPropertyId;
@@ -143,7 +143,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 
 			// For every external table
 			if (vpi.getLinked() != null) {
-				final LinkedTable lt = vpi.getLinked();
+				final LinkedProperty lt = vpi.getLinked();
 				// Add references to the external container
 				sc.addReference(lt.getSqlContainer(),lt.getIdName() , lt.getExternalIdName());
 				// Add a custom column generator 
@@ -185,7 +185,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 					// when the combobox selected item is changed
 					// the combobox is added to the view
 					// the textfield is bind to the data source
-					LinkedTable ltf=vpi.getLinked();
+					LinkedProperty ltf=vpi.getLinked();
 					HorizontalLayout hl = new HorizontalLayout();
 					hl.setSizeFull();
 					final ComboBox cbfield = new ComboBox(vpi.getName());
