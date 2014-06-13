@@ -63,15 +63,23 @@ public class LinkedProperty implements Serializable {
 		
 	}
 
+	/**
+	 * @return type of property to be displayed 
+	 */
 	public Class<?> getShowType() {
 		return showType;
 	}
 
-
+	/**
+	 * @return type of key and foreign key property
+	 */
 	public Class<?> getIdType() {
 		return idType;
 	}
 
+	/**
+	 * @return name of the property of the foreign key
+	 */
 	public String getExternalIdName() {
 		return externalIdName;
 	}
