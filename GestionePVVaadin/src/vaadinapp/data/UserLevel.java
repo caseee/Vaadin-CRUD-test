@@ -10,8 +10,8 @@ package vaadinapp.data;
 public enum UserLevel {
 	
 	Customer (1),
-	RestrictedSeller (5),
-	Seller (10),
+	RestrictedSalesman (5),
+	Salesman (10),
 	StoreManager (15),
 	Manager (20),
 	Owner (25),

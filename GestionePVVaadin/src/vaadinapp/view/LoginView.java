@@ -1,18 +1,22 @@
 package vaadinapp.view;
 
 
+import java.io.File;
 import java.io.Serializable;
 
 import vaadinapp.Controller;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -33,9 +37,14 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 	private final TextField user;
 	private final PasswordField password;
 	private final Button loginButton;	
-
+	private final Image img; 
+	private String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+	FileResource resource = new FileResource(new File(basepath +"/WEB-INF/resources/img/login.png"));
+	
 	public LoginView() {
 		setSizeFull();
+		img = new Image("LogIn", resource);
+		img.setWidth(COMPONENT_WIDTH);
 		// Create the user input field
 		user = new TextField("User Name:");
 		user.setWidth(COMPONENT_WIDTH);
@@ -54,7 +63,7 @@ public class LoginView extends CustomComponent implements View, Button.ClickList
 		loginButton = new Button("Login", this);
 		loginButton.setWidth(COMPONENT_WIDTH);
 		// Add both to a panel
-		VerticalLayout fields = new VerticalLayout(user, password, loginButton);
+		VerticalLayout fields = new VerticalLayout(img, user, password, loginButton);
 		fields.setCaption("Enter application user credentials. (Default admin/nimad)");
 		fields.setSpacing(true);
 		fields.setMargin(new MarginInfo(true, true, true, false));

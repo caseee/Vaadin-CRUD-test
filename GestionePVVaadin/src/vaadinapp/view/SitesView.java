@@ -22,7 +22,6 @@ import com.vaadin.server.VaadinSession;
  */
 public class SitesView extends AbstractSingleTableManagerView {
 
-
 	private static final long serialVersionUID = 5295128965443660371L;
 	public static String NAME = "sites";
 	private List<ViewPropertyId> ListOfViewPropertyId;

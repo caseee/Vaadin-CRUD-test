@@ -122,7 +122,17 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		leftLayout.setHeight("" );
 		rootLayout.setSplitPosition(50f);
 		rootLayout.setSizeFull();
+		
 		leftTopLayout.addComponents(back,newItem,searchField,searchButton,cancelSearchButton,deleteItem,saveItem,discardItem);
+		back.setSizeFull();
+		newItem.setSizeFull();
+		searchField.setSizeFull();
+		searchButton.setSizeFull();
+		cancelSearchButton.setSizeFull();
+		deleteItem.setSizeFull();
+		saveItem.setSizeFull();
+		discardItem.setSizeFull();
+		
 		leftLayout.addComponents(leftTopLayout,rightLayout);
 		rootLayout.addComponents(leftLayout,table);
 	

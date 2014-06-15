@@ -26,6 +26,9 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	private static final long serialVersionUID = -2762624119626051272L;
 		
 	
+	/* (non-Javadoc)
+	 * @see vaadinapp.view.AbstractSingleTableManagerView#initChild()
+	 */
 	public boolean initChild() {
 				
 		ListOfViewPropertyId = new ArrayList<ViewPropertyId> ();
@@ -74,12 +77,18 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 		return VaadinSession.getCurrent().getAttribute(Controller.class).getArticlesContainer();
 	}
 
+	/* (non-Javadoc)
+	 * @see vaadinapp.view.AbstractSingleTableManagerView#getViewPropertyId()
+	 */
 	@Override
 	public List<ViewPropertyId> getViewPropertyId() {
 		return ListOfViewPropertyId;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see vaadinapp.view.AbstractSingleTableManagerView#getMinimunUserLevel()
+	 */
 	@Override
 	protected int getMinimunUserLevel() {
 		// TODO Auto-generated method stub
