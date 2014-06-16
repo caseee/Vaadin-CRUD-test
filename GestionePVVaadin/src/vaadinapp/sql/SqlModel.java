@@ -2,6 +2,8 @@ package vaadinapp.sql;
 
 import java.sql.SQLException;
 
+import vaadinapp.data.UserBean;
+
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 
 /**
@@ -61,6 +63,30 @@ public interface SqlModel {
 	 * @throws SQLException
 	 */
 	public SQLContainer getRegistryContainer() throws SQLException;
+	
+	/**
+	 * @return  a SQLContainer populated with Movimentations
+	 * @throws SQLException
+	 */
+	public SQLContainer getMovimentationsContainer() throws SQLException;
+	
+	/**
+	 * @return  a SQLContainer populated with Movimentation_Specs
+	 * @throws SQLException
+	 */
+	public SQLContainer getMovimentation_SpecsContainer() throws SQLException;
+	
+	/**
+	 * @return  a SQLContainer populated with Movimentation_Types
+	 * @throws SQLException
+	 */
+	public SQLContainer getMovimentation_TypesContainer() throws SQLException;
+	
+	/**
+	 * @return  a SQLContainer populated with Inventory
+	 * @throws SQLException
+	 */
+	public SQLContainer getInventoryContainer() throws SQLException;	
 	
 	/**
 	 * Try to authorize a user 

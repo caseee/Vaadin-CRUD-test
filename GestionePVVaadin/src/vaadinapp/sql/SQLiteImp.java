@@ -17,6 +17,8 @@ import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import vaadinapp.data.UserBean;
+
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.connection.JDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;

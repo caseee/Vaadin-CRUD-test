@@ -1,3 +1,6 @@
+/**
+ * RegistryView.java
+ */
 package vaadinapp.view;
 
 import java.util.ArrayList;
@@ -16,11 +19,11 @@ import com.vaadin.server.VaadinSession;
  * @author Marco Casella
  *
  */
-public class ColorsView extends AbstractSingleTableManagerView {
+public class RegistryView extends AbstractSingleTableManagerView {
 
-	public static String NAME = "colors";
+	public static String NAME = "registry";
 	private List<ViewPropertyId> ListOfViewPropertyId;
-	private static final long serialVersionUID = -2761124119116051272L;
+	private static final long serialVersionUID = -2761124119116054321L;
 			
 	
 	/* (non-Javadoc)
@@ -45,14 +48,13 @@ public class ColorsView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	public SQLContainer getSQLContainer() {
-		return VaadinSession.getCurrent().getAttribute(Controller.class).getColorsContainer();
+		return VaadinSession.getCurrent().getAttribute(Controller.class).getRegistryContainer();
 	}
 
 	@Override
 	public List<ViewPropertyId> getViewPropertyId() {
 		return ListOfViewPropertyId;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see it.gigalol.vaadinapp.view.AbstractSingleTableManagerView#build()
@@ -61,8 +63,13 @@ public class ColorsView extends AbstractSingleTableManagerView {
 	protected boolean initChild() {
 		ListOfViewPropertyId = new ArrayList<ViewPropertyId> ();
 
-		ListOfViewPropertyId.add(new ViewPropertyId("ID",	PropertyIdVisibility.Hidden, PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));
-		ListOfViewPropertyId.add(new ViewPropertyId("NAME",	PropertyIdVisibility.Always, PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("ID",		PropertyIdVisibility.Hidden, PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("NAME",		PropertyIdVisibility.Always, PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("STREET",	PropertyIdVisibility.OnlyInDetail, PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("CITY",		PropertyIdVisibility.OnlyInDetail, PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("EMAIL",	PropertyIdVisibility.Always, PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
+		ListOfViewPropertyId.add(new ViewPropertyId("PHONE",	PropertyIdVisibility.OnlyInDetail, PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
+		
 
 		return true;
 	}

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vaadinapp.Controller;
-import vaadinapp.data.LinkedProperty;
 import vaadinapp.data.PropertyIdBehavior;
 import vaadinapp.data.PropertyIdSearch;
 import vaadinapp.data.PropertyIdVisibility;

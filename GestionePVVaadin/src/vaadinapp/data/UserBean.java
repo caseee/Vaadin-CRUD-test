@@ -1,4 +1,4 @@
-package vaadinapp.sql;
+package vaadinapp.data;
 
 import java.io.Serializable;
 
@@ -21,7 +21,7 @@ public class UserBean implements Serializable{
 	private String Name;
 	private int level;
 
-	UserBean(String name, int level) {
+	public UserBean(String name, int level) {
 		this.Name = name;
 		this.level = level;
 	}

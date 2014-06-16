@@ -2,13 +2,10 @@ package vaadinapp;
 
 import javax.servlet.annotation.WebServlet;
 
-import vaadinapp.view.ArticlesView;
-import vaadinapp.view.ColorsView;
-import vaadinapp.view.GroupsView;
 import vaadinapp.view.LoginView;
 import vaadinapp.view.MainView;
-import vaadinapp.view.UsersView;
-
+import vaadinapp.view.MovimentationsListView;
+import vaadinapp.view.MovimentationsView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
@@ -54,6 +51,12 @@ public class UiLauncher extends UI {
 
 		// Aggiunge la vista principale dell'applicazione
 		getNavigator().addView(MainView.NAME, MainView.class);
+		
+		// Aggiunge la vista 
+		getNavigator().addView(MovimentationsListView.NAME, MovimentationsListView.class);
+		
+		// Aggiunge la vista 
+		getNavigator().addView(MovimentationsView.NAME, MovimentationsView.class);
 		
 		for ( AppView view : controller.getViews())
 			getNavigator().addView(view.getViewName(),view.getViewClass());

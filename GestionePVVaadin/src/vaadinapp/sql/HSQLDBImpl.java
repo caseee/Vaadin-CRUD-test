@@ -11,6 +11,8 @@ import java.sql.SQLException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import vaadinapp.data.UserBean;
+
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.connection.JDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
@@ -150,7 +152,7 @@ public class HSQLDBImpl implements SqlModel {
 	@Override
 	public SQLContainer getCategoriesContainer() throws SQLException {
 		TableQuery tqg = new TableQuery("CATEGORIES", pool);
-		tqg.setVersionColumn("ID");
+		tqg.setVersionColumn("VERSIONID");
 		
 		return new SQLContainer(tqg);
 	}
@@ -161,13 +163,13 @@ public class HSQLDBImpl implements SqlModel {
 	@Override
 	public SQLContainer getUsersContainer() throws SQLException {
 		TableQuery tqg = new TableQuery("USERS", pool, new DefaultSQLGenerator());
-		tqg.setVersionColumn("ID");
+		tqg.setVersionColumn("VERSIONID");
 		return new SQLContainer(tqg);
 	}
 	
 	private SQLContainer getContainer(String tableName) throws SQLException {
 		TableQuery tqg = new TableQuery(tableName, pool, new DefaultSQLGenerator());
-		tqg.setVersionColumn("ID");
+		tqg.setVersionColumn("VERSIONID");
 		return new SQLContainer(tqg);
 	}
 
@@ -210,6 +212,39 @@ public class HSQLDBImpl implements SqlModel {
 	public SQLContainer getRegistryContainer() throws SQLException {
 		return getContainer("REGISTRY");
 	}
+
+	/* (non-Javadoc)
+	 * @see vaadinapp.sql.SqlModel#getMovimentationsContainer()
+	 */
+	@Override
+	public SQLContainer getMovimentationsContainer() throws SQLException {
+		return getContainer("MOVIMENTATIONS");
+	}
+
+	/* (non-Javadoc)
+	 * @see vaadinapp.sql.SqlModel#getMovimentation_SpecsContainer()
+	 */
+	@Override
+	public SQLContainer getMovimentation_SpecsContainer() throws SQLException {
+		return getContainer("MOVIMENTATION_SPECS");
+	}
+
+	/* (non-Javadoc)
+	 * @see vaadinapp.sql.SqlModel#getMovimentation_TypesContainer()
+	 */
+	@Override
+	public SQLContainer getMovimentation_TypesContainer() throws SQLException {
+		return getContainer("MOVIMENTATION_TYPES");
+	}
+
+	/* (non-Javadoc)
+	 * @see vaadinapp.sql.SqlModel#getInventoryContainer()
+	 */
+	@Override
+	public SQLContainer getInventoryContainer() throws SQLException {
+		return getContainer("INVENTORY");
+	}
 	
+
 	
 }

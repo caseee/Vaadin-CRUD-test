@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.*;
 
+import vaadinapp.data.UserBean;
 import vaadinapp.sql.HSQLDBImpl;
 import vaadinapp.sql.SqlModel;
-import vaadinapp.sql.UserBean;
 import vaadinapp.view.*;
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
@@ -61,6 +61,7 @@ public class Controller implements Serializable {
 		views.add(new AppView("Groups", GroupsView.class, 1));
 		views.add(new AppView("Colors", ColorsView.class, 1));
 		views.add(new AppView("Sizes", SizesView.class, 1));
+		views.add(new AppView("Registry", RegistryView.class, 1));
 		
 	}
 	
@@ -158,7 +159,39 @@ public class Controller implements Serializable {
 		}
 	}
 	
+	public SQLContainer getMovimentationsContainer() {
+		try {
+			return model.getMovimentationsContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving Registry data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
 
+	public SQLContainer getMovimentation_TypesContainer() {
+		try {
+			return model.getMovimentation_TypesContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving Registry data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
+	
+	public SQLContainer getMovimentation_SpecsContainer() {
+		try {
+			return model.getMovimentation_SpecsContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving Registry data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
+	
 	
 	
 }

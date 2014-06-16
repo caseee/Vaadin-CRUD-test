@@ -13,7 +13,6 @@ import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.*;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 
 public class MainView extends CustomComponent implements View {
@@ -40,12 +39,24 @@ public class MainView extends CustomComponent implements View {
 		}
 	});
 
+	Button mov  = new Button("Movimentations", new Button.ClickListener() {
+		private static final long serialVersionUID = -9081842014270147559L;
+		@Override
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(MovimentationsListView.NAME);
+		}
+	});
+	
 	public MainView() {
 		setSizeFull();
 
 		// Add both to a panel
 		GridLayout grid = new GridLayout(4, 4); 
 
+		grid.addComponent(mov);
+		mov.setWidth("180px");
+		mov.setWidth("180px");
+		
 		for (AppView view : VaadinSession.getCurrent().getAttribute(Controller.class).getViews()) {
 			final AppView finalView = view;
 			if (view.getLevelRequired() <= VaadinSession.getCurrent().getAttribute(Controller.class).getLoggedUser().getLevel() )
@@ -70,8 +81,10 @@ public class MainView extends CustomComponent implements View {
 
 		img = new Image("Main Menu", resource);
 		img.setWidth("256px");
+		
 		logout.setWidth("180px");
 		logout.setWidth("180px");
+
 		grid.addComponent(logout);	
 
 		grid.setSpacing(true);

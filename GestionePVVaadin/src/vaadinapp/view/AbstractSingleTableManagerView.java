@@ -26,7 +26,6 @@ import com.vaadin.data.util.sqlcontainer.RowId;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Sizeable;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -185,6 +184,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 					TextField field = new TextField(vpi.getName());
 					rightLayout.addComponent(field);
 					field.setWidth("100%");
+					field.setNullRepresentation("");
 					editorFields.bind(field, vpi.getName());
 				} 
 				else  {
@@ -209,10 +209,6 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 					TextField field = new TextField(vpi.getName());				
 					cbfield.addValueChangeListener(new ComboboxChangeListener(field));					
 					hl.addComponent(cbfield);
-//					Button btn = new Button("Edit");
-//					btn.setWidth("50px");
-//					btn.setHeight("100%");
-//					hl.addComponent(btn);
 					rightLayout.addComponent(hl);
 					cbfield.setWidth("100%");
 					editorFields.bind(field, vpi.getName());
