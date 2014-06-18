@@ -44,6 +44,14 @@ public class Controller implements Serializable {
        
 		try {
 			model= new HSQLDBImpl();
+			views.add(new AppView("Users", UsersView.class, 50));
+			views.add(new AppView("Sites", SitesView.class, 50));
+			views.add(new AppView("Articles", ArticlesView.class, 1));
+			views.add(new AppView("Groups", GroupsView.class, 1));
+			views.add(new AppView("Colors", ColorsView.class, 1));
+			views.add(new AppView("Sizes", SizesView.class, 1));
+			views.add(new AppView("Registry", RegistryView.class, 1));
+			
 		} catch (ClassNotFoundException e) {
 			log(Level.SEVERE, "Error loading JDBC driver");
 			e.printStackTrace();
@@ -59,18 +67,14 @@ public class Controller implements Serializable {
 		} catch (SqlToolError e) {
 			log(Level.SEVERE, "SqlTool Error.");
 			e.printStackTrace();
+			UI.getCurrent().getSession().close();
 		} catch (IOException e) {
 			log(Level.SEVERE, "File db error.");
 			e.printStackTrace();
+			UI.getCurrent().getSession().close();
 		}
 		
-		views.add(new AppView("Users", UsersView.class, 50));
-		views.add(new AppView("Sites", SitesView.class, 50));
-		views.add(new AppView("Articles", ArticlesView.class, 1));
-		views.add(new AppView("Groups", GroupsView.class, 1));
-		views.add(new AppView("Colors", ColorsView.class, 1));
-		views.add(new AppView("Sizes", SizesView.class, 1));
-		views.add(new AppView("Registry", RegistryView.class, 1));
+
 		
 	}
 	

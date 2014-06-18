@@ -48,6 +48,8 @@ public class UiLauncher extends UI {
 
 		// Aggiunge la vista del log-in
 		getNavigator().addView(LoginView.NAME, LoginView.class);
+		getNavigator().addView("", LoginView.class);
+		getNavigator().setErrorView(LoginView.class);
 
 		// Aggiunge la vista principale dell'applicazione
 		getNavigator().addView(MainView.NAME, MainView.class);
