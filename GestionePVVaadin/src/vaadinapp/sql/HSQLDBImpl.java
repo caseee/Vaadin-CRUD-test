@@ -3,11 +3,14 @@ package vaadinapp.sql;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -20,6 +23,10 @@ import com.vaadin.data.util.sqlcontainer.query.TableQuery;
 import com.vaadin.data.util.sqlcontainer.query.generator.DefaultSQLGenerator;
 import com.vaadin.server.VaadinService;
 
+import org.hsqldb.cmdline.SqlFile;
+import org.hsqldb.cmdline.SqlToolError;
+
+
 /**
  * SQLModel implementation for HyperSql server.
  * @author Marco Casella
@@ -27,9 +34,10 @@ import com.vaadin.server.VaadinService;
  */
 public class HSQLDBImpl implements SqlModel {
 	private static final String WEBDIR = "WEB-INF";
+	private static final String SCRIPTDIR = "SQL";
 	private static final String DBNAME = "HSQLDB.db";
 	private static final String DBNAME_EXTENSION = ".properties";
-	private static final String INITSQL = "HSQLDBInit.sql";
+	private static final String [] INITSQL = { "HSQLDB-TABLE.sql", "HSQLDB-BASE.sql","HSQLDB-PROCEDURE.sql", "HSQLDB-VERSIONTRIGGER.sql",  "HSQLDB-TRIGGER.sql"  };
 	private static final String FILE_SEPARATOR = "file.separator";
 	private static final String HSQLDB_JDBC_DRIVER_NAME = "org.hsqldb.jdbc.JDBCDriver";
 	private static final String HSQLDB_JDBC_CONNECTION_STRING_PREAMBLE = "jdbc:hsqldb:";
@@ -53,7 +61,7 @@ public class HSQLDBImpl implements SqlModel {
 		return new SQLContainer(tq);		 
 	}
 	
-	public HSQLDBImpl() throws java.lang.ClassNotFoundException,SQLException, FileNotFoundException {
+	public HSQLDBImpl() throws java.lang.ClassNotFoundException,SQLException, SqlToolError, IOException {
 
 		String dbfile = basepath + separator + WEBDIR + separator + DBNAME;
 
@@ -125,24 +133,54 @@ public class HSQLDBImpl implements SqlModel {
 		
 	/**
 	 * Uses SqlRunner class to run a sql script and create the tables of databases
-	 * @throws FileNotFoundException if script file is not found
 	 * @throws SQLException if the script execution fails
+	 * @throws IOException 
+	 * @throws SqlToolError 
 	 */
-	private void popolateDB() throws FileNotFoundException,SQLException  {
+	private void popolateDB() throws SQLException, IOException, SqlToolError  {
 
-		String dbinit = basepath + separator  +WEBDIR+separator+INITSQL;  
+		 
 		Connection c = null;
 		c = pool.reserveConnection();
-		FileReader fr = null;
-		PrintWriter stdwriter;
-		PrintWriter errwriter;
-		SqlRunner sr;
-		fr = new FileReader(dbinit);
-		stdwriter = new PrintWriter(System.out);
-		errwriter = new PrintWriter(System.err);
-		sr = new SqlRunner(c, stdwriter, errwriter, false, true);
-		sr.runScript(fr);
 		
+		Map<String, String> sqlVarMap = new HashMap<String, String>();
+        sqlVarMap.put("invoker", getClass().getName());
+        // This variable is pretty useless, but this should show you how to
+        // set variables which you can access inside of scripts like *{this}.
+
+        File file;
+        SqlFile sqlFile;
+        
+        for (String fileString : INITSQL) {
+        	String dbinit = basepath + separator  +WEBDIR+separator+SCRIPTDIR+separator+fileString; 
+            file = new File(dbinit);
+            if (!file.isFile())
+                throw new IOException("SQL file not present: "
+                        + file.getAbsolutePath());
+            sqlFile = new SqlFile(file);
+            sqlFile.setConnection(c);
+            sqlFile.addUserVars(sqlVarMap);
+            sqlFile.execute();
+
+            // The only reason for the following two statements is so that
+            // changes made by one .sql file will effect the future SQL files.
+            // Has no effect if you only execute one SQL file.
+            c = sqlFile.getConnection();
+            sqlVarMap = sqlFile.getUserVars();
+        }        
+
+
+		
+//		FileReader fr = null;
+//		PrintWriter stdwriter;
+//		PrintWriter errwriter;
+//		SqlRunner sr;
+//		fr = new FileReader(dbinit);
+//		stdwriter = new PrintWriter(System.out);
+//		errwriter = new PrintWriter(System.err);
+//		sr = new SqlRunner(c, stdwriter, errwriter, false, true);
+//		sr.runScript(fr);
+//		
 
 	}
 

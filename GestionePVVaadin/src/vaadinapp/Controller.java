@@ -1,10 +1,13 @@
 package vaadinapp;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.*;
+
+import org.hsqldb.cmdline.SqlToolError;
 
 import vaadinapp.data.UserBean;
 import vaadinapp.sql.HSQLDBImpl;
@@ -53,6 +56,12 @@ public class Controller implements Serializable {
 			log(Level.SEVERE, "Error database file not found.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
+		} catch (SqlToolError e) {
+			log(Level.SEVERE, "SqlTool Error.");
+			e.printStackTrace();
+		} catch (IOException e) {
+			log(Level.SEVERE, "File db error.");
+			e.printStackTrace();
 		}
 		
 		views.add(new AppView("Users", UsersView.class, 50));

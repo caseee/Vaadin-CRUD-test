@@ -32,7 +32,7 @@ public class UiLauncher extends UI {
 	@VaadinServletConfiguration(productionMode = false, ui = UiLauncher.class)
 	public static class Servlet extends VaadinServlet {
 
-		private static final long serialVersionUID = 1186087034464094368L;
+		private static final long serialVersionUID = 1186087034465694368L;
 		
 	}
 	

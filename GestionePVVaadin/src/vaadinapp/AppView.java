@@ -3,14 +3,17 @@
  */
 package vaadinapp;
 
+import java.io.Serializable;
+
 import com.vaadin.navigator.View;
 
 /**
  * @author Marco Casella
  *
  */
-public class AppView {
+public class AppView implements Serializable {
 
+	private static final long serialVersionUID = -1803907903358962357L;
 	/**
 	 * @param viewName
 	 * @param viewClass
