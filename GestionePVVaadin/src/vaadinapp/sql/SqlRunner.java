@@ -12,7 +12,6 @@ import java.sql.Statement;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 
 
 /**
@@ -139,7 +138,8 @@ public class SqlRunner {
 								out.print(name + "\t");
 							}
 							out.println("");
-							out.println(StringUtils.repeat("---------", md.getColumnCount()));
+							for (int i=0;i<md.getColumnCount();i++)
+								out.println("---------");
 							out.flush();
 
 							// Print result rows
