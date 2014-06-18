@@ -58,7 +58,7 @@ public class UsersView extends AbstractSingleTableManagerView {
 	protected boolean initChild() {
 		ListOfViewPropertyId = new ArrayList<ViewPropertyId> ();
 
-		LinkedProperty siteLink = new LinkedProperty("SITE", 	VaadinSession.getCurrent().getAttribute(Controller.class).getCategoriesContainer(), 
+		LinkedProperty siteLink = new LinkedProperty("SITE", 	VaadinSession.getCurrent().getAttribute(Controller.class).getSitesContainer(), 
 				"NAME", "ID", Integer.class, String.class);
 		
 		ListOfViewPropertyId.add(new ViewPropertyId("ID",	PropertyIdVisibility.Hidden, PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));

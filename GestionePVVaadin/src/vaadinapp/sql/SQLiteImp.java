@@ -110,7 +110,8 @@ public abstract class SQLiteImp implements SqlModel, Serializable{
 				String name = rs.getString(UserBean.USERNAME);
 				int level = rs.getInt(UserBean.LEVEL);
 				String hashpass = rs.getString(UserBean.HASH_PASSWORD);
-
+				int site = rs.getInt(UserBean.SITE);
+				
 				if (rs.next()) // Se trova più di un utente
 					result = null; 
 				else if (!hashpass.equals(DigestUtils.sha1Hex(pass))) // Se la pass non corrisponde
@@ -118,7 +119,7 @@ public abstract class SQLiteImp implements SqlModel, Serializable{
 				else if (level < levelreq) // Se il livello è inferiore
 					result = null;
 				else
-					result = new UserBean(name,level);
+					result = new UserBean(name,level,site);
 				rs.close();
 				stmt.close();
 				c.close();
