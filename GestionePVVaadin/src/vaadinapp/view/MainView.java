@@ -90,6 +90,7 @@ public class MainView extends CustomComponent implements View {
 		grid.setSpacing(true);
 		grid.setMargin(new MarginInfo(true, true, true, false));
 		grid.setSizeUndefined();
+		
 
 		// The view root layout
 		VerticalLayout viewLayout = new VerticalLayout(img,grid);
