@@ -92,7 +92,6 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 	 */
 	@Override
 	protected int getMinimunUserLevel() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 		

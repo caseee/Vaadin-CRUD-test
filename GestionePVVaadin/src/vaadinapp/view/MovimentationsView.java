@@ -3,6 +3,7 @@
  */
 package vaadinapp.view;
 
+import java.io.Console;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -23,6 +24,8 @@ import com.vaadin.data.util.sqlcontainer.RowId;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.query.QueryDelegate.RowIdChangeEvent;
 import com.vaadin.data.util.sqlcontainer.query.QueryDelegate.RowIdChangeListener;
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.VaadinSession;
@@ -37,7 +40,9 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 /**
  * @author Marco Casella
@@ -95,10 +100,11 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 	private TextField hiddenTypeField = new TextField();
 	private TextField hiddenSiteField = new TextField();
 	private TextField hiddenDestinationField = new TextField();	
+	private ArticleSelectWindow artWin;
 	private Integer headID = null;
 	private final FieldGroup editorFields = new FieldGroup();
 	private boolean isNew = false;
-	
+
 	/**
 	 * The constructor should first build the main layout, set the
 	 * composition root and then do any custom initialization.
@@ -107,19 +113,22 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 	 * visual editor.
 	 */
 	public MovimentationsView() {
+
+
 		buildMainLayout();
 		setCompositionRoot(mainLayout);
 
 		// TODO add user code here
-		
+
+
 		editorFields.setBuffered(true);
 		fieldID.setReadOnly(true);
 		editorFields.bind(fieldID, "ID");
-		
+
 		fieldOPDATE.setImmediate(true);
 		editorFields.bind(fieldOPDATE, "OPDATE");
 		fieldOPDATE.setValue(new Date());
-				
+
 		destinationCB.addValueChangeListener(new ComboboxChangeListener(hiddenDestinationField));
 		destinationCB.setImmediate(true);
 		destinationCB.setNullSelectionAllowed(false);
@@ -127,7 +136,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		destinationCB.setContainerDataSource(dest);
 		destinationCB.setItemCaptionPropertyId("NAME");
 		editorFields.bind(hiddenSiteField, "DESTINATION");
-		
+
 		fieldSITE.addValueChangeListener(new ComboboxChangeListener(hiddenSiteField));
 		fieldSITE.setImmediate(true);
 		fieldSITE.setNullSelectionAllowed(false);
@@ -135,7 +144,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		fieldSITE.setContainerDataSource(site);
 		fieldSITE.setItemCaptionPropertyId("NAME");
 		editorFields.bind(hiddenSiteField, "SITE");
-		
+
 		fieldTYPE.addValueChangeListener(new ComboboxChangeListener(hiddenTypeField));
 		fieldTYPE.setImmediate(true);
 		fieldTYPE.setNullSelectionAllowed(false);
@@ -143,23 +152,27 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		fieldTYPE.setContainerDataSource(type);
 		fieldTYPE.setItemCaptionPropertyId("DESCRIPTION");
 		editorFields.bind(hiddenTypeField, "MOVIMENTATION_TYPE");
-		
+
 		saveButton.addClickListener(this);
 		backBTN.addClickListener(this);
 		addArticleBTN.addClickListener(this);
-		
+
 		table.setEditable(true);
 		table.setImmediate(true);
 		table.setContainerDataSource(row);
-		
-		
+
+		artWin = new ArticleSelectWindow();
+		artWin.setWidth(400, Unit.PIXELS);
+		artWin.setHeight(400, Unit.PIXELS);
+
+
 		if (headID==null)
 			isNew = true;
-		
+
 		if (isNew)
 			createNewHead();
-		
-		
+
+
 	}
 
 	/* (non-Javadoc)
@@ -168,7 +181,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 	@Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -184,18 +197,18 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 			getUI().getNavigator().navigateTo(MovimentationsListView.NAME);
 		else if (source == addArticleBTN)
 			addRow();
-		
+
 	}
 
 
 	private void commit() {
-				
+
 		try {
 			editorFields.commit();
 			head.commit();
 			table.commit();
 			row.commit();
-			
+
 		} catch (CommitException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -206,11 +219,11 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void createNewHead() {
-		
+
 		// Listener che verrà chiamato quando la nuova movimentazione sarà aggiunta nel db   
 		head.addRowIdChangeListener(new RowIdChangeListener(){
 
@@ -218,27 +231,27 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 
 			@Override
 			public void rowIdChange(RowIdChangeEvent event) {
-				
+
 				RowId ri = event.getNewRowId();
 				Integer in = (Integer) ri.getId()[0];
 				headID=new Integer(in);
 				loadHead(ri);
-				
+
 
 			}
-			
+
 		});	
-		
+
 		Object tempItemId = head.addItem();
 		editorFields.setItemDataSource(head.getItem(tempItemId));
-				
+
 		fieldOPDATE.setValue(new Date());
-		
+
 		Iterator<?> itType = fieldTYPE.getItemIds().iterator();
 		if (itType.hasNext())
 			fieldTYPE.select(itType.next());
 		//hiddenTypeField.setValue(fieldTYPE.getValue().toString());
-		
+
 		hiddenSiteField.setValue(new Integer(controller.getLoggedUser().getSite()).toString());
 		RowId defaultSiteRowId = new RowId(hiddenSiteField.getValue());
 		Item defaultSite = fieldSITE.getItem(defaultSiteRowId );
@@ -249,7 +262,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 			RowId erw = new RowId(externalId.getValue());
 			fieldSITE.select(erw);
 		}
-				
+
 		try {
 			editorFields.commit();
 			head.commit();
@@ -263,24 +276,24 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void loadHead(RowId headRowId){
-		
+
 		Item it = head.getItem(headRowId);
-		
+
 		if (it == null) {
 			Notification.show("Error", "Error loading.",  Notification.Type.WARNING_MESSAGE);
 		}
-		
+
 		Property<Integer> id = it.getItemProperty("ID");
 		editorFields.setItemDataSource(it);
 		row.removeAllContainerFilters();
 		row.addContainerFilter(new Compare.Equal("ID_HEAD",headID));
-			
-		
+
+
 	}
 
 	/**
@@ -298,31 +311,25 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		ComboboxChangeListener(TextField field) {
 			this.field = field;
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data.Property.ValueChangeEvent)
 		 */
 		@Override
 		public void valueChange(ValueChangeEvent event) {
 			field.setValue(event.getProperty().getValue().toString());
-			
+
 		}
 
-		
+
 	}
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void addRow() {
-		
-		Object tempItemId = table.addItem();
-		Item itt = table.getItem(tempItemId);
-		itt.getItemProperty("ID_HEAD").setValue(new Integer(headID));
-		itt.getItemProperty("QUANTITY").setValue(new Integer(0));
-		Property price = itt.getItemProperty("PRICE");
-		price.setValue(new BigDecimal(0));
-		itt.getItemProperty("DISCOUNT").setValue(new BigDecimal(0));
-		itt.getItemProperty("TOTAL").setValue(new BigDecimal(0));
+
+		//FIXME NON APRI SE GIA APERTA
+		getUI().getCurrent().addWindow(artWin);
 
 	}
 
@@ -334,19 +341,19 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		mainLayout.setWidth("100%");
 		mainLayout.setHeight("100%");
 		mainLayout.setMargin(false);
-		
+
 		// top-level component properties
 		setWidth("100.0%");
 		setHeight("100.0%");
-		
+
 		// horizontalLayout_1
 		horizontalLayout_1 = buildHorizontalLayout_1();
 		mainLayout.addComponent(horizontalLayout_1);
-		
+
 		// gridLayout_2
 		gridLayout_2 = buildGridLayout_2();
 		mainLayout.addComponent(gridLayout_2);
-		
+
 		// table
 		table = new Table();
 		table.setImmediate(false);
@@ -354,7 +361,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		table.setHeight("100.0%");
 		mainLayout.addComponent(table);
 		mainLayout.setExpandRatio(table, 100.0f);
-		
+
 		return mainLayout;
 	}
 
@@ -366,7 +373,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		horizontalLayout_1.setWidth("-1px");
 		horizontalLayout_1.setHeight("-1px");
 		horizontalLayout_1.setMargin(false);
-		
+
 		// backBTN
 		backBTN = new Button();
 		backBTN.setCaption("Back");
@@ -375,7 +382,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		backBTN.setHeight("-1px");
 		horizontalLayout_1.addComponent(backBTN);
 		horizontalLayout_1.setExpandRatio(backBTN, 100.0f);
-		
+
 		// saveButton
 		saveButton = new Button();
 		saveButton.setCaption("Save");
@@ -384,7 +391,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		saveButton.setHeight("-1px");
 		horizontalLayout_1.addComponent(saveButton);
 		horizontalLayout_1.setExpandRatio(saveButton, 100.0f);
-		
+
 		return horizontalLayout_1;
 	}
 
@@ -398,42 +405,42 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		gridLayout_2.setMargin(false);
 		gridLayout_2.setColumns(4);
 		gridLayout_2.setRows(4);
-		
+
 		// fieldID
 		fieldID = new TextField();
 		fieldID.setImmediate(false);
 		fieldID.setWidth("-1px");
 		fieldID.setHeight("-1px");
 		gridLayout_2.addComponent(fieldID, 0, 0);
-		
+
 		// fieldOPDATE
 		fieldOPDATE = new PopupDateField();
 		fieldOPDATE.setImmediate(false);
 		fieldOPDATE.setWidth("-1px");
 		fieldOPDATE.setHeight("23px");
 		gridLayout_2.addComponent(fieldOPDATE, 1, 0);
-		
+
 		// fieldSITE
 		fieldSITE = new ComboBox();
 		fieldSITE.setImmediate(false);
 		fieldSITE.setWidth("-1px");
 		fieldSITE.setHeight("-1px");
 		gridLayout_2.addComponent(fieldSITE, 2, 0);
-		
+
 		// fieldTYPE
 		fieldTYPE = new ComboBox();
 		fieldTYPE.setImmediate(false);
 		fieldTYPE.setWidth("-1px");
 		fieldTYPE.setHeight("-1px");
 		gridLayout_2.addComponent(fieldTYPE, 3, 0);
-		
+
 		// destinationCB
 		destinationCB = new ComboBox();
 		destinationCB.setImmediate(false);
 		destinationCB.setWidth("-1px");
 		destinationCB.setHeight("-1px");
 		gridLayout_2.addComponent(destinationCB, 3, 1);
-		
+
 		// addArticleBTN
 		addArticleBTN = new Button();
 		addArticleBTN.setCaption("Add");
@@ -441,8 +448,81 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		addArticleBTN.setWidth("-1px");
 		addArticleBTN.setHeight("-1px");
 		gridLayout_2.addComponent(addArticleBTN, 0, 3);
-		
+
 		return gridLayout_2;
 	}
-	
+
+	public class ArticleSelectWindow extends Window implements ClickListener   {
+
+		private static final long serialVersionUID = -3604196350264435567L;
+
+		Table artTable = new Table();
+		Button searchBtn = new Button("Search");
+		Button addBtn = new Button("Add");
+
+		public ArticleSelectWindow() {
+			super("Article"); 
+			center();
+			artTable.setContainerDataSource(art);
+			artTable.setVisibleColumns("NAME", "PRICE");
+			VerticalLayout content = new VerticalLayout();
+			HorizontalLayout horiz = new HorizontalLayout();
+			content.setSizeFull();
+			TextField search = new TextField();
+			search.setWidth(100, Unit.PERCENTAGE);
+			addBtn.setWidth(100, Unit.PERCENTAGE);
+			addBtn.addClickListener(this);
+			searchBtn.addClickListener(this);
+			searchBtn.setWidth(100, Unit.PERCENTAGE);
+			search.setWidth(100, Unit.PERCENTAGE);
+			content.addComponents(horiz, artTable);
+			horiz.addComponents(addBtn, search,searchBtn);
+			horiz.setExpandRatio(addBtn, 100f);
+			horiz.setWidth(100, Unit.PERCENTAGE);
+			horiz.setExpandRatio(search, 100f);
+			horiz.setExpandRatio(searchBtn, 100f);
+			artTable.setSizeFull();
+			content.setExpandRatio(artTable, 100f);
+			artTable.setSelectable(true);
+			content.setExpandRatio(artTable, 100f);
+			setContent(content);
+		}
+
+		/* (non-Javadoc)
+		 * @see com.vaadin.ui.Button.ClickListener#buttonClick(com.vaadin.ui.Button.ClickEvent)
+		 */
+		@Override
+		public void buttonClick(ClickEvent event) {
+			Button source = event.getButton();
+
+			if (source==addBtn) 
+				add();
+
+		}
+
+		private void add() {
+			
+			Object artiid = artTable.getValue();
+			
+			if ( artiid == null)
+				return;
+
+			Item artItem = artTable.getItem(artiid);
+			Property <Integer> artID = artItem.getItemProperty("ID");
+			Property <BigDecimal> artPrice = artItem.getItemProperty("PRICE");
+			Object tempItemId = table.addItem();
+			Item itt = table.getItem(tempItemId);
+			itt.getItemProperty("ID_ART").setValue(artID.getValue());
+			itt.getItemProperty("ID_HEAD").setValue(new Integer(headID));
+			itt.getItemProperty("QUANTITY").setValue(new Integer(1));
+			itt.getItemProperty("PRICE").setValue(artPrice.getValue());
+			itt.getItemProperty("DISCOUNT").setValue(new BigDecimal(0));
+			itt.getItemProperty("TOTAL").setValue(artPrice.getValue());
+
+
+		}
+
+
+	}
+
 }

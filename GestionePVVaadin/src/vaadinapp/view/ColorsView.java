@@ -60,7 +60,6 @@ public class ColorsView extends AbstractSingleTableManagerView {
 	@Override
 	protected boolean initChild() {
 		ListOfViewPropertyId = new ArrayList<ViewPropertyId> ();
-
 		ListOfViewPropertyId.add(new ViewPropertyId("ID",	PropertyIdVisibility.Hidden, PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));
 		ListOfViewPropertyId.add(new ViewPropertyId("NAME",	PropertyIdVisibility.Always, PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
 

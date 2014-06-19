@@ -6,6 +6,7 @@ import vaadinapp.view.LoginView;
 import vaadinapp.view.MainView;
 import vaadinapp.view.MovimentationsListView;
 import vaadinapp.view.MovimentationsView;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
@@ -14,6 +15,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.Window;
 
 /**
  * Crea un oggetto Controller che gestisce tutti i dati di sessione dell'applicazione
@@ -39,7 +41,6 @@ public class UiLauncher extends UI {
 	private Controller controller = new Controller();
 		
 	protected void init(VaadinRequest request) {
-			
 		
 		 VaadinSession.getCurrent().setAttribute(Controller.class, controller);
 		
@@ -71,6 +72,10 @@ public class UiLauncher extends UI {
 			@Override
 			public boolean beforeViewChange(ViewChangeEvent event) {               
 
+				// Rimuove eventuali window
+				for (Window w : getWindows())
+					removeWindow(w);					
+				
 				// Controlla se l'utente è connesso
 				boolean isLoggedIn =  VaadinSession.getCurrent().getAttribute(Controller.class).getLoggedUser() != null;
 				boolean isLoginView = event.getNewView() instanceof LoginView;
