@@ -79,9 +79,9 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 	private VaadinSession session = VaadinSession.getCurrent();
 	private Controller controller = session.getAttribute(Controller.class);
 	private SQLContainer head = controller.getMovimentationsContainer();
-	private SQLContainer row = controller.getMovimentation_SpecsContainer();
+//	private SQLContainer row = controller.getMovimentation_SpecsContainer();
 	private SQLContainer type = controller.getMovimentation_TypesContainer();
-	private SQLContainer art = controller.getArticlesContainer();
+//	private SQLContainer art = controller.getArticlesContainer();
 	private SQLContainer dest = controller.getRegistryContainer();
 	private SQLContainer site = controller.getSitesContainer();	
 	

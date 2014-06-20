@@ -19,7 +19,6 @@ public class MainView extends CustomComponent implements View {
 
 	private static final long serialVersionUID = -6734826951324775495L;
 	public static final String NAME = "MainMenu";
-	private static final String COMPONENT_WIDTH = "800px";
 	private final Image img; 
 	Label text = new Label();
 
