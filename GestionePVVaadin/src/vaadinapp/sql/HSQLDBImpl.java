@@ -31,7 +31,7 @@ import org.hsqldb.cmdline.SqlToolError;
  */
 public class HSQLDBImpl implements SqlModel {
 	private static final String WEBDIR = "WEB-INF";
-	private static final String SCRIPTDIR = "SQL";
+	private static final String SCRIPTDIR = "sql";
 	private static final String DBNAME = "HSQLDB.db";
 	private static final String DBNAME_EXTENSION = ".properties";
 	private static final String [] INITSQL = { "HSQLDB-TABLE.sql", "HSQLDB-BASE.sql","HSQLDB-PROCEDURE.sql", "HSQLDB-VERSIONTRIGGER.sql",  "HSQLDB-TRIGGER.sql"  };
