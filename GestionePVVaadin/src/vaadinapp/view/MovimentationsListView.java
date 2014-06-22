@@ -250,12 +250,42 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 		
 		if (typeId==null)
 			return;
+		
+		RowId siteRowId = (RowId) siteCB.getValue();
+		
+		if (siteRowId == null)
+				return;
+		
+		Integer siteId = (Integer) typeRowId.getId()[0];
+		
+		if (siteId==null)
+			return;		
 				
-		getUI().getNavigator().navigateTo(MovimentationsView.NAME+"/"+typeId.toString() );
+		getUI().getNavigator().navigateTo(MovimentationsView.NAME+"/"+typeId.toString() + "/" + siteId.toString());
 		
 	}
 
 	private void edit() {
+				
+		RowId typeRowId = (RowId) typeCB.getValue();
+		
+		if (typeRowId == null)
+				return;
+		
+		Integer typeId = (Integer) typeRowId.getId()[0];
+		
+		if (typeId==null)
+			return;
+					
+		RowId siteRowId = (RowId) siteCB.getValue();
+		
+		if (siteRowId == null)
+				return;
+		
+		Integer siteId = (Integer) typeRowId.getId()[0];
+		
+		if (siteId==null)
+			return;							
 		
 		Object selectedItemId = lists.getValue();
 		
@@ -267,22 +297,12 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 		if (itemSelected == null)
 			return;
 		
-		RowId typeRowId = (RowId) typeCB.getValue();
-		
-		if (typeRowId == null)
-				return;
-		
-		Integer typeId = (Integer) typeRowId.getId()[0];
-		
-		if (typeId==null)
-			return;
-						
 		Property <?> selectedItemPropertyId = itemSelected.getItemProperty("ID");
 		
 		if (selectedItemPropertyId == null)
 			return;
 		
-		getUI().getNavigator().navigateTo(MovimentationsView.NAME + "/" + typeId.toString() + "/" + selectedItemPropertyId.getValue().toString());
+		getUI().getNavigator().navigateTo(MovimentationsView.NAME + "/" + typeId.toString() + "/" + siteId.toString() + "/" + selectedItemPropertyId.getValue().toString());
 		
 	}
 
