@@ -46,6 +46,14 @@ public class MainView extends CustomComponent implements View {
 		}
 	});
 	
+	Button inv  = new Button("Inventory", new Button.ClickListener() {
+		private static final long serialVersionUID = -928184204270147559L;
+		@Override
+		public void buttonClick(ClickEvent event) {
+			getUI().getNavigator().navigateTo(InventoryView.NAME);
+		}
+	});
+	
 	public MainView() {
 		setSizeFull();
 
@@ -55,6 +63,10 @@ public class MainView extends CustomComponent implements View {
 		grid.addComponent(mov);
 		mov.setWidth("180px");
 		mov.setWidth("180px");
+		
+		grid.addComponent(inv);
+		inv.setWidth("180px");
+		inv.setWidth("180px");
 		
 		for (AppView view : VaadinSession.getCurrent().getAttribute(Controller.class).getViews()) {
 			final AppView finalView = view;

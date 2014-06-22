@@ -204,6 +204,20 @@ public class Controller implements Serializable {
 			return null;
 		}
 	}
+
+	/**
+	 * @return
+	 */
+	public SQLContainer getInventoryContainer() {
+		try {
+			return model.getInventoryContainer();
+		} catch (SQLException e) {
+			log(Level.SEVERE, "Error retrieving Registry data.");
+			e.printStackTrace();
+			UI.getCurrent().getSession().close();
+			return null;
+		}
+	}
 	
 	
 	
