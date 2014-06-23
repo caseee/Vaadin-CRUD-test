@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
 
 import vaadinapp.Controller;
 
@@ -182,7 +183,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		fieldSITE.setEnabled(false);
 		fieldTYPE.setEnabled(false);
 		
-		
+		totalTextBox.setLocale(Locale.US);
 
 	}
 
@@ -209,7 +210,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		
 		//FIXME WRONG LOCALE
 		System.out.println("TOT: " + total.toString());
-		totalTextBox.setValue(total.toString().replace('.', ','));
+		totalTextBox.setValue(total.toString());
 		
 
 		try {
