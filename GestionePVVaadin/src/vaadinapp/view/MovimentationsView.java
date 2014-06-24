@@ -19,7 +19,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.data.util.converter.StringToBigDecimalConverter;
 import com.vaadin.data.util.filter.Compare;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.data.util.sqlcontainer.RowId;
@@ -141,7 +140,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		destinationCB.setNewItemsAllowed(true);
 		destinationCB.setContainerDataSource(dest);
 		destinationCB.setItemCaptionPropertyId("NAME");
-		editorFields.bind(hiddenSiteField, "DESTINATION");
+		editorFields.bind(hiddenDestinationField, "DESTINATION");
 
 		fieldSITE.addValueChangeListener(new ComboboxChangeListener(hiddenSiteField));
 		fieldSITE.setImmediate(true);
@@ -149,6 +148,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		fieldSITE.setNewItemsAllowed(false);
 		fieldSITE.setContainerDataSource(site);
 		fieldSITE.setItemCaptionPropertyId("NAME");
+
 		editorFields.bind(hiddenSiteField, "SITE");
 
 		fieldTYPE.addValueChangeListener(new ComboboxChangeListener(hiddenTypeField));
@@ -183,13 +183,20 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		fieldSITE.setEnabled(false);
 		fieldTYPE.setEnabled(false);
 		
+		hiddenDestinationField.setImmediate(true);
+		hiddenSiteField.setImmediate(true);
+		hiddenTypeField.setImmediate(true);
+		
+		
+		// FIXME 
 		totalTextBox.setLocale(Locale.US);
+		//totalTextBox.setConverter(new StringToBigDecimalConverter());
 
 	}
 
 	@SuppressWarnings("unchecked")
 	synchronized private void evaluateTotal() {
-		// FIXME total property update
+
 		BigDecimal total = new BigDecimal(0);
 		for ( Iterator<?> itemIdIteraor =  row.getItemIds().iterator(); itemIdIteraor.hasNext(); ) {
 			Object itemId = itemIdIteraor.next();
@@ -213,24 +220,8 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		totalTextBox.setValue(total.toString());
 		
 
-		try {
-			editorFields.commit();
-			head.commit();
-			row.commit();
-		} catch (CommitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedOperationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		commit();
 		
-		
-
-
 	}
 
 
@@ -353,6 +344,8 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 
 	}
 
+	
+	
 	private void createNewHead() {
 
 		// Listener che verrà chiamato quando la nuova movimentazione sarà aggiunta nel db   
@@ -385,9 +378,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		// set site value
 		RowId movSiteRowId = new RowId(new Integer(headSiteId));
 		fieldSITE.select(movSiteRowId);
-		hiddenDestinationField.setValue(new Integer (headSiteId).toString());
-
-		totalTextBox.setConverter(new StringToBigDecimalConverter());
+		hiddenSiteField.setValue(new Integer (headSiteId).toString());
 		
 		totalTextBox.setValue("0");
 		
@@ -540,6 +531,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 			Item artItem = artTable.getItem(artiid);
 			Property <?> artID =  artItem.  getItemProperty("ID");
 			Property <?> artPrice = artItem.getItemProperty("PRICE");
+		
 
 			Object tempItemId = row.addItem();
 
@@ -548,7 +540,14 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 
 			Item itt = row.getItemUnfiltered(tempItemId);
 
+			RowId siteRowid = (RowId) fieldSITE.getValue();
+			RowId typeRowid = (RowId) fieldTYPE.getValue();
+			
 			itt.getItemProperty("ID_ART").setValue(artID.getValue());
+			
+			itt.getItemProperty("SITE").setValue(siteRowid.getId()[0]);
+			itt.getItemProperty("MOVIMENTATION_TYPE").setValue(typeRowid.getId()[0]);
+			
 			itt.getItemProperty("ID_HEAD").setValue(new Integer(headID));
 			itt.getItemProperty("QUANTITY").setValue(new Integer(1));
 			itt.getItemProperty("PRICE").setValue(artPrice.getValue());

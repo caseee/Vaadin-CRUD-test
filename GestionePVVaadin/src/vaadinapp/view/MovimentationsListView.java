@@ -256,7 +256,7 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 		if (siteRowId == null)
 				return;
 		
-		Integer siteId = (Integer) typeRowId.getId()[0];
+		Integer siteId = (Integer) siteRowId.getId()[0];
 		
 		if (siteId==null)
 			return;		
