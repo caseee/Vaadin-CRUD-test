@@ -165,24 +165,24 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 			}
 		});
 		
-		head.addReference(dest,"DESTINATION" , "ID");
-		// Add a custom column generator 
-		lists.addGeneratedColumn("DESTINATION", new ColumnGenerator() {
-			private static final long serialVersionUID = -5227326849741964362L;
-			public Component generateCell(Table source, Object itemId, Object columnId) {
-				if (lists.getItem(itemId).getItemProperty("DESTINATION").getValue() == null) 
-					return null;
-				// Convert internal id property to external show property 
-				Label l = new Label();
-				// Retrieve the item in the external table
-				Item item = head.getReferencedItem(itemId, dest);
-				// Get the property used to show item
-				Property<?> property = item.getItemProperty("NAME"); 
-				l.setValue(property.getValue().toString());
-				l.setSizeUndefined();
-				return l;
-			}
-		});
+//		head.addReference(dest,"DESTINATION" , "ID");
+//		// Add a custom column generator 
+//		lists.addGeneratedColumn("DESTINATION", new ColumnGenerator() {
+//			private static final long serialVersionUID = -5227326849741964362L;
+//			public Component generateCell(Table source, Object itemId, Object columnId) {
+//				if (lists.getItem(itemId).getItemProperty("DESTINATION").getValue() == null) 
+//					return null;
+//				// Convert internal id property to external show property 
+//				Label l = new Label();
+//				// Retrieve the item in the external table
+//				Item item = head.getReferencedItem(itemId, dest);
+//				// Get the property used to show item
+//				Property<?> property = item.getItemProperty("NAME"); 
+//				l.setValue(property.getValue().toString());
+//				l.setSizeUndefined();
+//				return l;
+//			}
+//		});
 		
 		
 		head.addReference(site,"SITE" , "ID");
