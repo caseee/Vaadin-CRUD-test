@@ -158,9 +158,10 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		fieldTYPE.setContainerDataSource(type);
 		fieldTYPE.setItemCaptionPropertyId("DESCRIPTION");
 		editorFields.bind(hiddenTypeField, "MOVIMENTATION_TYPE");
-
+		
+		//totalTextBox.setImmediate(true);
+		
 		editorFields.bind(totalTextBox, "TOTAL");
-		totalTextBox.setEnabled(false);
 		
 		saveButton.addClickListener(this);
 		backBTN.addClickListener(this);
@@ -218,8 +219,8 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		//FIXME WRONG LOCALE
 		System.out.println("TOT: " + total.toString());
 		totalTextBox.setValue(total.toString());
-		
-
+		totalTextBox.markAsDirty();
+		totalTextBox.commit();
 		commit();
 		
 	}
