@@ -450,7 +450,7 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 
 	/**
 	 * Apply filter to the sql container
-	 * @param searchTerm String filter to add, if null cancel all filter
+	 * @param searchTerm String filter to add, if null or empty cancel all filter
 	 */
 	private void search(String searchTerm) {
 		sc.removeAllContainerFilters();

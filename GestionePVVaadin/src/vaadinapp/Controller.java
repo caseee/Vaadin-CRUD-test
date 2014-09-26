@@ -85,7 +85,7 @@ public class Controller implements Serializable {
 	public SQLContainer getArticlesContainer() {
 		try {
 			return model.getArticlesContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -109,7 +109,7 @@ public class Controller implements Serializable {
 	public SQLContainer getCategoriesContainer() {
 		try {
 			return model.getCategoriesContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Categories data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -120,7 +120,7 @@ public class Controller implements Serializable {
 	public SQLContainer getUsersContainer() {
 		try {
 			return model.getUsersContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Users data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -131,7 +131,7 @@ public class Controller implements Serializable {
 	public SQLContainer getColorsContainer() {
 		try {
 			return model.getColorsContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Colors data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -142,7 +142,7 @@ public class Controller implements Serializable {
 	public SQLContainer getSizesContainer() {
 		try {
 			return model.getSizesContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Sizes data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -153,7 +153,7 @@ public class Controller implements Serializable {
 	public SQLContainer getSitesContainer() {
 		try {
 			return model.getSitesContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Sites data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -164,7 +164,7 @@ public class Controller implements Serializable {
 	public SQLContainer getRegistryContainer() {
 		try {
 			return model.getRegistryContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Registry data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -175,7 +175,7 @@ public class Controller implements Serializable {
 	public SQLContainer getMovimentationsContainer() {
 		try {
 			return model.getMovimentationsContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Registry data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -186,7 +186,7 @@ public class Controller implements Serializable {
 	public SQLContainer getMovimentation_TypesContainer() {
 		try {
 			return model.getMovimentation_TypesContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Registry data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -197,7 +197,7 @@ public class Controller implements Serializable {
 	public SQLContainer getMovimentation_SpecsContainer() {
 		try {
 			return model.getMovimentation_SpecsContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Registry data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
@@ -211,7 +211,7 @@ public class Controller implements Serializable {
 	public SQLContainer getInventoryContainer() {
 		try {
 			return model.getInventoryContainer();
-		} catch (SQLException e) {
+		} catch (SQLException  | NullPointerException e) {
 			log(Level.SEVERE, "Error retrieving Registry data.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();

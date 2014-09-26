@@ -7,8 +7,6 @@ import vaadinapp.view.LoginView;
 import vaadinapp.view.MainView;
 import vaadinapp.view.MovimentationsListView;
 import vaadinapp.view.MovimentationsView;
-import vaadinapp.view.RegistryView;
-
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
