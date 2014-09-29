@@ -217,6 +217,11 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 			row.commit();
 			editorFields.commit();
 			head.commit();
+			
+			RowId headRowId = new RowId(new Integer (headID));
+			Item it = head.getItem(headRowId);
+			editorFields.setItemDataSource(it);			
+			
 		} catch (CommitException e) {
 			Notification.show("Error", "Error saving. Commit Exception. ", Notification.Type.ERROR_MESSAGE);			
 			e.printStackTrace();
@@ -298,6 +303,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private synchronized void add (Item artItem) {
 
 		Property <?> artID =  artItem.  getItemProperty("ID");
@@ -314,11 +320,9 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		RowId siteRowid = (RowId) fieldSITE.getValue();
 		RowId typeRowid = (RowId) fieldTYPE.getValue();
 		
-		itt.getItemProperty("ID_ART").setValue(artID.getValue());
-		
+		itt.getItemProperty("ID_ART").setValue(artID.getValue());		
 		itt.getItemProperty("SITE").setValue(siteRowid.getId()[0]);
-		itt.getItemProperty("MOVIMENTATION_TYPE").setValue(typeRowid.getId()[0]);
-		
+		itt.getItemProperty("MOVIMENTATION_TYPE").setValue(typeRowid.getId()[0]);		
 		itt.getItemProperty("ID_HEAD").setValue(new Integer(headID));
 		itt.getItemProperty("QUANTITY").setValue(new Integer(1));
 		itt.getItemProperty("PRICE").setValue(artPrice.getValue());
@@ -573,12 +577,14 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		public void valueChange(ValueChangeEvent event) {
 
 			field.setValue(event.getProperty().getValue().toString());
+			field.commit();
+			
+			commit();
 		
 		}
 
 	}
 
-	
 	public class QuantityChangeWindow extends Window implements ClickListener {
 
 		private Button okBtn = new Button("OK");
