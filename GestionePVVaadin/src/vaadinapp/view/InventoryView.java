@@ -6,6 +6,7 @@ package vaadinapp.view;
 import java.io.Serializable;
 
 import vaadinapp.Controller;
+import vaadinapp.data.ExternalColumnGenerator;
 import vaadinapp.data.UserBean;
 import vaadinapp.data.UserLevel;
 
@@ -26,6 +27,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -81,11 +83,21 @@ public class InventoryView extends CustomComponent implements View, Serializable
 			
 		
 		table.setContainerDataSource(inv);
+		
+		table.setColumnAlignment("QUANTIY", Align.RIGHT);
+		
 		inv.addReference(art, "ARTICLE", "ID");
+		table.addGeneratedColumn("ARTICLE NAME", new ExternalColumnGenerator(table, "ARTICLE", inv, "NAME", art));
+		
 		inv.addReference(site, "SITE", "ID");
+		table.addGeneratedColumn("SITE NAME", new ExternalColumnGenerator(table, "SITE", inv, "NAME", site));
+		
+		table.setVisibleColumns(new Object[] {"SITE NAME","ARTICLE NAME", "QUANTITY"});
 		
 		searchButton.addClickListener(this);
 		backButton.addClickListener(this);
+		
+		
 	}
 
 	/* (non-Javadoc)

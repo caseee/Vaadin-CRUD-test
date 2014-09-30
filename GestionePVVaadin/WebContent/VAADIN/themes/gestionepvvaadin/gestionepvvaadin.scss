@@ -9,4 +9,9 @@
   @include reindeer;
 
   /* Insert your theme rules here */
+  
+	.v-textfield-align-right {
+		text-align: right;
+	}
+  
 }

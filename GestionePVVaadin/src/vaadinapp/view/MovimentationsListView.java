@@ -35,6 +35,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.Align;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.VerticalLayout;
 
@@ -148,7 +149,7 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 		
 		head.addReference(type,"MOVIMENTATION_TYPE" , "ID");
 		// Add a custom column generator 
-		lists.addGeneratedColumn("MOVIMENTATION_TYPE", new ColumnGenerator() {
+		lists.addGeneratedColumn("TYPE", new ColumnGenerator() {
 			private static final long serialVersionUID = -5227036849741964362L;
 			public Component generateCell(Table source, Object itemId, Object columnId) {
 				if (lists.getItem(itemId).getItemProperty("MOVIMENTATION_TYPE").getValue() == null) 
@@ -165,29 +166,29 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 			}
 		});
 		
-//		head.addReference(dest,"DESTINATION" , "ID");
-//		// Add a custom column generator 
-//		lists.addGeneratedColumn("DESTINATION", new ColumnGenerator() {
-//			private static final long serialVersionUID = -5227326849741964362L;
-//			public Component generateCell(Table source, Object itemId, Object columnId) {
-//				if (lists.getItem(itemId).getItemProperty("DESTINATION").getValue() == null) 
-//					return null;
-//				// Convert internal id property to external show property 
-//				Label l = new Label();
-//				// Retrieve the item in the external table
-//				Item item = head.getReferencedItem(itemId, dest);
-//				// Get the property used to show item
-//				Property<?> property = item.getItemProperty("NAME"); 
-//				l.setValue(property.getValue().toString());
-//				l.setSizeUndefined();
-//				return l;
-//			}
-//		});
+		head.addReference(dest,"DESTINATION" , "ID");
+		// Add a custom column generator 
+		lists.addGeneratedColumn("DESTINATION NAME", new ColumnGenerator() {
+			private static final long serialVersionUID = -5227326849741964362L;
+			public Component generateCell(Table source, Object itemId, Object columnId) {
+				if (lists.getItem(itemId).getItemProperty("DESTINATION").getValue() == null) 
+					return null;
+				// Convert internal id property to external show property 
+				Label l = new Label();
+				// Retrieve the item in the external table
+				Item item = head.getReferencedItem(itemId, dest);
+				// Get the property used to show item
+				Property<?> property = item.getItemProperty("NAME"); 
+				l.setValue(property.getValue().toString());
+				l.setSizeUndefined();
+				return l;
+			}
+		});
 		
 		
 		head.addReference(site,"SITE" , "ID");
 		// Add a custom column generator 
-		lists.addGeneratedColumn("SITE", new ColumnGenerator() {
+		lists.addGeneratedColumn("SITE NAME", new ColumnGenerator() {
 			private static final long serialVersionUID = -3227326849741964362L;
 			public Component generateCell(Table source, Object itemId, Object columnId) {
 				if (lists.getItem(itemId).getItemProperty("SITE").getValue() == null) 
@@ -204,8 +205,10 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 			}
 		});
 		
-		lists.setVisibleColumns(new Object[] {"ID", "OPDATE","MOVIMENTATION", "SITE", "MOVIMENTATION_TYPE", "DESTINATION", "TOTAL"});
+		lists.setColumnAlignment("TOTAL", Align.RIGHT);
 		
+		lists.setVisibleColumns(new Object[] {"OPDATE","SITE NAME", "TYPE", "DESTINATION NAME", "TOTAL"});
+				
 		search();
 		
 	}
