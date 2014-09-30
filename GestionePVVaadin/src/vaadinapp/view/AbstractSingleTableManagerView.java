@@ -132,15 +132,19 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 		saveItem.setSizeFull();
 		discardItem.setSizeFull();
 		
-		leftLayout.addComponents(leftTopLayout,rightLayout);
-		rootLayout.addComponents(leftLayout,table);
+		leftLayout.addComponents(leftTopLayout,table);
+		rootLayout.addComponents(leftLayout,rightLayout);
 	
+		leftLayout.setSizeFull();
+				
 		leftTopLayout.setWidth(100,Unit.PERCENTAGE);
 
 		searchField.setWidth("100%");
 		table.setSizeFull();
 		rightLayout.setMargin(true);
 		rightLayout.setVisible(false);
+		leftLayout.setExpandRatio(table, 100f);
+		
 	}
 
 	/**
