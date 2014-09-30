@@ -1,4 +1,4 @@
-Vaadin CRM
+Sviluppo di un'applicazione web dinamica per la gestione di magazzini in linguaggio Java su framework Vaadin
 ==
 
 Vaadin Version: 7.1.15
