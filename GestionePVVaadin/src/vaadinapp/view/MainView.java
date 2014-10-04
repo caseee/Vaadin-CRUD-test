@@ -34,7 +34,7 @@ public class MainView extends CustomComponent implements View {
 			// logout
 			getSession().getAttribute(Controller.class).logout();
 			// redirect to log-in view
-			getUI().getNavigator().navigateTo(NAME);
+			getUI().getNavigator().navigateTo(LoginView.NAME);
 		}
 	});
 
