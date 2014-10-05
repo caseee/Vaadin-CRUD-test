@@ -63,6 +63,11 @@ public class InventoryView extends CustomComponent implements View, Serializable
 		setCompositionRoot(mainLayout);
 
 		// user code here
+		if (!Controller.validSession()) {
+			System.err.println("Invalid session.");
+			return;
+		}
+		
 		UserBean ub = controller.getLoggedUser();
 		
 		if ( ub.getLevel() <= UserLevel.StoreManager.getValue())

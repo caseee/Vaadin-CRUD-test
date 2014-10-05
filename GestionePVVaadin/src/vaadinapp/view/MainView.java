@@ -4,6 +4,7 @@ import java.io.File;
 
 import vaadinapp.AppView;
 import vaadinapp.Controller;
+import vaadinapp.data.UserBean;
 
 import com.vaadin.navigator.*;
 import com.vaadin.navigator.ViewChangeListener.*;
@@ -68,9 +69,37 @@ public class MainView extends CustomComponent implements View {
 		inv.setWidth("180px");
 		inv.setWidth("180px");
 		
+		img = new Image("Main Menu", resource);
+		
+		VaadinSession vs = VaadinSession.getCurrent();
+		if (vs == null) {
+			System.err.println("NO SESSION");
+			return;		
+		}
+		
+		Controller cntr = vs.getAttribute(Controller.class);
+		if (cntr == null) {
+			System.err.println("NO SESSION CONTROLLER");
+			return;
+		}
+		
+		UserBean user = cntr.getLoggedUser();
+		if (user == null) {
+			System.err.println("NO USER.");
+			return;
+		}
+					
 		for (AppView view : VaadinSession.getCurrent().getAttribute(Controller.class).getViews()) {
 			final AppView finalView = view;
-			if (view.getLevelRequired() <= VaadinSession.getCurrent().getAttribute(Controller.class).getLoggedUser().getLevel() )
+			
+			if (view == null) {
+				System.err.println("NO VIEW.");
+				continue;
+			}
+						
+			int level = user.getLevel();			
+			
+			if (view.getLevelRequired() <= level )
 			{
 				Button btn = new Button(view.getViewName(), new Button.ClickListener() {
 
@@ -88,9 +117,7 @@ public class MainView extends CustomComponent implements View {
 				grid.addComponent(btn);
 			}
 		}
-
-
-		img = new Image("Main Menu", resource);
+		
 		img.setWidth("256px");
 		
 		logout.setWidth("180px");

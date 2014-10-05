@@ -100,6 +100,14 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 		setCompositionRoot(mainLayout);
 
 		// user code here
+		
+		// user code here
+		if (!Controller.validSession()) {
+			System.err.println("Invalid session.");
+			return;
+		}
+		
+		
 		lists.setContainerDataSource(head);
 		newit.addClickListener(this);
 		deleteBtn.addClickListener(this);

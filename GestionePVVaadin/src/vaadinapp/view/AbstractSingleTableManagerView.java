@@ -247,7 +247,9 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	}
 
 	private void authTest() {
-		// FIXME
+		
+
+		
 		if (controller.getLoggedUser().getLevel() < getMinimunUserLevel())
 			getUI().getNavigator().navigateTo(getBackViewName());
 		
@@ -255,6 +257,11 @@ public abstract class AbstractSingleTableManagerView extends CustomComponent imp
 	
 	public AbstractSingleTableManagerView() {
 
+		if (!Controller.validSession()) {
+			System.err.println("Invalid session.");
+			return;
+		}
+		
 		initChild();
 		authTest();
 		initLayout();

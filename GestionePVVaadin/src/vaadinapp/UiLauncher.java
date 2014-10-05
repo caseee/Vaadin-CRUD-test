@@ -98,7 +98,7 @@ public class UiLauncher extends UI {
 
 			@Override
 			public void afterViewChange(ViewChangeEvent event) {
-
+				
 			}
 		});
 			

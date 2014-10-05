@@ -137,6 +137,13 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		setCompositionRoot(mainLayout);
 
 		// user code here
+		
+		// user code here
+		if (!Controller.validSession()) {
+			System.err.println("Invalid session.");
+			return;
+		}		
+		
 		fieldID.setReadOnly(true);
 		
 		fieldOPDATE.setValue(new Date());

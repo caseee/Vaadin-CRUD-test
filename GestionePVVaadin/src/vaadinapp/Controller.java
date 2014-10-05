@@ -15,6 +15,7 @@ import vaadinapp.sql.SqlModel;
 import vaadinapp.view.*;
 
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.UI;
 
 /**
@@ -219,6 +220,22 @@ public class Controller implements Serializable {
 		}
 	}
 	
-	
+	static public boolean validSession() {
+		
+		VaadinSession vs = VaadinSession.getCurrent();
+		if (vs == null) 
+			return false;			
+		
+		Controller cntr = vs.getAttribute(Controller.class);
+		if (cntr == null) 
+			return false;
+		
+		UserBean user = cntr.getLoggedUser();
+		if (user == null) 
+			return false;
+		
+		return true;
+		
+	}
 	
 }
