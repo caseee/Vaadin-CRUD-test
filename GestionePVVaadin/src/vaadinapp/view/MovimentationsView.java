@@ -127,7 +127,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 	private final FieldGroup editorFields = new FieldGroup();
 	// finestra per il cambio quantità
 	private final QuantityChangeWindow quantityWindows = new QuantityChangeWindow();
-	// indica se la movimentazione è nuova o si sta modificando 
+	// indica se la movimentazione e' nuova o si sta modificando 
 	private boolean moviementazioneNuova = false;
 	
 
@@ -282,7 +282,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		String parameters = event.getParameters();
 		RowId headRowId = null;
 				
-		// controlla se è un edit di una movimentazione o una movimentazione nuova
+		// controlla se e' un edit di una movimentazione o una movimentazione nuova
 		if(parameters != null){
 						
 			// split at "/", add each part as a label

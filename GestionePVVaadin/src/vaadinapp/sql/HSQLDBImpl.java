@@ -101,11 +101,11 @@ public class HSQLDBImpl implements SqlModel {
 				String hashpass = rs.getString(UserBean.HASH_PASSWORD);
 				int site = rs.getInt(UserBean.SITE);
 
-				if (rs.next()) // Se trova più di un utente
+				if (rs.next()) // Se trova piu' di un utente
 					result = null; 
 				else if (!hashpass.equals(DigestUtils.sha1Hex(pass))) // Se la pass non corrisponde
 					result = null;
-				else if (level < levelreq) // Se il livello è inferiore
+				else if (level < levelreq) // Se il livello e' inferiore
 					result = null;
 				else
 					result = new UserBean(name,level,site);

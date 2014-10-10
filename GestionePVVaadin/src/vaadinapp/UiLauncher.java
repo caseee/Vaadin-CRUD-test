@@ -79,12 +79,12 @@ public class UiLauncher extends UI {
 				for (Window w : getWindows())
 					removeWindow(w);					
 				
-				// Controlla se l'utente è connesso
+				// Controlla se l'utente e' connesso
 				boolean isLoggedIn =  VaadinSession.getCurrent().getAttribute(Controller.class).getLoggedUser() != null;
 				boolean isLoginView = event.getNewView() instanceof LoginView;
 
 				if (!isLoggedIn && !isLoginView) {
-					// Se non è connesso manda alla vista di log-in
+					// Se non e' connesso manda alla vista di log-in
 					getNavigator().navigateTo(LoginView.NAME);
 					return false;
 
