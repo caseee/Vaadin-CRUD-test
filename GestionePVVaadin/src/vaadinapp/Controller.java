@@ -11,6 +11,7 @@ import org.hsqldb.cmdline.SqlToolError;
 
 import vaadinapp.data.UserBean;
 import vaadinapp.sql.HSQLDBImpl;
+import vaadinapp.sql.MySqlImpl;
 import vaadinapp.sql.SqlModel;
 import vaadinapp.view.*;
 
@@ -44,7 +45,7 @@ public class Controller implements Serializable {
 	Controller() {        
        
 		try {
-			model= new HSQLDBImpl();
+			model= new MySqlImpl();
 			views.add(new AppView("Users", UsersView.class, 50));
 			views.add(new AppView("Sites", SitesView.class, 50));
 			views.add(new AppView("Articles", ArticlesView.class, 1));
@@ -73,6 +74,12 @@ public class Controller implements Serializable {
 			log(Level.SEVERE, "File db error.");
 			e.printStackTrace();
 			UI.getCurrent().getSession().close();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 

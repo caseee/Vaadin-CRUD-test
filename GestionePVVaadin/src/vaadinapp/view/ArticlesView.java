@@ -47,7 +47,7 @@ public class ArticlesView extends AbstractSingleTableManagerView {
 		ListOfViewPropertyId.add(new ViewPropertyId("COLOR",		PropertyIdVisibility.OnlyInDetail, 	PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	colorsLink));
 		ListOfViewPropertyId.add(new ViewPropertyId("SIZE",			PropertyIdVisibility.OnlyInDetail, 	PropertyIdBehavior.Editable, 	PropertyIdSearch.Searchable,	sizeLink));
 		ListOfViewPropertyId.add(new ViewPropertyId("PRICE",		PropertyIdVisibility.Always, 		PropertyIdBehavior.Editable, 	PropertyIdSearch.NotSearchable,	null));
-		ListOfViewPropertyId.add(new ViewPropertyId("VERSIONID",		PropertyIdVisibility.Hidden, 		PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));
+		//ListOfViewPropertyId.add(new ViewPropertyId("VERSIONID",		PropertyIdVisibility.Hidden, 		PropertyIdBehavior.ReadOnly, 	PropertyIdSearch.NotSearchable,	null));
 				
 		return true;
 	}
