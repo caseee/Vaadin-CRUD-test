@@ -125,7 +125,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 	private Integer headSiteId = null;
 	// fieldgroup della testa movimentazione
 	private final FieldGroup editorFields = new FieldGroup();
-	// finestra per il cambio quantità
+	// finestra per il cambio quantita'
 	private final QuantityChangeWindow quantityWindows = new QuantityChangeWindow();
 	// indica se la movimentazione e' nuova o si sta modificando 
 	private boolean moviementazioneNuova = false;
