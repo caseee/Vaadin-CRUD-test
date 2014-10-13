@@ -100,11 +100,11 @@
 	
 	<target name="package-war" depends="-init" description="Packages everything in a WAR that has been deployed in ${workdir}">
 		<mkdir dir="${workdir}/WEB-INF/lib"/>
-		<copy todir="${workdir}/WEB-INF/lib" flatten="true">
+		<copy todir="${workdir}WEB-INF/lib" flatten="true">
 			<fileset refid="ivy.deps.default.fileset"/>
 		</copy>
 		
-		<copy todir="${workdir}">
+		<copy todir="${workdir}/WEB-INF/classes">
 			<fileset dir="${sources}"/>
 		</copy>
 		
