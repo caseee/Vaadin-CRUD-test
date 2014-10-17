@@ -106,6 +106,10 @@
 			<fileset refid="ivy.deps.default.fileset"/>
 		</copy>
 		
+		<copy todir="${workdir}/">
+			<fileset dir="${sources}/WebContent"/>
+		</copy>
+		
 		<delete>
 			<fileset dir="${workdir}/WEB-INF/lib">
 				<include name="**/*-sources.jar"/>
