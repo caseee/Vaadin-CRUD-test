@@ -59,7 +59,7 @@
 	</target>
 	
 	<target name="compile-project" depends="-init">
-		<javac destdir="${workdir}" debug="${compile.debug}" includeantruntime="no">
+		<javac destdir="${workdir}/WEB-INF/classes" debug="${compile.debug}" includeantruntime="no">
 			<src path="${sources}"/>
 			<classpath refid="classpath"/>
 		</javac>
@@ -102,10 +102,6 @@
 		<mkdir dir="${workdir}/WEB-INF/lib"/>
 		<copy todir="${workdir}/WEB-INF/lib" flatten="true">
 			<fileset refid="ivy.deps.default.fileset"/>
-		</copy>
-		
-		<copy todir="${workdir}/WEB-INF/classes">
-			<fileset dir="${sources}"/>
 		</copy>
 		
 		<delete>
