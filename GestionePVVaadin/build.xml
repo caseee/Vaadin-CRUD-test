@@ -120,6 +120,7 @@
 		<war destfile="${artifacts}/${warfilename}" 
 			basedir="${workdir}"
 			webxml="${webroot}/WEB-INF/web.xml"
+			needxmlfile="false"
 			>
 			<lib dir="${webroot}/WEB-INF/lib" erroronmissingdir="no">
 				<include name="*.jar"/>
