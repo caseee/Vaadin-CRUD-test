@@ -107,7 +107,7 @@
 		</copy>
 		
 		<copy todir="${workdir}/">
-			<fileset dir="${sources}/WebContent"/>
+			<fileset dir="${sources}/../WebContent"/>
 		</copy>
 		
 		<delete>
