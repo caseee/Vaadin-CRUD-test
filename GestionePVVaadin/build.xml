@@ -118,8 +118,7 @@
 		</delete>
 		
 		<war destfile="${artifacts}/${warfilename}" 
-			basedir="${workdir}"
-			webxml="${webroot}/WEB-INF/web.xml"
+			basedir="${workdir}"			
 			needxmlfile="false"
 			>
 			<lib dir="${webroot}/WEB-INF/lib" erroronmissingdir="no">
