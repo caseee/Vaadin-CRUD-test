@@ -59,6 +59,8 @@
 	</target>
 	
 	<target name="compile-project" depends="-init">
+	<mkdir dir="${workdir}/WEB-INF/lib"/>
+	<mkdir dir="${workdir}/WEB-INF/classes"/>
 		<javac destdir="${workdir}/WEB-INF/classes" debug="${compile.debug}" includeantruntime="no">
 			<src path="${sources}"/>
 			<classpath refid="classpath"/>
