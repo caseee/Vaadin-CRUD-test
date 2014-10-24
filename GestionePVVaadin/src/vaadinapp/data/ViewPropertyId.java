@@ -51,7 +51,7 @@ public class ViewPropertyId implements Serializable {
 	 */
 	public ViewPropertyId(String name, PropertyIdVisibility visibility,
 			PropertyIdBehavior behavior, PropertyIdSearch searchable,
-			LinkedProperty linked) {
+			LinkedProperty linked ) {
 		super();
 		this.name = name;
 		this.visibility = visibility;
@@ -59,6 +59,7 @@ public class ViewPropertyId implements Serializable {
 		this.searchable = searchable;
 		this.linked = linked;
 	}
+
 
 
 	/**
@@ -73,6 +74,7 @@ public class ViewPropertyId implements Serializable {
 	private PropertyIdBehavior behavior;
 	private PropertyIdSearch searchable;
 	private LinkedProperty linked = null;
+
 	
 	
 	

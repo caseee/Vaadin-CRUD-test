@@ -48,7 +48,7 @@ public class MySqlImpl implements SqlModel {
 	 */
 	public SQLContainer getArticlesContainer() throws SQLException {
 		TableQuery tq = new TableQuery(null, null, "ARTICLES", pool, new DefaultSQLGenerator());
-		tq.setVersionColumn("ID");
+		tq.setVersionColumn("VERSIONID");
 		return new SQLContainer(tq);		 
 	}
 	
