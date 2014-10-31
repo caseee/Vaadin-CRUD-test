@@ -120,9 +120,9 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 	// finestra per la selezione articoli
 	private ArticleSelectWindow artWin;
 	// id movimentazione e id tipo collegati
-	private Integer headID = null;
-	private Integer headTypeId = null;
-	private Integer headSiteId = null;
+	private Long headID = null;
+	private Long headTypeId = null;
+	private Long headSiteId = null;
 	// fieldgroup della testa movimentazione
 	private final FieldGroup editorFields = new FieldGroup();
 	// finestra per il cambio quantita'
@@ -256,7 +256,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 			editorFields.commit();
 			head.commit();
 			
-			RowId headRowId = new RowId(new Integer (headID));
+			RowId headRowId = new RowId(new Long(headID));
 			Item it = head.getItem(headRowId);
 			editorFields.setItemDataSource(it);			
 			
@@ -292,14 +292,15 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 			if (msgs.length < 1 || msgs.length > 3) {
 				Notification.show("Error", "Parameter error. ", Notification.Type.ERROR_MESSAGE);
 				getUI().getNavigator().navigateTo(MovimentationsListView.NAME);
+				return;
 			}
 			
 			try { 
-				headTypeId = Integer.parseInt(msgs[0]);
-				headSiteId = Integer.parseInt(msgs[1]);
+				headTypeId = Long.parseLong(msgs[0]);
+				headSiteId = Long.parseLong(msgs[1]);
 
 				if (msgs.length == 3) {
-					headID=Integer.parseInt(msgs[2]);
+					headID=Long.parseLong(msgs[2]);
 					headRowId = new RowId(headID);
 				}
 				
@@ -361,7 +362,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		itt.getItemProperty("ID_ART").setValue(artID.getValue());		
 		itt.getItemProperty("SITE").setValue(siteRowid.getId()[0]);
 		itt.getItemProperty("MOVIMENTATION_TYPE").setValue(typeRowid.getId()[0]);		
-		itt.getItemProperty("ID_HEAD").setValue(new Integer(headID));
+		itt.getItemProperty("ID_HEAD").setValue(new Integer(headID.intValue()));
 		itt.getItemProperty("QUANTITY").setValue(new Integer(1));
 		itt.getItemProperty("PRICE").setValue(artPrice.getValue());
 		itt.getItemProperty("DISCOUNT").setValue(new BigDecimal(0));
@@ -495,12 +496,19 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 
 			private static final long serialVersionUID = 1128167464731496937L;
 
+			@SuppressWarnings("unused")
 			@Override
 			public void rowIdChange(RowIdChangeEvent event) {
 				
-				RowId ri = event.getNewRowId();
-				Integer in = (Integer) ri.getId()[0];
-				headID=new Integer(in);
+				RowId ri = event.getNewRowId(); // the new generated row
+				Object obj = ri.getId()[0]; // this is a long ID int NOT NULL AUTO_INCREMENT
+				Long in = (Long) obj;
+				
+//				Item i1 = head.getItem(ri); // return null
+//				Item i2 = head.getItem(new RowId(in)); // return null
+//				Item i3 = head.getItem(new RowId(new Integer(in.intValue()))); // return the item
+				
+				headID=new Long(in);
 				loadHead(ri);
 
 			}
@@ -516,7 +524,7 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		fieldOPDATE.setValue(new Date());
 
 		// set type value
-		RowId movTypeRowId = new RowId(new Integer (headTypeId));
+		RowId movTypeRowId = new RowId(new Long (headTypeId));
 		fieldTYPE.select(movTypeRowId);
 		hiddenTypeField.setValue(headTypeId.toString());
 		
@@ -524,9 +532,9 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 		// hiddenDestinationField.setValue(new Integer (headTypeId).toString());
 		
 		// set site value
-		RowId movSiteRowId = new RowId(new Integer(headSiteId));
+		RowId movSiteRowId = new RowId(new Long(headSiteId));
 		fieldSITE.select(movSiteRowId);
-		hiddenSiteField.setValue(new Integer (headSiteId).toString());
+		hiddenSiteField.setValue(new Long (headSiteId).toString());
 		
 		totalTextBox.setValue("0");
 		
@@ -558,20 +566,30 @@ public class MovimentationsView extends CustomComponent implements Serializable,
 	
 		//TODO Check if user is allowed to see and edit this mov
 		
-		try {
-			head.rollback();
-			row.rollback();
-		} catch (UnsupportedOperationException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			head.rollback();
+//			row.rollback();
+//		} catch (UnsupportedOperationException | SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
-		editorFields.discard();
+//		editorFields.discard();
+//		head.refresh();
 		
-		Item it = head.getItem(headRowId);
+		Long longid= (Long) headRowId.getId()[0];
+		
+		Integer intid= new Integer(longid.intValue());
+		
+		RowId headIntRowid = new RowId(intid);
+		
+		Item it = head.getItem(headIntRowid);
 
 		if (it == null) {
 			Notification.show("Error", "Error loading.",  Notification.Type.WARNING_MESSAGE);
+			getUI().getNavigator().navigateTo(MovimentationsListView.NAME);
+			return;
+			
 		}
 		
 		editorFields.setItemDataSource(it);

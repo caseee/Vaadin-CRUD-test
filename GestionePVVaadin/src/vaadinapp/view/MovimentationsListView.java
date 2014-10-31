@@ -389,7 +389,7 @@ public class MovimentationsListView extends CustomComponent implements  View , C
 		Integer cbmint = (Integer) cbmvalue.getId()[0];
 		
 		Filter fromDataFilter = new Compare.GreaterOrEqual("OPDATE", fromDate.getValue());
-		Filter toDataFilter = new Compare.LessOrEqual("OPDATE", toDate.getValue());
+		Filter toDataFilter = new Compare.Less("OPDATE", toDate.getValue());
 		Filter siteFilter = new Compare.Equal("SITE",cbsint);
 		Filter typeFilter = new Compare.Equal("MOVIMENTATION_TYPE",cbmint);
 	
